@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#030a13"><meta name="description" content="An abandoned orbital observatory. A world without end. Explore ECHO-9, a self-contained procedural WebGPU experience.">
+<title>ECHO—9 · The last light</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Cpath fill=%27%23030a13%27 d=%27M0 0h32v32H0z%27/%3E%3Cpath fill=%27none%27 stroke=%27%2374d8e9%27 d=%27m16 4 12 12-12 12L4 16zM16 0v32M0 16h32%27/%3E%3C/svg%3E">
+<style>/*__CSS__*/</style>
+</head>
+<body>
+<canvas id="world" aria-label="Explorable three-dimensional space station. Use WASD to move and click to look around." tabindex="0"></canvas>
+<div id="hud">
+  <header class="topbar">
+    <div class="identity"><div class="sigil" aria-hidden="true"></div><div class="brand">ECHO—9<small>ORBITAL RESEARCH STATION</small></div></div>
+    <div class="telemetry"><div><span class="signal"></span>TRANSMISSION LOST<strong>ASTERION / ORBIT 0842</strong></div><div>POSITION<strong id="coordinates">0.0 / 5.8 / 16.0 M</strong></div></div>
+    <nav class="top-actions" aria-label="Experience settings"><button id="audio-toggle" aria-pressed="false">SOUND OFF</button><button id="menu-toggle" aria-label="Open or close menu">MENU<span class="menu-icon" aria-hidden="true"></span></button></nav>
+  </header>
+  <div class="rule"></div>
+  <div class="caption"><div class="eyebrow" id="sector">01 / KEPLER DECK</div><h1 id="view-title">THE OBSERVATORY</h1><p id="view-note">The last light of a forgotten orbit.</p></div>
+  <footer class="footer"><nav class="view-tabs" aria-label="Saved camera views"><button data-view="1" class="selected" aria-label="View 1: Observatory" aria-pressed="true">01</button><button data-view="2" aria-label="View 2: Planet">02</button><button data-view="3" aria-label="View 3: Research gallery">03</button><button data-view="4" aria-label="View 4: Service spine">04</button><button data-view="5" aria-label="View 5: Hangar">05</button><button data-view="6" aria-label="View 6: Salvage vessel">06</button></nav><div class="controls"><span><b>W A S D</b> MOVE</span><span><b>Q / E</b> VERTICAL</span><span><b>SHIFT</b> DRIFT FASTER</span><span><b>ESC</b> MENU</span></div><div class="status"><span id="location-label">OBSERVATORY</span> · <span id="quality-label">HIGH</span></div></footer>
+  <div class="reticle" aria-hidden="true"></div><output id="stats" hidden aria-label="Performance statistics"></output>
+</div>
+<aside id="menu" aria-label="Exploration menu">
+  <div class="menu-kicker">A PROCEDURAL WEBGPU EXPERIENCE</div><h2>DRIFT INTO<br>THE SILENCE.</h2><p>Beyond the glass, a planet turns.<br>Inside, the station keeps its secrets.<br>Take your time. There is no one waiting.</p>
+  <button class="primary" id="explore">ENTER THE STATION <span>↗</span></button><button class="secondary" id="flythrough">TAKE THE LONG WAY HOME <span>60 S</span></button>
+  <div class="settings-label">RENDER QUALITY</div><div class="quality-buttons"><button data-quality="Low">LOW</button><button data-quality="Medium">MEDIUM</button><button data-quality="High" class="selected">HIGH</button></div>
+  <div class="menu-foot">CLICK THE SCENE TO LOOK AROUND · 1–6 SAVED VIEWS<br>M SOUND · H TELEMETRY<br><button id="download-report">Download diagnostic report</button></div>
+</aside>
+<div id="loading"><div class="brand">ECHO—9</div><div class="loader"></div><p>RECONSTRUCTING THE LAST TRANSMISSION</p></div>
+<section id="error" hidden role="alert"><div class="menu-kicker">TRANSMISSION INTERRUPTED</div><h2>A COMPATIBLE GPU IS REQUIRED</h2><p></p><span>Use a current desktop Chrome or Edge</span></section>
+<script type="module">/*__SCRIPT__*/</script>
+</body></html>

@@ -1,0 +1,34 @@
+{
+  "browser": "151.0.7922.34",
+  "softwareFlag": true,
+  "sceneCodeUsed": false,
+  "results": [
+    {
+      "presentation": "offscreen",
+      "status": "PASS",
+      "adapter": {
+        "vendor": "google",
+        "architecture": "swiftshader",
+        "isFallbackAdapter": true
+      },
+      "format": "rgba8unorm",
+      "expected": [
+        255,
+        0,
+        255,
+        255
+      ],
+      "pixel": [
+        255,
+        0,
+        255,
+        255
+      ]
+    },
+    {
+      "presentation": "swapchain",
+      "status": "BLOCKED",
+      "reason": "Failed to execute 'mapAsync' on 'GPUBuffer': A valid external Instance reference no longer exists."
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+
+> project-echo-9@1.0.0 RunAllTests
+> npm run test:all
+
+
+> project-echo-9@1.0.0 test:all
+> npm run build && npm test
+
+
+> project-echo-9@1.0.0 build
+> node scripts/build.mjs
+
+Built standalone index.html: 68,058 bytes raw · 24,346 bytes gzip
+
+> project-echo-9@1.0.0 test
+> node --test tests/*.test.mjs
+
+✔ seeded random has a stable, distinct sequence and a bounded range (2.643985ms)
+✔ projection maps the near/far clipping planes to WebGPU 0..1 depth (0.25119ms)
+✔ lookAngles and viewMatrix agree for all six views (0.494274ms)
+✔ matrix multiplication preserves a known translation through identity (0.190802ms)
+✔ architectural bounds allow one uninterrupted route and protect major solids (1.553707ms)
+✔ wide-room bulkhead collisions stop forward motion without sideways teleporting (0.379535ms)
+✔ 60-second route is finite, deterministic and reaches both approved endpoints (3.310138ms)
+✔ procedural geometry is deterministic, finite, structurally rich and changes with seed (729.832131ms)
+✔ cuboid helper produces twelve triangles and outward normals (0.4427ms)
+✔ build is byte-for-byte reproducible and standalone, with no external resources (69.952776ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 933.924951

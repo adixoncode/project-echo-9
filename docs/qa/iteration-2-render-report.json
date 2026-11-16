@@ -1,0 +1,634 @@
+{
+  "capturedAt": "2026-11-16T22:17:50.968Z",
+  "artifactSha256": "d215c20d7868943926194fecb0f42b98f342b0f560a450f0b873cb0b994a09d8",
+  "url": "http://localhost:4173/index.html?view=1&quality=High&test=1&readback=1",
+  "browser": "151.0.7922.34",
+  "viewport": {
+    "width": 1920,
+    "height": 1080
+  },
+  "softwareFlag": true,
+  "adapter": {
+    "vendor": "google",
+    "architecture": "swiftshader",
+    "device": "",
+    "description": "",
+    "isFallbackAdapter": true,
+    "features": [
+      "depth32float-stencil8",
+      "rg11b10ufloat-renderable",
+      "bgra8unorm-storage",
+      "texture-compression-bc",
+      "core-features-and-limits",
+      "chromium-experimental-timestamp-query-inside-passes",
+      "float32-filterable",
+      "indirect-first-instance",
+      "texture-compression-astc-sliced-3d",
+      "float32-blendable",
+      "subgroup-size-control",
+      "texture-compression-astc",
+      "texture-compression-etc2",
+      "depth-clip-control",
+      "texture-compression-bc-sliced-3d",
+      "clip-distances",
+      "timestamp-query",
+      "texture-component-swizzle",
+      "subgroups"
+    ]
+  },
+  "hardwareAcceptance": "BLOCKED",
+  "states": [
+    {
+      "ready": true,
+      "position": [
+        0,
+        5.800000190734863,
+        16
+      ],
+      "yaw": 0,
+      "pitch": -0.08186788792469124,
+      "sector": "OBSERVATORY",
+      "quality": "High",
+      "renderSize": [
+        1920,
+        1080
+      ],
+      "view": 1,
+      "presentedView": 1,
+      "presentedFrames": 3,
+      "presentationMode": "readback",
+      "menuOpen": false,
+      "audio": false,
+      "pointerLocked": false,
+      "time": 12,
+      "flight": null,
+      "pixelProbe": {
+        "mean": 87.00028935185192,
+        "variance": 3274.809702848279,
+        "min": 10.666666666666666,
+        "max": 235
+      }
+    },
+    {
+      "ready": true,
+      "position": [
+        -10,
+        7,
+        -4
+      ],
+      "yaw": 0.30587887140485215,
+      "pitch": -0.12481911853403782,
+      "sector": "OBSERVATORY",
+      "quality": "High",
+      "renderSize": [
+        1920,
+        1080
+      ],
+      "view": 2,
+      "presentedView": 2,
+      "presentedFrames": 6,
+      "presentationMode": "readback",
+      "menuOpen": false,
+      "audio": false,
+      "pointerLocked": false,
+      "time": 12,
+      "flight": null,
+      "pixelProbe": {
+        "mean": 93.95124421296319,
+        "variance": 3339.354731283598,
+        "min": 10.666666666666666,
+        "max": 238.33333333333334
+      }
+    },
+    {
+      "ready": true,
+      "position": [
+        17,
+        9.5,
+        7
+      ],
+      "yaw": -0.960070362405688,
+      "pitch": 0.26021369666029137,
+      "sector": "OBSERVATORY",
+      "quality": "High",
+      "renderSize": [
+        1920,
+        1080
+      ],
+      "view": 3,
+      "presentedView": 3,
+      "presentedFrames": 10,
+      "presentationMode": "readback",
+      "menuOpen": false,
+      "audio": false,
+      "pointerLocked": false,
+      "time": 12,
+      "flight": null,
+      "pixelProbe": {
+        "mean": 94.02358217592597,
+        "variance": 2841.796945809936,
+        "min": 13,
+        "max": 241
+      }
+    },
+    {
+      "ready": true,
+      "position": [
+        0,
+        3.5999999046325684,
+        33
+      ],
+      "yaw": 3.141592653589793,
+      "pitch": -0.006060531858310405,
+      "sector": "SERVICE SPINE",
+      "quality": "High",
+      "renderSize": [
+        1920,
+        1080
+      ],
+      "view": 4,
+      "presentedView": 4,
+      "presentedFrames": 14,
+      "presentationMode": "readback",
+      "menuOpen": false,
+      "audio": false,
+      "pointerLocked": false,
+      "time": 12,
+      "flight": null,
+      "pixelProbe": {
+        "mean": 102.78269675925931,
+        "variance": 1884.026660474272,
+        "min": 14.666666666666666,
+        "max": 228
+      }
+    },
+    {
+      "ready": true,
+      "position": [
+        -14,
+        7,
+        81
+      ],
+      "yaw": 2.5283853047152838,
+      "pitch": 0.030279869006321083,
+      "sector": "HANGAR",
+      "quality": "High",
+      "renderSize": [
+        1920,
+        1080
+      ],
+      "view": 5,
+      "presentedView": 5,
+      "presentedFrames": 17,
+      "presentationMode": "readback",
+      "menuOpen": false,
+      "audio": false,
+      "pointerLocked": false,
+      "time": 12,
+      "flight": null,
+      "pixelProbe": {
+        "mean": 76.04586226851853,
+        "variance": 1784.7658846924933,
+        "min": 10.666666666666666,
+        "max": 247.66666666666666
+      }
+    },
+    {
+      "ready": true,
+      "position": [
+        16,
+        5.5,
+        112
+      ],
+      "yaw": -1.0460005551447893,
+      "pitch": 0.059144317530231534,
+      "sector": "HANGAR",
+      "quality": "High",
+      "renderSize": [
+        1920,
+        1080
+      ],
+      "view": 6,
+      "presentedView": 6,
+      "presentedFrames": 21,
+      "presentationMode": "readback",
+      "menuOpen": false,
+      "audio": false,
+      "pointerLocked": false,
+      "time": 12,
+      "flight": null,
+      "pixelProbe": {
+        "mean": 74.13802083333357,
+        "variance": 1988.9520150643893,
+        "min": 11,
+        "max": 226.33333333333334
+      }
+    }
+  ],
+  "flightStates": [
+    {
+      "ready": true,
+      "position": [
+        -7.380132675170898,
+        6.393918037414551,
+        5.5733747482299805
+      ],
+      "yaw": 0.21763122520062975,
+      "pitch": -0.11712926257054943,
+      "sector": "OBSERVATORY",
+      "quality": "High",
+      "renderSize": [
+        1920,
+        1080
+      ],
+      "view": 0,
+      "presentedView": 0,
+      "presentedFrames": 26,
+      "presentationMode": "readback",
+      "menuOpen": false,
+      "audio": false,
+      "pointerLocked": false,
+      "time": 4.7762999999999085,
+      "flight": {
+        "elapsed": 5.063199999999953,
+        "duration": 60
+      }
+    },
+    {
+      "ready": true,
+      "position": [
+        -8.083333015441895,
+        7.430717945098877,
+        -7.46856164932251
+      ],
+      "yaw": 0.3975827316611017,
+      "pitch": -0.13538761247163655,
+      "sector": "OBSERVATORY",
+      "quality": "High",
+      "renderSize": [
+        1920,
+        1080
+      ],
+      "view": 0,
+      "presentedView": 0,
+      "presentedFrames": 32,
+      "presentationMode": "readback",
+      "menuOpen": false,
+      "audio": false,
+      "pointerLocked": false,
+      "time": 10.109399999999907,
+      "flight": {
+        "elapsed": 10.129399999999906,
+        "duration": 60
+      }
+    },
+    {
+      "ready": true,
+      "position": [
+        5.47979736328125,
+        7.292094707489014,
+        -1.50978422164917
+      ],
+      "yaw": -0.37824788753749794,
+      "pitch": 0.09465698277638877,
+      "sector": "OBSERVATORY",
+      "quality": "High",
+      "renderSize": [
+        1920,
+        1080
+      ],
+      "view": 0,
+      "presentedView": 0,
+      "presentedFrames": 38,
+      "presentationMode": "readback",
+      "menuOpen": false,
+      "audio": false,
+      "pointerLocked": false,
+      "time": 14.575899999999907,
+      "flight": {
+        "elapsed": 15.1835,
+        "duration": 60
+      }
+    },
+    {
+      "ready": true,
+      "position": [
+        7.308380603790283,
+        6.040670871734619,
+        11.206089973449707
+      ],
+      "yaw": -1.9690010316681703,
+      "pitch": 0.26574860967079456,
+      "sector": "OBSERVATORY",
+      "quality": "High",
+      "renderSize": [
+        1920,
+        1080
+      ],
+      "view": 0,
+      "presentedView": 0,
+      "presentedFrames": 42,
+      "presentationMode": "readback",
+      "menuOpen": false,
+      "audio": false,
+      "pointerLocked": false,
+      "time": 20.108999999999906,
+      "flight": {
+        "elapsed": 20.249800000000047,
+        "duration": 60
+      }
+    },
+    {
+      "ready": true,
+      "position": [
+        3.266582727432251,
+        4.843564987182617,
+        18.554378509521484
+      ],
+      "yaw": -2.939841992982989,
+      "pitch": 0.06103587154056384,
+      "sector": "OBSERVATORY",
+      "quality": "High",
+      "renderSize": [
+        1920,
+        1080
+      ],
+      "view": 0,
+      "presentedView": 0,
+      "presentedFrames": 44,
+      "presentationMode": "readback",
+      "menuOpen": false,
+      "audio": false,
+      "pointerLocked": false,
+      "time": 23.525599999999905,
+      "flight": {
+        "elapsed": 25.307300000000048,
+        "duration": 60
+      }
+    },
+    {
+      "ready": true,
+      "position": [
+        -0.33494406938552856,
+        3.3527586460113525,
+        30.4910945892334
+      ],
+      "yaw": 3.1291663327002075,
+      "pitch": -0.003165421355507237,
+      "sector": "SERVICE SPINE",
+      "quality": "High",
+      "renderSize": [
+        1920,
+        1080
+      ],
+      "view": 0,
+      "presentedView": 0,
+      "presentedFrames": 46,
+      "presentationMode": "readback",
+      "menuOpen": false,
+      "audio": false,
+      "pointerLocked": false,
+      "time": 28.475399999999908,
+      "flight": {
+        "elapsed": 30.365600000000093,
+        "duration": 60
+      }
+    },
+    {
+      "ready": true,
+      "position": [
+        0.0246695876121521,
+        3.523942708969116,
+        46.496849060058594
+      ],
+      "yaw": -3.1406920770788624,
+      "pitch": -0.0013993159037626276,
+      "sector": "SERVICE SPINE",
+      "quality": "High",
+      "renderSize": [
+        1920,
+        1080
+      ],
+      "view": 0,
+      "presentedView": 0,
+      "presentedFrames": 48,
+      "presentationMode": "readback",
+      "menuOpen": false,
+      "audio": false,
+      "pointerLocked": false,
+      "time": 33.12519999999991,
+      "flight": {
+        "elapsed": 35.44439999999991,
+        "duration": 60
+      }
+    },
+    {
+      "ready": true,
+      "position": [
+        -3.0754706859588623,
+        5.066051483154297,
+        72.49225616455078
+      ],
+      "yaw": 3.0191265895516635,
+      "pitch": -0.0016302351216708325,
+      "sector": "HANGAR",
+      "quality": "High",
+      "renderSize": [
+        1920,
+        1080
+      ],
+      "view": 0,
+      "presentedView": 0,
+      "presentedFrames": 51,
+      "presentationMode": "readback",
+      "menuOpen": false,
+      "audio": false,
+      "pointerLocked": false,
+      "time": 40.1082999999999,
+      "flight": {
+        "elapsed": 40.50360000000009,
+        "duration": 60
+      }
+    },
+    {
+      "ready": true,
+      "position": [
+        -11.447921752929688,
+        7.474646091461182,
+        86.06988525390625
+      ],
+      "yaw": 2.5155326159132296,
+      "pitch": 0.11317197573150724,
+      "sector": "HANGAR",
+      "quality": "High",
+      "renderSize": [
+        1920,
+        1080
+      ],
+      "view": 0,
+      "presentedView": 0,
+      "presentedFrames": 54,
+      "presentationMode": "readback",
+      "menuOpen": false,
+      "audio": false,
+      "pointerLocked": false,
+      "time": 44.67469999999991,
+      "flight": {
+        "elapsed": 45.5585,
+        "duration": 60
+      }
+    },
+    {
+      "ready": true,
+      "position": [
+        -12.061365127563477,
+        9.023029327392578,
+        106.03282165527344
+      ],
+      "yaw": 1.4235843368408863,
+      "pitch": 0.2790927651348572,
+      "sector": "HANGAR",
+      "quality": "High",
+      "renderSize": [
+        1920,
+        1080
+      ],
+      "view": 0,
+      "presentedView": 0,
+      "presentedFrames": 57,
+      "presentationMode": "readback",
+      "menuOpen": false,
+      "audio": false,
+      "pointerLocked": false,
+      "time": 49.44119999999991,
+      "flight": {
+        "elapsed": 50.61830000000005,
+        "duration": 60
+      }
+    },
+    {
+      "ready": true,
+      "position": [
+        15.398977279663086,
+        7.757684230804443,
+        115.2243881225586
+      ],
+      "yaw": -0.8652937856080052,
+      "pitch": 0.1813524183049137,
+      "sector": "HANGAR",
+      "quality": "High",
+      "renderSize": [
+        1920,
+        1080
+      ],
+      "view": 0,
+      "presentedView": 0,
+      "presentedFrames": 60,
+      "presentationMode": "readback",
+      "menuOpen": false,
+      "audio": false,
+      "pointerLocked": false,
+      "time": 55.19099999999991,
+      "flight": {
+        "elapsed": 55.70039999999991,
+        "duration": 60
+      }
+    },
+    {
+      "ready": true,
+      "position": [
+        16,
+        5.5,
+        112
+      ],
+      "yaw": -1.0460005551447893,
+      "pitch": 0.059144326187611784,
+      "sector": "HANGAR",
+      "quality": "High",
+      "renderSize": [
+        1920,
+        1080
+      ],
+      "view": 0,
+      "presentedView": 0,
+      "presentedFrames": 63,
+      "presentationMode": "readback",
+      "menuOpen": false,
+      "audio": false,
+      "pointerLocked": false,
+      "time": 60,
+      "flight": null
+    }
+  ],
+  "report": {
+    "project": "PROJECT ECHO-9",
+    "seed": 15515657,
+    "status": "BLOCKED",
+    "reason": "CPU readback presentation is diagnostic only; hardware swapchain measurement is required.",
+    "measurementStatus": "PASS",
+    "adapter": {
+      "vendor": "google",
+      "architecture": "swiftshader",
+      "device": "unreported",
+      "description": "unreported",
+      "isFallbackAdapter": true
+    },
+    "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/151.0.0.0 Safari/537.36",
+    "resolution": [
+      1920,
+      1080
+    ],
+    "cssResolution": [
+      1920,
+      1080
+    ],
+    "devicePixelRatio": 1,
+    "quality": "High",
+    "presentationMode": "readback",
+    "readbackOverhead": "GPU copy, async map, BGRA→RGBA conversion and 2D upload included in frame times",
+    "renderScale": 1,
+    "msaa": 4,
+    "triangles": 38958,
+    "vertices": 116874,
+    "estimatedGpuBytes": 88567712,
+    "diagnosticCpuPixelBytes": 8294400,
+    "frame": {
+      "count": 40,
+      "meanMs": 1478.69,
+      "p99Ms": 2866.699999999997,
+      "maxMs": 2866.699999999997
+    },
+    "gpu": {
+      "count": 2,
+      "meanMs": 1164.9107945,
+      "p99Ms": 1650.943069,
+      "maxMs": 1650.943069,
+      "samplingEveryNthFrame": 30,
+      "status": "PASS",
+      "reason": null
+    },
+    "flythrough": {
+      "status": "PASS",
+      "durationSeconds": 60,
+      "wallClockSeconds": 60.27469999999995,
+      "completedAt": "2026-11-16T22:17:50.482Z",
+      "quality": "High",
+      "frame": {
+        "count": 40,
+        "meanMs": 1478.69,
+        "p99Ms": 2866.699999999997,
+        "maxMs": 2866.699999999997
+      },
+      "gpu": {
+        "count": 2,
+        "meanMs": 1164.9107945,
+        "p99Ms": 1650.943069,
+        "maxMs": 1650.943069
+      }
+    },
+    "runtimeErrors": [],
+    "elapsedSeconds": 97.12809999999986
+  },
+  "errors": [],
+  "unexpectedRequests": []
+}

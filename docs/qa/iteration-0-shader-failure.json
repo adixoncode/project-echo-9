@@ -1,0 +1,182 @@
+{
+  "capturedAt": "2026-11-16T22:01:05.905Z",
+  "url": "http://localhost:8000/index.html?view=1&quality=High&test=1",
+  "browser": "156.0.8078.79",
+  "viewport": {
+    "width": 1920,
+    "height": 1080
+  },
+  "softwareFlag": true,
+  "adapter": {
+    "vendor": "google",
+    "architecture": "swiftshader",
+    "device": "",
+    "description": "",
+    "isFallbackAdapter": true,
+    "features": [
+      "depth32float-stencil8",
+      "rg11b10ufloat-renderable",
+      "bgra8unorm-storage",
+      "texture-compression-bc",
+      "chromium-experimental-sampling-resource-table",
+      "core-features-and-limits",
+      "chromium-experimental-timestamp-query-inside-passes",
+      "float32-filterable",
+      "indirect-first-instance",
+      "texture-compression-astc-sliced-3d",
+      "float32-blendable",
+      "subgroup-size-control",
+      "texture-compression-unaligned",
+      "texture-compression-astc",
+      "texture-compression-etc2",
+      "depth-clip-control",
+      "texture-compression-bc-sliced-3d",
+      "timestamp-query",
+      "clip-distances",
+      "texture-component-swizzle",
+      "subgroups"
+    ]
+  },
+  "hardwareAcceptance": "BLOCKED",
+  "states": [
+    {
+      "ready": false,
+      "position": [
+        0,
+        5.800000190734863,
+        16
+      ],
+      "yaw": 0,
+      "pitch": -0.08186788792469124,
+      "sector": "OBSERVATORY",
+      "quality": "High",
+      "renderSize": [
+        1920,
+        1080
+      ],
+      "view": 1,
+      "menuOpen": false,
+      "audio": false,
+      "pointerLocked": false,
+      "time": 12,
+      "flight": null
+    },
+    {
+      "ready": false,
+      "position": [
+        -10,
+        7,
+        -4
+      ],
+      "yaw": 0.30587887140485215,
+      "pitch": -0.12481911853403782,
+      "sector": "OBSERVATORY",
+      "quality": "High",
+      "renderSize": [
+        1920,
+        1080
+      ],
+      "view": 2,
+      "menuOpen": false,
+      "audio": false,
+      "pointerLocked": false,
+      "time": 12,
+      "flight": null
+    },
+    {
+      "ready": false,
+      "position": [
+        17,
+        9.5,
+        7
+      ],
+      "yaw": -0.960070362405688,
+      "pitch": 0.26021369666029137,
+      "sector": "OBSERVATORY",
+      "quality": "High",
+      "renderSize": [
+        1920,
+        1080
+      ],
+      "view": 3,
+      "menuOpen": false,
+      "audio": false,
+      "pointerLocked": false,
+      "time": 12,
+      "flight": null
+    },
+    {
+      "ready": false,
+      "position": [
+        0,
+        3.5999999046325684,
+        33
+      ],
+      "yaw": 3.141592653589793,
+      "pitch": -0.006060531858310405,
+      "sector": "SERVICE SPINE",
+      "quality": "High",
+      "renderSize": [
+        1920,
+        1080
+      ],
+      "view": 4,
+      "menuOpen": false,
+      "audio": false,
+      "pointerLocked": false,
+      "time": 12,
+      "flight": null
+    },
+    {
+      "ready": false,
+      "position": [
+        -14,
+        7,
+        81
+      ],
+      "yaw": 2.5283853047152838,
+      "pitch": 0.030279869006321083,
+      "sector": "HANGAR",
+      "quality": "High",
+      "renderSize": [
+        1920,
+        1080
+      ],
+      "view": 5,
+      "menuOpen": false,
+      "audio": false,
+      "pointerLocked": false,
+      "time": 12,
+      "flight": null
+    },
+    {
+      "ready": false,
+      "position": [
+        16,
+        5.5,
+        112
+      ],
+      "yaw": -1.0460005551447893,
+      "pitch": 0.059144317530231534,
+      "sector": "HANGAR",
+      "quality": "High",
+      "renderSize": [
+        1920,
+        1080
+      ],
+      "view": 6,
+      "menuOpen": false,
+      "audio": false,
+      "pointerLocked": false,
+      "time": 12,
+      "flight": null
+    }
+  ],
+  "report": null,
+  "errors": [
+    "Failed to load resource: the server responded with a status of 404 (File not found)",
+    "WebGPU validation: Error while parsing WGSL: :86:33 error: expected ';' for variable declaration\n    let px=fract(p.x*.6+p.z*.35),py=fract(p.y*6.+p.z*.4);\n                                ^\n\n\n - While calling [Device].CreateShaderModule([ShaderModuleDescriptor \"\"Station alloy and procedural lighting\"\"]).\n",
+    "The GPU device was lost: A valid external Instance reference no longer exists.. Reload to reconnect."
+  ],
+  "unexpectedRequests": []
+}

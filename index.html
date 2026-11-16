@@ -1,0 +1,871 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#030a13"><meta name="description" content="An abandoned orbital observatory. A world without end. Explore ECHO-9, a self-contained procedural WebGPU experience.">
+<title>ECHO—9 · The last light</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Cpath fill=%27%23030a13%27 d=%27M0 0h32v32H0z%27/%3E%3Cpath fill=%27none%27 stroke=%27%2374d8e9%27 d=%27m16 4 12 12-12 12L4 16zM16 0v32M0 16h32%27/%3E%3C/svg%3E">
+<style>:root{color-scheme:dark;font-family:Arial,Helvetica,sans-serif;color:#e5edf0;background:#020711;font-synthesis:none;--cyan:#74d8e9;--dim:#8d9ea7;--line:rgba(153,196,210,.22)}
+*{box-sizing:border-box}body{margin:0;overflow:hidden}button{font:inherit;color:inherit;cursor:pointer}button:focus-visible{outline:2px solid var(--cyan);outline-offset:5px}button:disabled{cursor:default}button, a{-webkit-tap-highlight-color:transparent}button:hover{color:#fff}canvas{display:block;width:100vw;height:100vh;outline:none}button{background:none;border:0}button small{font-family:monospace} [hidden]{display:none!important}
+#hud{position:fixed;inset:0;pointer-events:none;opacity:0;transition:opacity 1.4s}body.ready #hud{opacity:1}.topbar{position:absolute;left:40px;right:40px;top:28px;display:flex;align-items:center;justify-content:space-between;gap:30px}.identity{display:flex;align-items:center;gap:17px}.sigil{width:33px;height:33px;border:1px solid #8ac8d5;transform:rotate(45deg);position:relative}.sigil:before,.sigil:after{content:'';position:absolute;background:var(--cyan)}.sigil:before{width:1px;height:43px;left:15px;top:-6px}.sigil:after{height:1px;width:43px;left:-6px;top:15px}.brand{font-size:19px;font-weight:600;letter-spacing:6px}.brand small{font:9px monospace;letter-spacing:2.8px;display:block;color:var(--dim);margin-top:7px}.telemetry{display:flex;gap:35px;align-items:center;font:9px monospace;letter-spacing:1.7px;color:#b1c1c9}.telemetry strong{font:11px monospace;color:#dce8eb;display:block;margin-top:7px;letter-spacing:1.2px}.signal{display:inline-block;width:5px;height:5px;border-radius:50%;background:#efa84c;box-shadow:0 0 8px #e99b42;margin-right:8px}.top-actions{display:flex;gap:26px;pointer-events:auto;font:10px monospace;letter-spacing:1.4px}.top-actions button{font:inherit;padding:10px 0}.menu-icon{display:inline-block;width:19px;height:8px;border-top:1px solid var(--cyan);border-bottom:1px solid var(--cyan);margin-left:9px}.rule{position:absolute;left:40px;right:40px;top:95px;border-top:1px solid var(--line)}.rule:before{content:'';position:absolute;top:-1px;left:0;width:55px;border-top:1px solid var(--cyan)}
+.caption{position:absolute;left:42px;bottom:103px;text-shadow:0 2px 16px #000;max-width:640px}.eyebrow{font:10px monospace;letter-spacing:3px;color:var(--cyan);margin-bottom:16px;display:flex;align-items:center;gap:10px}.eyebrow:before{content:'';display:inline-block;width:22px;border-top:1px solid var(--cyan)}h1{font-size:clamp(23px,2.5vw,43px);letter-spacing:5px;line-height:1.1;margin:0 0 13px;font-weight:300}#view-note{font:12px Georgia,serif;font-style:italic;letter-spacing:.3px;color:#b4c3cc;margin:0;line-height:1.7}.footer{position:absolute;bottom:27px;left:40px;right:40px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--line);padding-top:19px;gap:25px}.view-tabs{display:flex;gap:10px;pointer-events:auto}.view-tabs button{font:10px monospace;width:35px;height:27px;border:1px solid transparent;color:#91a7b2;transition:all .2s}.view-tabs button.selected{border-color:var(--cyan);color:#d9faff;background:rgba(83,183,210,.12)}.view-tabs button:hover{border-color:#698b98}.controls{font:9px monospace;letter-spacing:1.2px;display:flex;gap:22px;color:#829ca8}.controls span b{font-weight:400;color:#d0dde2;margin-right:5px}.status{font:9px monospace;letter-spacing:2px;color:#a5bec9;white-space:nowrap}.status:before{content:'◈';color:var(--cyan);margin-right:10px}.reticle{position:absolute;left:50%;top:50%;width:3px;height:3px;border-radius:50%;background:#cee8ee;box-shadow:0 0 4px #003d55;opacity:0}.pointer-locked .reticle{opacity:.7}#stats{position:absolute;right:40px;top:122px;background:rgba(1,9,17,.82);border:1px solid var(--line);padding:16px 20px;white-space:pre;font:11px/1.8 monospace;color:#c2dce6;pointer-events:auto;max-width:calc(100vw - 40px)}
+#menu{position:fixed;right:40px;top:135px;width:350px;padding:33px;background:linear-gradient(135deg,rgba(8,23,35,.95),rgba(4,12,23,.93));border:1px solid rgba(130,177,191,.3);box-shadow:0 18px 80px #0007;backdrop-filter:blur(20px)}.menu-kicker{font:9px monospace;letter-spacing:2px;color:var(--cyan);margin-bottom:18px}#menu h2{font-size:28px;line-height:1.16;font-weight:300;letter-spacing:3px;margin:0 0 17px}#menu p{font:12px/1.8 Georgia,serif;color:#a8bec8;margin:0 0 23px}.primary{width:100%;border:1px solid #7fc6d7;background:rgba(61,154,181,.12);padding:14px 18px;text-align:left;letter-spacing:2px;font:10px monospace}.primary span{float:right;color:var(--cyan)}.secondary{width:100%;padding:18px 0;text-align:left;font:10px monospace;letter-spacing:1.4px;color:#c6d9e0;border-bottom:1px solid var(--line)}.secondary span{float:right;color:var(--cyan)}.settings-label{font:9px monospace;letter-spacing:2px;color:#8da6b2;margin:22px 0 12px}.quality-buttons{display:flex;gap:8px}.quality-buttons button{flex:1;font:9px monospace;letter-spacing:.7px;padding:10px 0;border:1px solid var(--line);color:#94acb8}.quality-buttons button.selected{color:#c4f5ff;border-color:#62aabf;background:#143641}.menu-foot{font:8px/1.8 monospace;letter-spacing:.5px;color:#7f9daa;margin-top:22px}.menu-foot button{font:inherit;padding:0;color:#b4d5e0;text-decoration:underline;text-underline-offset:3px}
+#loading,#error{position:fixed;inset:0;background:#030a13;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;text-align:center;padding:40px}#loading .brand{font-size:35px;letter-spacing:12px}#loading p{font:10px monospace;letter-spacing:3px;color:#8bbbc9}.loader{width:140px;height:1px;background:#233440;overflow:hidden}.loader:after{content:'';display:block;width:50%;height:100%;background:#78cfe1;animation:load 1.4s infinite alternate}@keyframes load{to{transform:translateX(100%)}}#error{z-index:10}#error h2{font-weight:300;letter-spacing:4px}#error p{max-width:520px;color:#9fbbc7;font:14px/1.8 monospace}#error a{color:var(--cyan)}
+@media(max-width:1000px){.telemetry{display:none}.controls{gap:12px;font-size:8px}.controls span:last-child{display:none}.topbar{left:25px;right:25px}.rule{left:25px;right:25px}.footer{left:25px;right:25px}.caption{left:25px}.status{display:none}#menu{right:25px;width:315px}}@media(max-height:760px){#menu{top:115px;padding:23px}#menu h2{font-size:24px}#menu p{font-size:11px;margin-bottom:17px}.menu-foot{margin-top:15px}.caption{bottom:92px}h1{font-size:26px}.settings-label{margin-top:16px}.topbar{top:23px}.rule{top:87px}}@media(max-width:600px){#menu{left:20px;right:20px;top:115px;width:auto}.caption{bottom:110px;max-width:85vw}.controls{display:none}.top-actions{gap:16px}.brand{font-size:15px}.brand small{font-size:8px;letter-spacing:1px}.sigil{width:25px;height:25px}.sigil:before{left:11px;height:35px}.sigil:after{top:11px;width:35px}.footer{bottom:22px}h1{font-size:21px;letter-spacing:3px}.view-tabs button{width:30px}}
+
+/* Localized cinematic scrims preserve HUD contrast over bright architecture and sky. */
+#hud{background:linear-gradient(to bottom,rgba(1,7,13,.82) 0,rgba(1,7,13,.5) 95px,transparent 190px,transparent calc(100% - 285px),rgba(1,7,13,.4) calc(100% - 130px),rgba(1,7,13,.86) 100%)}
+.brand small{font-size:10px;color:#aec5d0}.telemetry{color:#b8cdd6;text-shadow:0 1px 5px #000}.telemetry strong{color:#e0edf2}.top-actions{color:#d4e4eb;text-shadow:0 1px 5px #000}
+.controls{font-size:10px;letter-spacing:.65px;color:#bcd0da;text-shadow:0 1px 4px #000}.controls span b{color:#ecf6fa}.status{color:#d4e6ed}.view-tabs button{color:#bad0db}.view-tabs button.selected{background:rgba(35,108,133,.4);color:#e6fbff}.eyebrow{color:#9bebfa}#view-note{font-size:13px;color:#d3e1e8}.footer{border-color:rgba(173,211,224,.38)}
+@media(max-width:1000px){.controls{font-size:9px;gap:12px}.brand small{font-size:9px}}
+</style>
+</head>
+<body>
+<canvas id="world" aria-label="Explorable three-dimensional space station. Use WASD to move and click to look around." tabindex="0"></canvas>
+<div id="hud">
+  <header class="topbar">
+    <div class="identity"><div class="sigil" aria-hidden="true"></div><div class="brand">ECHO—9<small>ORBITAL RESEARCH STATION</small></div></div>
+    <div class="telemetry"><div><span class="signal"></span>TRANSMISSION LOST<strong>ASTERION / ORBIT 0842</strong></div><div>POSITION<strong id="coordinates">0.0 / 5.8 / 16.0 M</strong></div></div>
+    <nav class="top-actions" aria-label="Experience settings"><button id="audio-toggle" aria-pressed="false">SOUND OFF</button><button id="menu-toggle" aria-label="Open or close menu">MENU<span class="menu-icon" aria-hidden="true"></span></button></nav>
+  </header>
+  <div class="rule"></div>
+  <div class="caption"><div class="eyebrow" id="sector">01 / KEPLER DECK</div><h1 id="view-title">THE OBSERVATORY</h1><p id="view-note">The last light of a forgotten orbit.</p></div>
+  <footer class="footer"><nav class="view-tabs" aria-label="Saved camera views"><button data-view="1" class="selected" aria-label="View 1: Observatory" aria-pressed="true">01</button><button data-view="2" aria-label="View 2: Planet">02</button><button data-view="3" aria-label="View 3: Research gallery">03</button><button data-view="4" aria-label="View 4: Service spine">04</button><button data-view="5" aria-label="View 5: Hangar">05</button><button data-view="6" aria-label="View 6: Salvage vessel">06</button></nav><div class="controls"><span><b>W A S D</b> MOVE</span><span><b>Q / E</b> VERTICAL</span><span><b>SHIFT</b> DRIFT FASTER</span><span><b>ESC</b> MENU</span></div><div class="status"><span id="location-label">OBSERVATORY</span> · <span id="quality-label">HIGH</span></div></footer>
+  <div class="reticle" aria-hidden="true"></div><output id="stats" hidden aria-label="Performance statistics"></output>
+</div>
+<aside id="menu" aria-label="Exploration menu">
+  <div class="menu-kicker">A PROCEDURAL WEBGPU EXPERIENCE</div><h2>DRIFT INTO<br>THE SILENCE.</h2><p>Beyond the glass, a planet turns.<br>Inside, the station keeps its secrets.<br>Take your time. There is no one waiting.</p>
+  <button class="primary" id="explore">ENTER THE STATION <span>↗</span></button><button class="secondary" id="flythrough">TAKE THE LONG WAY HOME <span>60 S</span></button>
+  <div class="settings-label">RENDER QUALITY</div><div class="quality-buttons"><button data-quality="Low">LOW</button><button data-quality="Medium">MEDIUM</button><button data-quality="High" class="selected">HIGH</button></div>
+  <div class="menu-foot">CLICK THE SCENE TO LOOK AROUND · 1–6 SAVED VIEWS<br>M SOUND · H TELEMETRY<br><button id="download-report">Download diagnostic report</button></div>
+</aside>
+<div id="loading"><div class="brand">ECHO—9</div><div class="loader"></div><p>RECONSTRUCTING THE LAST TRANSMISSION</p></div>
+<section id="error" hidden role="alert"><div class="menu-kicker">TRANSMISSION INTERRUPTED</div><h2>A COMPATIBLE GPU IS REQUIRED</h2><p></p><span>Use a current desktop Chrome or Edge</span></section>
+<script type="module">
+// math.js
+// A tiny dependency-free math layer. Matrices are column major, WebGPU depth is 0..1.
+function seededRandom(seed = 0xecc009) {
+  let state = seed >>> 0;
+  return () => {
+    state += 0x6D2B79F5;
+    let n = state;
+    n = Math.imul(n ^ n >>> 15, n | 1);
+    n ^= n + Math.imul(n ^ n >>> 7, n | 61);
+    return ((n ^ n >>> 14) >>> 0) / 4294967296;
+  };
+}
+const clamp = (n, low, high) => Math.max(low, Math.min(n, high));
+const mix = (a, b, t) => a + (b - a) * t;
+function normalize(v) {
+  const l = Math.hypot(...v) || 1;
+  return v.map(n => n / l);
+}
+function cross(a, b) {
+  return [a[1]*b[2]-a[2]*b[1], a[2]*b[0]-a[0]*b[2], a[0]*b[1]-a[1]*b[0]];
+}
+const dot = (a, b) => a[0]*b[0]+a[1]*b[1]+a[2]*b[2];
+function multiply(out, a, b) {
+  for (let c=0;c<4;c++) for (let r=0;r<4;r++) {
+    out[c*4+r]=a[r]*b[c*4]+a[4+r]*b[c*4+1]+a[8+r]*b[c*4+2]+a[12+r]*b[c*4+3];
+  }
+  return out;
+}
+function perspective(out, fov, aspect, near, far) {
+  out.fill(0); const f=1/Math.tan(fov/2);
+  out[0]=f/aspect; out[5]=f; out[10]=far/(near-far); out[11]=-1; out[14]=near*far/(near-far);
+  return out;
+}
+function viewMatrix(out, position, yaw, pitch) {
+  const cy=Math.cos(yaw), sy=Math.sin(yaw), cp=Math.cos(pitch), sp=Math.sin(pitch);
+  const rx=cy, rz=sy, ux=sy*sp, uy=cp, uz=-cy*sp, bx=-sy*cp, by=sp, bz=cy*cp;
+  out[0]=rx;out[1]=ux;out[2]=bx;out[3]=0;
+  out[4]=0;out[5]=uy;out[6]=by;out[7]=0;
+  out[8]=rz;out[9]=uz;out[10]=bz;out[11]=0;
+  out[12]=-rx*position[0]-rz*position[2];
+  out[13]=-ux*position[0]-uy*position[1]-uz*position[2];
+  out[14]=-bx*position[0]-by*position[1]-bz*position[2];out[15]=1;
+  return out;
+}
+function lookAngles(position, target) {
+  const dx=target[0]-position[0],dy=target[1]-position[1],dz=target[2]-position[2];
+  return [Math.atan2(dx,-dz),-Math.atan2(dy,Math.hypot(dx,dz))];
+}
+// Piecewise cubic interpolation gives a reproducible path with no accumulating integration drift.
+function catmull(out, a, b, c, d, t) {
+  const t2=t*t,t3=t2*t;
+  for(let i=0;i<3;i++) out[i]=.5*((2*b[i])+(-a[i]+c[i])*t+(2*a[i]-5*b[i]+4*c[i]-d[i])*t2+(-a[i]+3*b[i]-3*c[i]+d[i])*t3);
+  return out;
+}
+const WORLD_SEED = 0xecc009;
+const VIEWS = [
+  {name:'THE OBSERVATORY',sector:'01 / KEPLER DECK',position:[0,5.8,16],target:[0,9,-23],description:'The last light of a forgotten orbit.'},
+  {name:'A WORLD WITHOUT END',sector:'01 / PANORAMIC ARRAY',position:[-10,7,-4],target:[2,12,-42],description:'Asterion. Six billion years of weather.'},
+  {name:'THE LISTENING ARRAY',sector:'01 / RESEARCH GALLERY',position:[17,9.5,7],target:[-3,3,-7],description:'Still listening. Still waiting.'},
+  {name:'SERVICE SPINE',sector:'02 / MAINTENANCE',position:[0,3.6,33],target:[0,3.8,66],description:'Follow the amber pulse into the dark.'},
+  {name:'THE SILENT HANGAR',sector:'03 / DOCKING BAY',position:[-14,7,81],target:[5,6,108],description:'Departure clearance never came.'},
+  {name:'VESSEL E-09',sector:'03 / SALVAGE PLATFORM',position:[16,5.5,112],target:[-3,4.2,101],description:'An unfinished journey, held in suspension.'}
+];
+const FLIGHT_POINTS = [
+  {p:[0,5.8,16],t:[0,9,-23]}, {p:[-8,6.5,4],t:[1,11,-32]},
+  {p:[-11,8,-7],t:[6,12,-40]}, {p:[-9,8,6],t:[-4,3,-6]},
+  {p:[5,5.5,15],t:[0,4,24]}, {p:[0,3.5,27],t:[0,3.5,52]},
+  {p:[0,3.5,45],t:[0,3.5,75]}, {p:[0,4.2,67],t:[0,5,96]},
+  {p:[-10,7,82],t:[1,5,103]}, {p:[-13,9,105],t:[2,5,104]},
+  {p:[14,8,115],t:[0,4,102]}, {p:[16,5.5,112],t:[-3,4.2,101]}
+];
+function sampleFlight(seconds, outPosition, outTarget) {
+  const segment=clamp(seconds/60,0,1)*(FLIGHT_POINTS.length-1), i=Math.min(Math.floor(segment),FLIGHT_POINTS.length-2),f=segment-i;
+  const a=FLIGHT_POINTS[Math.max(0,i-1)],b=FLIGHT_POINTS[i],c=FLIGHT_POINTS[i+1],d=FLIGHT_POINTS[Math.min(i+2,FLIGHT_POINTS.length-1)];
+  catmull(outPosition,a.p,b.p,c.p,d.p,f); catmull(outTarget,a.t,b.t,c.t,d.t,f);
+}
+// Bounds are deliberately architectural: the narrow spine opens into both large rooms.
+function constrainPosition(position, obstacles=[], previousPosition=null) {
+  position[2]=clamp(position[2],-21.8,127.5);
+  // Stop on the approached face, retaining lateral movement along the bulkhead.
+  // The stop values are inside the broad room, avoiding Float32 threshold oscillation.
+  if(previousPosition&&Math.abs(position[0])>3.75){
+    if(previousPosition[2]<=20.85&&position[2]>20.8)position[2]=20.8;
+    if(previousPosition[2]>=71.9&&position[2]<72)position[2]=72;
+  }
+  const z=position[2],limit=z<20.85?20.8:z<71.9?3.75:26;
+  position[0]=clamp(position[0],-limit,limit);
+  position[1]=clamp(position[1],1.6,z>72?25:z>24?7:24);
+  if(z<18.5&&z>-19&&Math.abs(position[0])>16.05&&position[1]>4.65&&position[1]<6.2) {
+    position[1]=position[1]<5.4?4.65:6.2;
+  }
+  if(z>72.5&&z<129.5&&Math.abs(position[0])>20.45&&position[1]>4.5&&position[1]<6.1) {
+    position[1]=position[1]<5.3?4.5:6.1;
+  }
+  for(const box of obstacles) {
+    const r=.45;
+    if(position[0]>box[0]-r&&position[0]<box[3]+r&&position[1]>box[1]-r&&position[1]<box[4]+r&&position[2]>box[2]-r&&position[2]<box[5]+r){
+      const distances=[position[0]-box[0]+r,box[3]+r-position[0],position[2]-box[2]+r,box[5]+r-position[2]];
+      const i=distances.indexOf(Math.min(...distances));
+      if(i<2)position[0]=i===0?box[0]-r:box[3]+r;else position[2]=i===2?box[2]-r:box[5]+r;
+    }
+  }
+  return position;
+}
+
+// geometry.js
+// All solid architecture is baked once into a shared vertex buffer. No runtime models.
+class Geometry {
+  constructor(){this.data=[];this.triangles=0;}
+  vertex(p,n,color,emission=0,material=0,ao=1){this.data.push(...p,...n,...color,emission,material,ao);}
+  tri(a,b,c,n,color,emission=0,material=0,ao=1){this.vertex(a,n,color,emission,material,ao);this.vertex(b,n,color,emission,material,ao);this.vertex(c,n,color,emission,material,ao);this.triangles++;}
+  quad(a,b,c,d,color,emission=0,material=0,ao=1){
+    const n=normalize(cross(b.map((v,i)=>v-a[i]),c.map((v,i)=>v-a[i])));
+    this.tri(a,b,c,n,color,emission,material,ao);this.tri(a,c,d,n,color,emission,material,ao);
+  }
+  box(x,y,z,w,h,d,color,emission=0,material=0,rotation=0){
+    const c=Math.cos(rotation),s=Math.sin(rotation),p=[];
+    for(const dz of [-1,1])for(const dy of [-1,1])for(const dx of [-1,1])p.push([x+dx*w*.5*c+dz*d*.5*s,y+dy*h*.5,z-dx*w*.5*s+dz*d*.5*c]);
+    for(const ids of [[0,2,3,1],[4,5,7,6],[0,4,6,2],[1,3,7,5],[2,6,7,3],[0,1,5,4]])this.quad(...ids.map(i=>p[i]),color,emission,material);
+  }
+  beam(a,b,width,color,emission=0,depth=width,material=0){
+    const dir=normalize(b.map((v,i)=>v-a[i])),u=normalize(cross(dir,Math.abs(dir[1])>.95?[1,0,0]:[0,1,0])),v=cross(dir,u);
+    const p=[];
+    for(const q of [a,b])for(const sv of [-1,1])for(const su of [-1,1])p.push(q.map((n,i)=>n+u[i]*su*width*.5+v[i]*sv*depth*.5));
+    for(const ids of [[0,2,3,1],[4,5,7,6],[0,4,6,2],[1,3,7,5],[2,6,7,3],[0,1,5,4]])this.quad(...ids.map(i=>p[i]),color,emission,material);
+  }
+  cylinder(x,y,z,r,h,color,segments=24,emission=0,material=0){
+    for(let i=0;i<segments;i++){
+      const a=i/segments*Math.PI*2,b=(i+1)/segments*Math.PI*2;
+      const p=[x+Math.cos(a)*r,y-h/2,z+Math.sin(a)*r],q=[x+Math.cos(b)*r,y-h/2,z+Math.sin(b)*r],u=[q[0],y+h/2,q[2]],v=[p[0],y+h/2,p[2]];
+      this.quad(p,v,u,q,color,emission,material);this.tri([x,y+h/2,z],u,v,[0,1,0],color,emission,material);this.tri([x,y-h/2,z],p,q,[0,-1,0],color,emission,material);
+    }
+  }
+  torus(x,y,z,r,tube,color,emission=0,plane='horizontal',segments=72){
+    const f=(a,b)=>{
+      const rr=r+Math.cos(b)*tube;
+      return plane==='vertical'?[x+Math.cos(a)*rr,y+Math.sin(a)*rr,z+Math.sin(b)*tube]:[x+Math.cos(a)*rr,y+Math.sin(b)*tube,z+Math.sin(a)*rr];
+    };
+    for(let i=0;i<segments;i++)for(let j=0;j<6;j++)this.quad(f(i/segments*6.283,j/6*6.283),f((i+1)/segments*6.283,j/6*6.283),f((i+1)/segments*6.283,(j+1)/6*6.283),f(i/segments*6.283,(j+1)/6*6.283),color,emission,0);
+  }
+  sphere(x,y,z,r,color,emission=0,segments=24){
+    const f=(a,b)=>[x+Math.sin(b)*Math.cos(a)*r,y+Math.cos(b)*r,z+Math.sin(b)*Math.sin(a)*r];
+    for(let i=0;i<segments;i++)for(let j=0;j<segments/2;j++){
+      const a=i/segments*6.283,b=(i+1)/segments*6.283,c=j/(segments/2)*Math.PI,d=(j+1)/(segments/2)*Math.PI;
+      this.quad(f(a,c),f(a,d),f(b,d),f(b,c),color,emission,4);
+    }
+  }
+  finish(){return new Float32Array(this.data);}
+}
+
+// scene.js
+
+function buildScene(seed=WORLD_SEED){
+  const g=new Geometry(),rand=seededRandom(seed),obstacles=[];
+  const navy=[.045,.074,.1],metal=[.13,.19,.23],edge=[.25,.32,.34],dark=[.023,.037,.047];
+  const cyan=[.12,.78,.94],ice=[.5,.85,.96],amber=[1,.42,.09],red=[1,.075,.04],white=[.83,.88,.84];
+  const B=(...a)=>g.box(...a), L=(...a)=>g.beam(...a);
+  const obstacle=(x,y,z,w,h,d)=>obstacles.push([x-w/2,y-h/2,z-d/2,x+w/2,y+h/2,z+d/2]);
+  // Observatory: a cathedral-like shell built around a 44-metre panoramic window.
+  B(0,-.65,-1,44,1.3,46,metal,0,1);
+  B(0,-.01,-2,7.6,.06,42,[.16,.22,.25],0,1);
+  for(const x of [-3.95,3.95])B(x,.045,-2,.065,.05,41,cyan,2.3);
+  for(let z=-21;z<22;z+=3.5){
+    for(const side of [-1,1]){
+      B(side*13,.035,z,17,.035,.055,edge);B(side*20.7,.11,z,.5,.18,1.5,navy);
+      B(side*20.71,.22,z,.075,.03,.9,amber,1.3);
+    }
+  }
+  for(let i=0;i<4;i++){
+    const z=-23+i*14.7;
+    for(let j=0;j<18;j++){
+      const a=j/18*Math.PI,b=(j+1)/18*Math.PI;
+      const p=[Math.cos(a)*22,.35+Math.sin(a)*24,z],q=[Math.cos(b)*22,.35+Math.sin(b)*24,z];
+      L(p,q,.48,metal,0,.7); // structural vaulted ribs
+      L([p[0]*.976,p[1]*.986+.08,z+.42],[q[0]*.976,q[1]*.986+.08,z+.42],.055,ice,1.6);
+      if(i<3 && j%3===0)L(p,[p[0],p[1],z+14.7],.22,navy);
+    }
+  }
+  // Front glazing mullions are slender enough to leave the atmosphere and rings legible.
+  for(const x of [-16,-8,0,8,16]){
+    const top=Math.sqrt(1-(x/22)**2)*24;
+    L([x,2.7,-23.1],[x,top,-23.1],.18,edge);
+    L([x-.22,2.7,-23.04],[x-.22,top,-23.04],.032,cyan,.7);
+  }
+  for(const y of [3.1,13.5])L([-20.1,y,-23.05],[20.1,y,-23.05],.16,metal);
+  B(0,1,-23.1,43,2,1,navy,0,2);
+  for(let x=-20;x<=20;x+=2.8){
+    B(x,1.05,-22.53,2.5,1.2,.07,metal,0,2);
+    B(x,1.7,-22.45,1.8,.045,.04,cyan,1.8);
+  }
+  // Wraparound research galleries, railings, pressure ribs, and cable conduits.
+  for(const side of [-1,1]){
+    B(side*21.6,3.5,-1,.8,7,43,navy,0,2);
+    B(side*18.9,5.5,-.5,5,.5,37,metal,0,1);
+    B(side*16.45,6.65,-.5,.12,.12,37,edge);
+    B(side*16.45,5.95,-.5,.08,.08,37,navy);
+    for(let z=-18;z<=18;z+=4.5){
+      B(side*16.45,6.1,z,.1,1.4,.1,edge);
+      L([side*21,0,z],[side*16.8,5.3,z],.32,navy);
+      B(side*21.02,2,z,.05,2.3,.28,cyan,2.2);
+      for(let k=0;k<3;k++)B(side*21.02,3.5+k*.24,z,.06,.08,1.8,metal);
+    }
+    // Gently stepped stairs onto the side galleries; collision bounds keep the free camera above floors.
+    for(let j=0;j<13;j++)B(side*18.8,j*.43,19-j*.57,4.2,.43,.6,metal,0,1);
+    for(let k=0;k<3;k++)L([side*(20.8-k*.18),7,-20],[side*(20.8-k*.18),7,19],.11,edge);
+  }
+  // Massive rear pressure bulkhead with a continuously open spine entrance.
+  for(const side of [-1,1])B(side*13.1,10,22,17.8,20,1.2,navy,0,2);
+  B(0,15.2,22,9,10.5,1.2,metal,0,2);
+  for(const x of [-4.35,4.35])B(x,4.5,21.3,.35,9,.9,edge);
+  B(0,8.9,21.3,9,.35,.9,edge);
+  for(const x of [-3.95,3.95])B(x,4.2,20.8,.06,8,.05,amber,2.2);
+  B(0,8.2,20.8,7.8,.06,.05,amber,2.2);
+  for(const side of [-1,1]){
+    for(let i=0;i<4;i++)B(side*(6.5+i*3.5),12.5,21.28,2.9,8,.1,[.09,.14,.18],0,2);
+    B(side*12.8,3.3,21.25,8.5,5.2,.2,metal,0,2);
+    for(let i=0;i<6;i++)B(side*12.8,1.2+i*.62,21.1,7.5,.13,.15,dark);
+  }
+  // Instrument platform: brass-edged turntable, suspended optical ring and holographic planet.
+  g.cylinder(0,.24,-6,6.4,.48,navy,64,0,1);
+  g.cylinder(0,.52,-6,5.8,.15,metal,64,0,1);
+  g.torus(0,.63,-6,5.45,.04,cyan,2.8);
+  g.torus(0,.64,-6,4.9,.025,amber,1.6);
+  for(let i=0;i<24;i++){
+    const a=i/24*6.283;
+    B(Math.sin(a)*5.9,.64,-6+Math.cos(a)*5.9,.12,.05,.45,i%3===0?amber:edge,i%3===0?1:0,0,a);
+  }
+  g.cylinder(0,1.2,-6,2.2,1.3,dark,48,0,2);g.cylinder(0,1.92,-6,2.5,.14,edge,48);
+  g.torus(0,2.04,-6,2.3,.055,cyan,3.5);
+  for(const side of [-1,1]){
+    B(side*3.2,2.9,-7.2,.6,5.8,1,navy,0,2);B(side*3.2,3,-6.62,.09,4.5,.06,cyan,2);
+    L([side*3.2,5.6,-7.2],[side*2.6,7.8,-7.2],.45,metal);
+  }
+  g.torus(0,6.7,-7.3,3.35,.26,edge,0,'vertical');
+  g.torus(0,6.7,-7.06,3.13,.047,cyan,3.3,'vertical');
+  g.sphere(0,4.35,-6,1.4,[.08,.45,.58],.65,32);
+  g.torus(0,4.35,-6,2.25,.018,cyan,2.4);
+  g.torus(0,4.35,-6,1.75,.018,ice,2,'vertical');
+  obstacle(0,1.2,-6,4.4,2.4,4.4);
+  // Coarse envelope of the optical ring and its tall fork supports. This deliberately
+  // treats the occupied assembly as a solid rather than allowing near-camera clipping.
+  const instrumentBounds=[[-3.8,2.6,-8.1,3.8,10.5,-6.45],[-3.9,0,-8,-2.4,8.2,-6.4],[2.4,0,-8,3.9,8.2,-6.4]];
+  obstacles.push(...instrumentBounds);
+  // Eight asymmetrical research stations establish human scale.
+  const console=(x,z,rotation=0)=>{
+    B(x,.65,z,3.2,1.3,1.8,navy,0,2,rotation);
+    B(x,1.4,z,3.5,.2,2,edge,0,0,rotation);
+    const transform=(u,y,v)=>[x+u*Math.cos(rotation)+v*Math.sin(rotation),y,z-u*Math.sin(rotation)+v*Math.cos(rotation)];
+    g.quad(transform(-1.55,1.5,.7),transform(1.55,1.5,.7),transform(1.55,2.5,-.6),transform(-1.55,2.5,-.6),dark,0,3);
+    g.quad(transform(-1.4,1.55,.62),transform(1.4,1.55,.62),transform(1.4,2.39,-.46),transform(-1.4,2.39,-.46),cyan,1.1,3);
+    B(x,.6,z+.95,.1,1.2,.07,cyan,1.4);
+    obstacle(x,1,z,3.5,2,2);
+  };
+  for(const side of [-1,1])for(let i=0;i<4;i++)console(side*(12.8+(i%2)*.9),-14+i*8.4,side*.2);
+  // Floor light wells, freight cases, scattered but purposeful maintenance detail.
+  for(const side of [-1,1])for(let i=0;i<5;i++){
+    B(side*8.1,.035,-18+i*8,.75,.025,1.8,dark);B(side*8.1,.055,-18+i*8,.45,.025,1.5,ice,1.4);
+  }
+  for(const x of [-18,18]){
+    B(x,.8,14.2,2.1,1.6,2.7,metal,0,2);obstacle(x,.8,14.2,2.1,1.6,2.7);
+    for(const dx of [-.8,.8])B(x+dx,.85,14.2,.09,1.7,2.8,amber,.2);
+  }
+  // Service spine: dense utility surfaces and alternating interrupted emergency light.
+  B(0,-.4,46,9,.8,48,metal,0,1);
+  B(0,8.15,46,9,.5,48,navy,0,2);
+  for(const side of [-1,1]){
+    B(side*4.5,4,46,.7,8,48,navy,0,2);
+    for(let z=25;z<70;z+=4){
+      B(side*4.08,3.7,z,.1,5.8,3.5,metal,0,2);
+      B(side*3.97,1.1,z,.06,.08,2.6,amber,1.2);
+      B(side*4.00,6.6,z,.1,.3,2.6,dark);
+      for(let k=0;k<4;k++)B(side*3.9,2.1+k*.4,z,.13,.07,1.6,dark);
+    }
+    for(let k=0;k<4;k++){
+      const x=side*(3.0+k*.3),y=6.6+(k%2)*.4;
+      L([x,y,23],[x,y,71],.19,k===0?amber:metal,0);
+      for(let z=26;z<70;z+=5)B(x,y,z,.3,.3,.16,edge);
+    }
+    B(side*2.8,.08,46,.055,.035,47,amber,1.5);
+    for(let z=27;z<70;z+=5.8){
+      B(side*4.03,4.6,z,.1,1.3,.18,ice,3);
+      B(side*4.0,4.6,z,.13,1.7,.48,dark);
+      B(side*3.88,4.6,z,.06,1.3,.16,z%2>1?amber:cyan,2.9);
+    }
+  }
+  for(let z=24;z<71;z+=7.8){
+    const points=[[-4.2,.1,z],[-4.2,5.8,z],[-2.8,7.8,z],[2.8,7.8,z],[4.2,5.8,z],[4.2,.1,z]];
+    for(let i=0;i<points.length-1;i++)L(points[i],points[i+1],.27,edge,0,.48);
+    L([-2.2,7.55,z],[2.2,7.55,z],.055,amber,2);
+    B(0,.025,z,8,.05,.4,dark);
+    for(let x=-3;x<=3;x+=.5)B(x,.06,z,.22,.04,.42,amber,.1,0,-.45);
+  }
+  // Recessed valve banks and overhead drooping cables.
+  for(const side of [-1,1])for(let z=31;z<65;z+=14){
+    B(side*3.85,2.4,z,.5,2.6,2.1,navy,0,2);
+    g.torus(side*3.5,3.6,z,.52,.08,red,.35,'vertical',24);
+    for(let j=0;j<5;j++)L([side*3.1,7.8,z+j*.1],[side*2.3,6.0,z+3+j*.1],.05,dark);
+  }
+  // Hangar: a huge modular truss volume, blue docking aperture and amber gantry.
+  B(0,-.7,101,56,1.4,60,metal,0,1);
+  B(0,27.8,101,56,1,60,dark,0,2);
+  for(const side of [-1,1]){
+    B(side*27.8,13.8,101,.8,28,60,navy,0,2);
+    B(side*15.7,6.7,71,23,13.4,.8,navy,0,2); // leave spine entry open
+    B(side*24.2,5.3,101,6.5,.65,57,metal,0,1);
+    B(side*20.9,6.6,101,.1,.1,57,amber,.7);
+    for(let z=74;z<=129;z+=7.5){
+      B(side*26,12.8,z,1.3,25.6,1.3,metal,0,2);
+      L([side*26,.5,z],[side*26,24,z+7],.45,edge);
+      L([side*26,24,z],[side*26,.5,z+7],.45,navy);
+      B(side*25.2,9,z,.1,4.2,.3,cyan,2);
+      B(side*25.2,23,z,.12,.2,2.7,amber,2.5);
+      for(let k=0;k<3;k++)B(side*27.2,3.2+k*4.7,z+3,.1,3.6,5.8,[.07,.105,.135],0,2);
+    }
+    for(const y of [10,18,25])L([side*25.7,y,72],[side*25.7,y,130],.3,navy);
+  }
+  for(let z=75;z<=127;z+=10.5){
+    L([-26,25,z],[26,25,z],.6,metal,0,.9);
+    L([-26,28,z],[26,28,z],.45,edge);
+    for(let x=-24;x<26;x+=4)L([x,25,z],[x+4,28,z],.24,edge);
+    B(0,24.6,z,12,.08,.18,ice,3.7);
+    B(-17,24.6,z,6,.08,.12,cyan,2);B(17,24.6,z,6,.08,.12,cyan,2);
+  }
+  // The rear aperture is a luminous docking forcefield. Thin strips preserve the space view.
+  B(-22.5,13,130,11,26,1.4,navy,0,2);B(22.5,13,130,11,26,1.4,navy,0,2);
+  B(0,25.5,130,35,5,1.4,metal,0,2);B(0,2,130,35,4,1.4,navy,0,2);
+  for(const x of [-16.8,16.8]){B(x,13,129.1,.65,23,1.1,edge);B(x,13,128.45,.12,22,.1,cyan,4);}
+  for(const y of [3.7,23.5]){B(0,y,129.1,34,.6,1.1,metal);B(0,y,128.45,33,.1,.1,cyan,3.5);}
+  for(let x=-16;x<=16;x+=2)B(x,13.6,129.7,.017,19.3,.025,cyan,.7);
+  // Gantry crane, suspended hoist and a memorable asymmetrical salvage vessel.
+  for(const x of [-18,18])L([x,20,76],[x,20,127],.6,amber);
+  B(0,20.5,104,39,1.4,1.5,amber,0,2);
+  for(let x=-18;x<=18;x+=2.2){L([x,19.8,103.2],[x+1.7,21.2,103.2],.12,dark);}
+  B(-5,19,104,3,1.5,3,navy);L([-5,18.2,104],[-5,10,104],.09,edge);g.torus(-5,9.8,104,.45,.12,amber,0,'vertical',24);
+  // A tall maintenance cradle provides an unambiguous floor reference under the floating ship.
+  B(0,.22,103,19,.45,19,dark,0,1);
+  for(const x of [-9.3,9.3])B(x,.47,103,.09,.035,19,amber,1.2);
+  for(const z of [93.6,112.4])B(0,.47,z,18.6,.035,.09,amber,1.2);
+  for(let z=94;z<=112;z+=1)for(const side of [-1,1])B(side*8.7,.48,z,.7,.04,.3,amber,.1,0,-.6);
+  // Ship hull, cockpit, swept wings, exposed aft engine and service livery.
+  B(0,4.7,102,4.7,2.2,12,[.32,.4,.4],0,2);
+  B(0,5.85,99.6,3.8,.18,5.6,white);
+  B(0,5.7,96.1,3.2,1.1,3,navy,0,2);
+  // sloped cockpit canopy, rather than a simple box
+  g.quad([-1.5,5.5,94.5],[1.5,5.5,94.5],[1.65,6.8,97.6],[-1.65,6.8,97.6],[.05,.22,.29],.35,5);
+  L([-1.5,5.5,94.5],[-1.65,6.8,97.6],.12,edge);L([1.5,5.5,94.5],[1.65,6.8,97.6],.12,edge);
+  B(0,6.82,97.65,3.5,.1,.12,white);
+  for(const side of [-1,1]){
+    g.quad([side*2,4.4,99],[side*8,3.8,104],[side*7.4,3.8,108],[side*2,4.4,106],metal,0,2);
+    g.quad([side*2,4.15,99],[side*2,4.15,106],[side*7.4,3.55,108],[side*8,3.55,104],navy,0,2);
+    L([side*8,3.8,104],[side*7.4,3.8,108],.18,amber,.2);
+    B(side*2.7,4.2,105.5,1.7,1.7,5,navy,0,2);
+    for(let k=0;k<4;k++)B(side*2.7,5.1,104+k*.7,1.8,.13,.2,edge);
+    B(side*2.7,4.2,108.08,1.35,1.35,.09,dark);B(side*2.7,4.2,108.15,.85,.85,.1,cyan,2.7);
+    B(side*2.45,5,100,.06,.3,6,amber,.6);
+    L([side*1.5,3.8,98],[side*2.4,1,97],.23,edge);B(side*2.4,.85,97,1.3,.18,1.8,navy);
+    L([side*1.5,3.8,106],[side*2.5,1,107],.23,edge);B(side*2.5,.85,107,1.3,.18,1.8,navy);
+  }
+  obstacle(0,4.5,102,5,4,12);
+  obstacle(-5,4.1,104,6.4,1.1,9);obstacle(5,4.1,104,6.4,1.1,9);
+  // Tool bays, tanks, cargo stacks, warning beacons and maintenance robots.
+  for(let i=0;i<20;i++){
+    const side=i%2?1:-1,x=side*(17+rand()*5),z=77+rand()*46,h=1.2+rand()*2.2;
+    B(x,h/2,z,2.5,h,2.6,i%3?metal:navy,0,2);
+    for(const dx of [-1,1])B(x+dx,h/2,z,.09,h+.06,2.7,amber,.05);
+    B(x,h+.05,z,1.8,.08,1.9,dark);
+    if(i%4===0){B(x,h+.3,z,.22,.4,.22,amber,3);}
+    obstacle(x,h/2,z,2.5,h,2.6);
+  }
+  for(const side of [-1,1])for(let j=0;j<3;j++){
+    g.cylinder(side*23.4,2.1,87+j*4,1.05,4.2,edge,20);
+    g.torus(side*23.4,1,87+j*4,1.06,.08,amber,.2);
+    g.torus(side*23.4,3.2,87+j*4,1.06,.08,amber,.2);
+  }
+  // Suspended fragments drift in the vertex shader; their seeded phase is packed into material.
+  for(let i=0;i<38;i++){
+    const z=76+rand()*49,x=(rand()-.5)*41,y=9+rand()*11;
+    B(x,y,z,.1+rand()*.6,.07+rand()*.2,.2+rand()*.9,i%5?edge:amber,0,6+rand(),rand()*6.28);
+  }
+  // Small scattered ceiling debris and visible particulate points. Seeded, not re-randomized per frame.
+  const dust=[];
+  for(let i=0;i<850;i++){
+    const z=-22+rand()*152,side=z>72?25:z>23?3.6:20;
+    dust.push((rand()-.5)*side*2,1+rand()*(z>72?24:z>23?6:20),z,.3+rand()*.7);
+  }
+  return {vertices:g.finish(),triangles:g.triangles,obstacles,instrumentBounds,dust:new Float32Array(dust),seed};
+}
+
+// shaders.js
+const COMMON = /* wgsl */`
+struct Uniforms {
+  viewProjection: mat4x4<f32>,
+  camera: vec4<f32>,
+  right: vec4<f32>,
+  up: vec4<f32>,
+  forward: vec4<f32>,
+  resolution: vec4<f32>,
+  settings: vec4<f32>,
+};
+@group(0) @binding(0) var<uniform> u: Uniforms;
+fn hash(p: vec3<f32>) -> f32 {
+  var a=fract(p*.1031); a += dot(a,a.yzx+33.33); return fract((a.x+a.y)*a.z);
+}
+fn noise(p:vec3<f32>) -> f32 {
+  let i=floor(p);var f=fract(p);f=f*f*(3.-2.*f);
+  return mix(mix(mix(hash(i),hash(i+vec3(1.,0.,0.)),f.x),mix(hash(i+vec3(0.,1.,0.)),hash(i+vec3(1.,1.,0.)),f.x),f.y),mix(mix(hash(i+vec3(0.,0.,1.)),hash(i+vec3(1.,0.,1.)),f.x),mix(hash(i+vec3(0.,1.,1.)),hash(i+vec3(1.,1.,1.)),f.x),f.y),f.z);
+}
+fn tone(color:vec3<f32>) -> vec3<f32> {
+  let c=max(color,vec3(0.));
+  return pow(clamp((c*(2.51*c+.03))/(c*(2.43*c+.59)+.14),vec3(0.),vec3(1.)),vec3(.4545));
+}
+`;
+const SKY_SHADER = COMMON + /* wgsl */`
+struct SkyOut {@builtin(position) position:vec4<f32>,@location(0) uv:vec2<f32>};
+@vertex fn skyVertex(@builtin(vertex_index) i:u32)->SkyOut{
+  let p=array<vec2<f32>,3>(vec2(-1.,-1.),vec2(3.,-1.),vec2(-1.,3.));
+  var o:SkyOut;o.position=vec4(p[i],.99999,1.);o.uv=p[i];return o;
+}
+@fragment fn skyFragment(input:SkyOut)->@location(0) vec4<f32>{
+  let ray=normalize(u.forward.xyz+u.right.xyz*input.uv.x*u.resolution.z+u.up.xyz*input.uv.y*u.resolution.w);
+  // Astronomical objects use actual world directions; turning around reveals the same sky.
+  let center=vec3(16.,47.,-172.);let radius=89.;let oc=u.camera.xyz-center;
+  let b=dot(oc,ray);let c=dot(oc,oc)-radius*radius;let disc=b*b-c;
+  var color=vec3(.0018,.004,.011);
+  let cloud=pow(max(0.,1.-abs(ray.y*.8+ray.x*.31+.13)),12.);
+  color+=vec3(.009,.016,.03)*cloud*(.35+.65*noise(ray*6.));
+  // Sparse deterministic stars, with a compact halo around the brightest points.
+  let grid=ray*720.;let cell=floor(grid);let star=hash(cell);
+  let d=length(fract(grid)-vec3(.5));
+  color+=vec3(.5,.7,1.)*pow(max(0.,1.-d*2.),10.)*step(.996,star)*4.;
+  let bright=pow(max(0.,dot(ray,normalize(vec3(-.62,.38,-.9)))),900.);
+  color+=vec3(.6,.8,1.)*bright*.7;
+  var planetDistance=1.e6;
+  if(disc>0. && b<0.){
+    planetDistance=-b-sqrt(disc);
+    let normal=normalize(oc+ray*planetDistance);
+    let swirl=noise(normal*vec3(14.,35.,14.)+vec3(u.camera.w*.002,0.,0.));
+    let fine=noise(normal*vec3(55.,110.,55.));
+    let latitude=normal.y+(.55*swirl+.13*fine)*.045;
+    let band=.5+.5*sin(latitude*83.+swirl*2.8+sin(latitude*35.)*2.);
+    let streak=.5+.5*sin(latitude*205.+swirl*6.);
+    var albedo=mix(vec3(.085,.16,.23),vec3(.49,.59,.59),smoothstep(.15,.9,band));
+    albedo=mix(albedo,vec3(.43,.32,.22),smoothstep(.67,.85,band)*.3);
+    albedo*=.87+.16*streak+.13*fine;
+    let storm=length((normal.xy-vec2(-.25,-.18))*vec2(1.,2.6));
+    let stormLine=.5+.5*sin(storm*135.-swirl*2.);
+    albedo=mix(albedo,vec3(.5,.42,.3)*(.7+.3*stormLine),(1.-smoothstep(.08,.19,storm))*.7);
+    let sun=normalize(vec3(-.72,.65,.75));let diffuse=max(0.,dot(normal,sun));
+    color=albedo*(.055+diffuse*.9);
+    let limb=pow(1.-max(0.,dot(normal,-ray)),4.);
+    color+=vec3(.07,.3,.45)*limb*pow(diffuse+.15,.6)*.55;
+    // Thin projected shadow of the ring plane across cloud bands.
+    let ringNormal=normalize(vec3(.14,.91,.39));let shadowT=-dot(normal*radius,ringNormal)/dot(sun,ringNormal);
+    let shadowP=normal*radius+sun*shadowT;
+    let shadowR=length(shadowP);
+    if(shadowT>0. && shadowR>radius*1.3 && shadowR<radius*1.9){color*=.62;}
+  }
+  let rn=normalize(vec3(.14,.91,.39));let den=dot(ray,rn);
+  let safeDen=select(-max(abs(den),.0001),max(abs(den),.0001),den>=0.);
+  let ringT=dot(center-u.camera.xyz,rn)/safeDen;
+  let ringR=length(u.camera.xyz+ray*ringT-center)/radius;
+  // Filter radial optical-depth bands by their screen footprint. Unresolved detail converges
+  // to its average rather than shimmering as a hard, subpixel vinyl-record pattern.
+  let footprint=max(fwidth(ringR),.00001);
+  let detail417=cos(ringR*417.)*exp(-.5*pow(footprint*417.,2.));
+  let detail763=cos(ringR*763.)*exp(-.5*pow(footprint*763.,2.));
+  let detail1000=sin(ringR*1000.)*exp(-.5*pow(footprint*1000.,2.));
+  if(abs(den)>.0001 && ringT>0. && ringT<planetDistance && ringR>1.29 && ringR<2.02){
+    let bands=.48+.12*cos(ringR*42.)+.06*cos(ringR*119.)+.045*(detail417-detail763);
+    let gap=1.-smoothstep(.014,.025,abs(ringR-1.68));
+    let fade=smoothstep(1.29,1.34,ringR)*(1.-smoothstep(1.96,2.02,ringR));
+    let ring=mix(vec3(.14,.2,.23),vec3(.56,.56,.44),bands)*(.88+.025*detail1000);
+    color=mix(color,ring,fade*(.82-gap*.7));
+  }
+  let vignette=1.-.17*dot(input.uv,input.uv);
+  return vec4(tone(color*vignette),1.);
+}
+`;
+const MESH_SHADER = COMMON + /* wgsl */`
+struct MeshIn {@location(0) position:vec3<f32>,@location(1) normal:vec3<f32>,@location(2) color:vec3<f32>,@location(3) material:vec3<f32>};
+struct MeshOut {@builtin(position) position:vec4<f32>,@location(0) world:vec3<f32>,@location(1) normal:vec3<f32>,@location(2) color:vec3<f32>,@location(3) material:vec3<f32>};
+@vertex fn meshVertex(input:MeshIn)->MeshOut{
+  var world=input.position;
+  if(input.material.y>5.5){let phase=input.material.y*73.;world+=vec3(sin(u.camera.w*.13+phase)*.2,sin(u.camera.w*.11+phase)*.27,cos(u.camera.w*.09+phase)*.16);}
+  var o:MeshOut;o.position=u.viewProjection*vec4(world,1.);o.world=world;o.normal=input.normal;o.color=input.color;o.material=input.material;return o;
+}
+fn localLight(p:vec3<f32>,n:vec3<f32>,view:vec3<f32>,light:vec3<f32>,col:vec3<f32>,power:f32,roughness:f32)->vec3<f32>{
+  let delta=light-p;let d2=dot(delta,delta);let l=normalize(delta);
+  let diff=max(0.,dot(n,l));let spec=pow(max(0.,dot(n,normalize(l+view))),mix(65.,12.,roughness));
+  return col*(diff+spec*.65)*power/(1.+d2);
+}
+@fragment fn meshFragment(input:MeshOut,@builtin(front_facing) front:bool)->@location(0) vec4<f32>{
+  var n=normalize(input.normal);if(!front){n=-n;}
+  let p=input.world;let eye=u.camera.xyz;let view=normalize(eye-p);
+  let distance=length(eye-p);let emission=input.material.x;let material=input.material.y;
+  var base=input.color;var rough=.65;
+  if(u.settings.w>1.5){return vec4(.05,.2,.3,1.);}
+  if(u.settings.w>.5){return vec4(n*.5+.5,1.);}
+  // World-space brushed alloy, panel seams and wear, without textures or UV assets.
+  let grain=hash(floor(p*vec3(105.,83.,105.)))*.09;
+  base*=.94+grain;
+  if(material>.5 && material<1.5){
+    let panel=abs(fract(p.xz/3.)-.5);
+    let seam=smoothstep(.478,.49,max(panel.x,panel.y));
+    base*=1.-seam*.58;
+    let edgeWear=smoothstep(.46,.48,max(panel.x,panel.y))*(1.-seam);
+    base+=vec3(.025,.035,.04)*edgeWear;
+    // Fine grating in the center walkway and inspection plates.
+    let grate=step(.78,fract(p.z*8.))*step(.3,fract(p.x*4.));
+    base*=1.-grate*.15;rough=.44;
+  }
+  if(material>1.5 && material<2.5){
+    let lines=step(.94,fract(p.y*1.5))+step(.97,fract((p.x+p.z)*.5));
+    base*=1.-min(lines,1.)*.32;
+  }
+  var light=vec3(.085,.13,.18);
+  light+=vec3(.13,.23,.29)*max(0.,n.y)*.9;
+  // Distant planetlight and a sharp star key produce broad dimensional metal surfaces.
+  let key=normalize(vec3(-.55,.7,-.6));let diffuse=max(0.,dot(n,key));
+  let spec=pow(max(0.,dot(n,normalize(key+view))),42.);
+  light+=vec3(.43,.6,.68)*(diffuse*.45+spec*.28);
+  if(p.z<24.){
+    light+=localLight(p,n,view,vec3(0.,8.,-8.),vec3(.09,.73,1.),65.,rough);
+    light+=localLight(p,n,view,vec3(-15.,8.,-15.),vec3(.1,.65,.9),75.,rough);
+    light+=localLight(p,n,view,vec3(15.,8.,5.),vec3(.15,.65,1.),85.,rough);
+    light+=localLight(p,n,view,vec3(0.,7.,21.),vec3(1.,.4,.08),36.,rough);
+  }else if(p.z<72.){
+    let z=floor((p.z-24.)/7.8)*7.8+27.;
+    light+=localLight(p,n,view,vec3(-3.7,4.5,z),vec3(1.,.32,.055),24.,rough);
+    light+=localLight(p,n,view,vec3(3.7,5.,z+4.),vec3(.13,.6,1.),29.,rough);
+    light+=localLight(p,n,view,vec3(0.,7.4,z+1.),vec3(1.,.57,.22),22.,rough);
+    light*=.78;
+  }else{
+    light+=localLight(p,n,view,vec3(0.,23.,101.),vec3(.53,.77,1.),170.,rough);
+    light+=localLight(p,n,view,vec3(-15.,11.,85.),vec3(.12,.6,1.),140.,rough);
+    light+=localLight(p,n,view,vec3(12.,9.,112.),vec3(1.,.4,.08),115.,rough);
+    light+=localLight(p,n,view,vec3(0.,12.,128.),vec3(.1,.6,1.),150.,rough);
+  }
+  var color=base*light;
+  if(emission>.01){
+    var pulse=1.;
+    if(base.r>base.b*2.){pulse=.88+.12*sin(u.camera.w*1.5+p.z*.2);}
+    color+=base*emission*pulse;
+  }
+  if(material>2.5 && material<3.5){
+    let px=fract(p.x*.6+p.z*.35);let py=fract(p.y*6.+p.z*.4);
+    let line=step(.8,py)*step(.13,px);
+    let graph=step(abs(fract(p.x*1.5+p.z*.21)-.5),.025);
+    color=base*(.25+line*.7+graph*.25)*(1.+.08*sin(u.camera.w*.4+p.x));
+  }
+  if(material>3.5 && material<4.5){
+    let stripe=pow(.5+.5*sin(p.y*24.),12.);
+    let latitude=pow(.5+.5*sin(p.x*14.+p.z*8.),20.);
+    color=base*(.5+stripe*2.+latitude*.65);
+  }
+  if(material>4.5){color+=vec3(.02,.1,.15)*pow(1.-max(0.,dot(n,view)),3.);}
+  // Analytic contact shadow below the instrument plinth and the salvage vessel.
+  if(p.y<.8){
+    let observatory=1.-exp(-dot(p.xz-vec2(0.,-6.),p.xz-vec2(0.,-6.))*.045);
+    let vessel=1.-exp(-dot((p.xz-vec2(0.,102.))*vec2(1.,.48),(p.xz-vec2(0.,102.))*vec2(1.,.48))*.045);
+    color*=min(observatory,vessel)*.5+.5;
+    // Broad reflected cyan pools from the architecture; deliberately subtle.
+    color+=vec3(.006,.035,.047)*exp(-abs(p.x)*.25)*max(0.,1.-abs(p.z+6.)*.04);
+  }
+  let fog=1.-exp(-distance*select(.004,.007,p.z>24. && p.z<72.));
+  color=mix(color,vec3(.012,.027,.043),fog);
+  // Soft, stationary shafts through the upper observatory. Tiny density keeps surfaces readable.
+  if(u.settings.x>0. && p.z<20.){
+    let shaft=pow(max(0.,sin((p.x+p.y*.42)*.22+1.)),18.);
+    color+=vec3(.014,.035,.048)*shaft*(1.-exp(-distance*.03));
+  }
+  return vec4(tone(color),1.);
+}
+`;
+const DUST_SHADER = COMMON + /* wgsl */`
+struct DustOut {@builtin(position) position:vec4<f32>,@location(0) uv:vec2<f32>,@location(1) alpha:f32};
+@group(0) @binding(1) var<storage,read> particles:array<vec4<f32>>;
+@vertex fn dustVertex(@builtin(vertex_index) v:u32,@builtin(instance_index) i:u32)->DustOut{
+  let corners=array<vec2<f32>,6>(vec2(-1.,-1.),vec2(1.,-1.),vec2(-1.,1.),vec2(-1.,1.),vec2(1.,-1.),vec2(1.,1.));
+  let data=particles[i];var p=data.xyz;
+  p.x+=sin(u.camera.w*.06+f32(i))*.13;p.y+=sin(u.camera.w*.045+f32(i)*.7)*.11;
+  let size=.012+data.w*.018;let corner=corners[v];
+  var o:DustOut;o.position=u.viewProjection*vec4(p+(u.right.xyz*corner.x+u.up.xyz*corner.y)*size,1.);
+  o.uv=corner;o.alpha=.13+data.w*.2;return o;
+}
+@fragment fn dustFragment(i:DustOut)->@location(0) vec4<f32>{let a=exp(-dot(i.uv,i.uv)*3.)*i.alpha;return vec4(.4,.7,.83,a);}
+`;
+
+// main.js
+
+const $=id=>document.getElementById(id);
+const params=new URLSearchParams(location.search),testMode=params.has('test'),debug=params.get('debug'),readbackMode=params.has('readback');
+const PRESETS={High:{scale:1,samples:4,dust:850,effects:1},Medium:{scale:1,samples:1,dust:500,effects:1},Low:{scale:.7,samples:1,dust:180,effects:0}};
+let quality=Object.keys(PRESETS).find(x=>x.toLowerCase()===(params.get('quality')||'high').toLowerCase())||'High';
+const canvas=$('world'),errorBox=$('error'),menu=$('menu'),keys=new Set();
+const camera={position:new Float32Array(VIEWS[0].position),yaw:0,pitch:0};
+const projection=new Float32Array(16),view=new Float32Array(16),vp=new Float32Array(16),uniform=new Float32Array(40);
+const flightPosition=new Float32Array(3),flightTarget=new Float32Array(3),previousPosition=new Float32Array(3);
+const frameSamples=new Float64Array(18000),gpuSamples=new Float64Array(2048);
+let frameCount=0,gpuCount=0,lastFrame=0,sceneTime=0,fixedTime=testMode?12:null,flight=null,activeView=1,menuOpen=!testMode;
+const gpuInstance=navigator.gpu;
+let adapterReference,device,context,format,uniformBuffer,scene,meshBuffer,particleBuffer,bindGroup,skyPipeline,meshPipeline,dustPipeline;
+let depthTexture,colorTexture,renderWidth=0,renderHeight=0,deviceInfo={},timestampSet,timestampResolve,timestampRead,timestampBusy=false,timingError=null;
+let startupVerificationStarted=false,startupSubmissionVerified=false,routeCaption=false;
+let animationFrame=0,ready=false,flightReport=null,showStats=false,lastHud=0,crashed=false;
+let readbackContext,readbackTexture,readbackBuffer,readbackImage,readbackStride=0,readbackBusy=false,pendingResize=false,presentedFrames=0,presentedView=0;
+const startedAt=performance.now();
+
+function setMenu(open){menuOpen=open;menu.hidden=!open;document.body.classList.toggle('menu-open',open);if(open&&document.pointerLockElement)document.exitPointerLock();}
+function setView(n){
+  const index=clamp(Math.floor(Number(n)||1),1,6)-1,record=VIEWS[index];
+  flight=null;routeCaption=false;activeView=index+1;camera.position.set(record.position);const angles=lookAngles(record.position,record.target);camera.yaw=angles[0];camera.pitch=angles[1];
+  $('view-title').textContent=record.name;$('view-note').textContent=record.description;$('sector').textContent=record.sector;
+  document.querySelectorAll('[data-view]').forEach(b=>{b.classList.toggle('selected',Number(b.dataset.view)===index+1);b.setAttribute('aria-pressed',String(Number(b.dataset.view)===index+1));});
+  return getState();
+}
+function currentSector(){return camera.position[2]<23?'OBSERVATORY':camera.position[2]<72?'SERVICE SPINE':'HANGAR';}
+function currentSectorCaption(){return camera.position[2]<23?'01 / KEPLER DECK':camera.position[2]<72?'02 / MAINTENANCE':'03 / DOCKING BAY';}
+function setQuality(name){
+  const key=Object.keys(PRESETS).find(x=>x.toLowerCase()===String(name).toLowerCase());if(!key)throw Error('Unknown quality preset');
+  if(flight&&quality!==key)flight.configurationChanged=true;
+  quality=key;document.querySelectorAll('[data-quality]').forEach(b=>{b.classList.toggle('selected',b.dataset.quality===quality);b.setAttribute('aria-pressed',String(b.dataset.quality===quality));});
+  if(ready){createPipelines();resize();}return quality;
+}
+function getState(){return {ready:ready&&startupSubmissionVerified&&(!readbackMode||presentedFrames>0),position:Array.from(camera.position),yaw:camera.yaw,pitch:camera.pitch,sector:currentSector(),quality,renderSize:[renderWidth,renderHeight],view:activeView,presentedView,presentedFrames,presentationMode:readbackMode?'readback':'swapchain',menuOpen,audio:audio.enabled,pointerLocked:document.pointerLockElement===canvas,time:sceneTime,flight:flight?{elapsed:Math.min(60,(performance.now()-flight.start)/1000),duration:60}:null};}
+function summarize(samples,count){
+  if(!count)return {count:0,meanMs:null,p99Ms:null,maxMs:null};
+  const sorted=Array.from(samples.subarray(0,count)).sort((a,b)=>a-b);let sum=0;for(const n of sorted)sum+=n;
+  return {count,meanMs:sum/count,p99Ms:sorted[Math.max(0,Math.ceil(count*.99)-1)],maxMs:sorted[count-1]};
+}
+function getReport(){
+  const cpu=flightReport?.frame||summarize(frameSamples,frameCount),gpu=flightReport?.gpu||summarize(gpuSamples,gpuCount);
+  return {project:'PROJECT ECHO-9',seed:WORLD_SEED,status:'BLOCKED',reason:readbackMode?'CPU readback presentation is diagnostic only; hardware swapchain measurement is required.':deviceInfo.isFallbackAdapter?'Software adapter; a reference hardware GPU is required for the 60 FPS gate.':'Reference GPU has not been agreed; measurements are diagnostic until hardware is selected.',measurementStatus:flightReport?flightReport.status:frameCount?'IN_PROGRESS':'NOT_RUN',adapter:deviceInfo,browser:navigator.userAgent,resolution:[renderWidth,renderHeight],cssResolution:[innerWidth,innerHeight],devicePixelRatio:devicePixelRatio,quality,presentationMode:readbackMode?'readback':'swapchain',readbackOverhead:readbackMode?'GPU copy, async map, BGRA→RGBA conversion and 2D upload included in frame times':null,renderScale:PRESETS[quality].scale,msaa:PRESETS[quality].samples,triangles:scene?.triangles||0,vertices:scene?.vertices.length/12||0,estimatedGpuBytes:scene?scene.vertices.byteLength+scene.dust.byteLength+160+renderWidth*renderHeight*4*(PRESETS[quality].samples+(PRESETS[quality].samples>1?PRESETS[quality].samples:0)+1)+(readbackMode?readbackStride*renderHeight:0):0,diagnosticCpuPixelBytes:readbackMode?renderWidth*renderHeight*4:0,frame:cpu,gpu:{...gpu,samplingEveryNthFrame:30,status:timingError?'BLOCKED':timestampSet?(gpuCount?'PASS':'PENDING'):'BLOCKED',reason:timestampSet?timingError:'timestamp-query not supported by the current adapter'},flythrough:flightReport||{durationSeconds:60,status:flight?'RUNNING':'NOT_RUN'},runtimeErrors:crashed?['Rendering stopped; see on-screen error']:[],elapsedSeconds:(performance.now()-startedAt)/1000};
+}
+function startFlythrough(){
+  if(document.pointerLockElement)document.exitPointerLock();setMenu(false);frameCount=0;gpuCount=0;flightReport=null;fixedTime=null;sceneTime=0;flight={start:performance.now(),startQuality:quality,startWidth:renderWidth,startHeight:renderHeight,configurationChanged:false};lastFrame=0;activeView=0;routeCaption=true;
+  sampleFlight(0,flightPosition,flightTarget);camera.position.set(flightPosition);const angles=lookAngles(flightPosition,flightTarget);camera.yaw=angles[0];camera.pitch=angles[1];
+  document.querySelectorAll('[data-view]').forEach(button=>{button.classList.remove('selected');button.setAttribute('aria-pressed','false');});
+  $('sector').textContent=currentSectorCaption();
+  $('view-title').textContent='THE LONG WAY HOME';$('view-note').textContent='A deterministic sixty-second passage through ECHO-9.';return {durationSeconds:60,status:'RUNNING'};
+}
+function stopFlythrough(){flight=null;return getState();}
+function finishFlight(){flightReport={status:flight.configurationChanged?'BLOCKED':'PASS',reason:flight.configurationChanged?'Quality or resolution changed during the route; rerun with a fixed configuration.':null,durationSeconds:60,wallClockSeconds:(performance.now()-flight.start)/1000,completedAt:new Date().toISOString(),quality:flight.startQuality,frame:summarize(frameSamples,frameCount),gpu:summarize(gpuSamples,gpuCount)};flight=null;fixedTime=60;$('view-title').textContent='TRANSMISSION COMPLETE';$('view-note').textContent='Sixty seconds in a station that has forgotten time.';}
+function setTime(seconds){fixedTime=Number(seconds);sceneTime=fixedTime;return sceneTime;}
+function fail(message){crashed=true;ready=false;errorBox.hidden=false;errorBox.querySelector('p').textContent=message;$('loading').hidden=true;console.error(message);}
+
+const audio={enabled:false,context:null,gain:null,async toggle(){
+  if(!this.context){
+    const AudioContext=window.AudioContext||window.webkitAudioContext;if(!AudioContext)return false;
+    const ctx=this.context=new AudioContext();const gain=this.gain=ctx.createGain();gain.gain.value=0;gain.connect(ctx.destination);
+    for(const hz of [32.7,65.4,98.1]){const oscillator=ctx.createOscillator(),volume=ctx.createGain();oscillator.type='sine';oscillator.frequency.value=hz;volume.gain.value=hz===32.7?.11:.025;oscillator.connect(volume).connect(gain);oscillator.start();}
+    const buffer=ctx.createBuffer(1,ctx.sampleRate*4,ctx.sampleRate),data=buffer.getChannelData(0);let state=17;for(let i=0;i<data.length;i++){state=(Math.imul(state,1664525)+1013904223)|0;data[i]=(state/2147483648)*.06;}
+    const noise=ctx.createBufferSource();noise.buffer=buffer;noise.loop=true;const filter=ctx.createBiquadFilter();filter.type='lowpass';filter.frequency.value=140;noise.connect(filter).connect(gain);noise.start();
+  }
+  await this.context.resume();this.enabled=!this.enabled;this.gain.gain.setTargetAtTime(this.enabled?.55:0,this.context.currentTime,.6);$('audio-toggle').textContent=this.enabled?'SOUND ON':'SOUND OFF';$('audio-toggle').setAttribute('aria-pressed',String(this.enabled));return this.enabled;
+}};
+
+let bindGroupLayout,passDescriptor,compilationChecks;
+function createPipelines(){
+  const samples=PRESETS[quality].samples;
+  if(!bindGroupLayout)bindGroupLayout=device.createBindGroupLayout({entries:[{binding:0,visibility:GPUShaderStage.VERTEX|GPUShaderStage.FRAGMENT,buffer:{type:'uniform'}},{binding:1,visibility:GPUShaderStage.VERTEX,buffer:{type:'read-only-storage'}}]});
+  const layout=device.createPipelineLayout({bindGroupLayouts:[bindGroupLayout]});
+  bindGroup=device.createBindGroup({layout:bindGroupLayout,entries:[{binding:0,resource:{buffer:uniformBuffer}},{binding:1,resource:{buffer:particleBuffer}}]});
+  const sky=device.createShaderModule({label:'Procedural planetary atmosphere and rings',code:SKY_SHADER});
+  const mesh=device.createShaderModule({label:'Station alloy and procedural lighting',code:MESH_SHADER});
+  const dust=device.createShaderModule({label:'Seeded drifting dust',code:DUST_SHADER});
+  compilationChecks=Promise.all([sky,mesh,dust].map(async module=>{
+    const info=await module.getCompilationInfo();const errors=info.messages.filter(message=>message.type==='error');
+    if(errors.length)throw Error(errors.map(error=>`WGSL line ${error.lineNum}: ${error.message}`).join('\n'));
+  }));
+  compilationChecks.catch(error=>fail(error.message));
+  skyPipeline=device.createRenderPipeline({label:'Astronomical sky',layout,vertex:{module:sky,entryPoint:'skyVertex'},fragment:{module:sky,entryPoint:'skyFragment',targets:[{format}]},primitive:{topology:'triangle-list'},depthStencil:{format:'depth24plus',depthWriteEnabled:false,depthCompare:'always'},multisample:{count:samples}});
+  meshPipeline=device.createRenderPipeline({label:'Station architecture',layout,vertex:{module:mesh,entryPoint:'meshVertex',buffers:[{arrayStride:48,attributes:[{shaderLocation:0,offset:0,format:'float32x3'},{shaderLocation:1,offset:12,format:'float32x3'},{shaderLocation:2,offset:24,format:'float32x3'},{shaderLocation:3,offset:36,format:'float32x3'}]}]},fragment:{module:mesh,entryPoint:'meshFragment',targets:[{format}]},primitive:{topology:'triangle-list',cullMode:'none'},depthStencil:{format:'depth24plus',depthWriteEnabled:true,depthCompare:'less'},multisample:{count:samples}});
+  dustPipeline=device.createRenderPipeline({label:'Atmospheric particles',layout,vertex:{module:dust,entryPoint:'dustVertex'},fragment:{module:dust,entryPoint:'dustFragment',targets:[{format,blend:{color:{srcFactor:'src-alpha',dstFactor:'one-minus-src-alpha',operation:'add'},alpha:{srcFactor:'one',dstFactor:'one-minus-src-alpha',operation:'add'}}}]},primitive:{topology:'triangle-list'},depthStencil:{format:'depth24plus',depthWriteEnabled:false,depthCompare:'less'},multisample:{count:samples}});
+}
+function resize(){
+  if(!device)return;
+  if(readbackMode&&readbackBusy){pendingResize=true;return;}
+  pendingResize=false;
+  const scale=PRESETS[quality].scale,ratio=Math.min(devicePixelRatio||1,2);
+  renderWidth=Math.max(1,Math.floor(innerWidth*ratio*scale));renderHeight=Math.max(1,Math.floor(innerHeight*ratio*scale));
+  if(flight&&(renderWidth!==flight.startWidth||renderHeight!==flight.startHeight))flight.configurationChanged=true;
+  canvas.width=renderWidth;canvas.height=renderHeight;
+  depthTexture?.destroy();colorTexture?.destroy();
+  depthTexture=device.createTexture({size:[renderWidth,renderHeight],format:'depth24plus',sampleCount:PRESETS[quality].samples,usage:GPUTextureUsage.RENDER_ATTACHMENT});
+  colorTexture=PRESETS[quality].samples>1?device.createTexture({size:[renderWidth,renderHeight],format,sampleCount:PRESETS[quality].samples,usage:GPUTextureUsage.RENDER_ATTACHMENT}):null;
+  passDescriptor={colorAttachments:[{view:null,resolveTarget:undefined,clearValue:{r:0,g:0,b:0,a:1},loadOp:'clear',storeOp:'store'}],depthStencilAttachment:{view:depthTexture.createView(),depthClearValue:1,depthLoadOp:'clear',depthStoreOp:'store'},timestampWrites:undefined};
+  if(colorTexture)passDescriptor.colorAttachments[0].view=colorTexture.createView();
+  if(readbackMode){
+    readbackTexture?.destroy();readbackBuffer?.destroy();
+    readbackStride=Math.ceil(renderWidth*4/256)*256;
+    readbackTexture=device.createTexture({label:'Diagnostic offscreen presentation',size:[renderWidth,renderHeight],format,usage:GPUTextureUsage.RENDER_ATTACHMENT|GPUTextureUsage.COPY_SRC});
+    readbackBuffer=device.createBuffer({label:'Preallocated diagnostic pixel copy',size:readbackStride*renderHeight,usage:GPUBufferUsage.COPY_DST|GPUBufferUsage.MAP_READ});
+    readbackImage=new ImageData(renderWidth,renderHeight);
+  }
+}
+async function initialize(){
+  try{
+    if(!navigator.gpu)throw Error('WebGPU is unavailable. Open this offline file in a recent desktop Chrome or Edge with WebGPU enabled. A compatible GPU and a secure context are required.');
+    const adapter=adapterReference=await gpuInstance.requestAdapter({powerPreference:'high-performance'});
+    if(!adapter)throw Error('No WebGPU adapter was found. Check hardware acceleration in Chrome or Edge and your graphics driver, then reload.');
+    const info=adapter.info||{};
+    deviceInfo={vendor:info.vendor||'unreported',architecture:info.architecture||'unreported',device:info.device||'unreported',description:info.description||'unreported',isFallbackAdapter:info.isFallbackAdapter??adapter.isFallbackAdapter??/swiftshader|llvmpipe|software/i.test([info.architecture,info.description].join(' '))};
+    const features=adapter.features.has('timestamp-query')?['timestamp-query']:[];
+    device=await adapter.requestDevice({requiredFeatures:features});
+    device.addEventListener('uncapturederror',event=>fail('WebGPU validation: '+event.error.message));
+    device.lost.then(info=>{if(info.reason!=='destroyed')fail('The GPU device was lost: '+info.message+'. Reload to reconnect.');});
+    if(readbackMode){
+      // Diagnostic fallback for cloud browsers whose WebGPU shared-image swapchain is broken.
+      // Rendering remains native WebGPU; only presentation uses an explicit CPU pixel copy.
+      readbackContext=canvas.getContext('2d',{alpha:false});format='bgra8unorm';
+    }else{
+      context=canvas.getContext('webgpu');format=gpuInstance.getPreferredCanvasFormat();context.configure({device,format,alphaMode:'opaque',usage:GPUTextureUsage.RENDER_ATTACHMENT|GPUTextureUsage.COPY_SRC});
+    }
+    scene=buildScene();meshBuffer=device.createBuffer({label:'Seeded station geometry',size:scene.vertices.byteLength,usage:GPUBufferUsage.VERTEX|GPUBufferUsage.COPY_DST});device.queue.writeBuffer(meshBuffer,0,scene.vertices);
+    particleBuffer=device.createBuffer({label:'Preallocated dust field',size:scene.dust.byteLength,usage:GPUBufferUsage.STORAGE|GPUBufferUsage.COPY_DST});device.queue.writeBuffer(particleBuffer,0,scene.dust);
+    uniformBuffer=device.createBuffer({size:160,usage:GPUBufferUsage.UNIFORM|GPUBufferUsage.COPY_DST});
+    if(features.length){
+      timestampSet=device.createQuerySet({type:'timestamp',count:2});timestampResolve=device.createBuffer({size:16,usage:GPUBufferUsage.QUERY_RESOLVE|GPUBufferUsage.COPY_SRC});timestampRead=device.createBuffer({size:16,usage:GPUBufferUsage.COPY_DST|GPUBufferUsage.MAP_READ});
+    }
+    createPipelines();await compilationChecks;resize();setView(params.get('view')||1);setQuality(quality);setMenu(menuOpen);
+    ready=true;$('loading').hidden=true;document.body.classList.add('ready');
+    if(params.has('flythrough'))startFlythrough();requestAnimationFrame(render);
+  }catch(error){fail(error.message);}
+}
+function updateCamera(delta,now){
+  if(flight){
+    const seconds=Math.min(60,(now-flight.start)/1000);sampleFlight(seconds,flightPosition,flightTarget);camera.position.set(flightPosition);const dx=flightTarget[0]-flightPosition[0],dy=flightTarget[1]-flightPosition[1],dz=flightTarget[2]-flightPosition[2];camera.yaw=Math.atan2(dx,-dz);camera.pitch=-Math.atan2(dy,Math.hypot(dx,dz));sceneTime=seconds;
+    if(seconds>=60)finishFlight();return;
+  }
+  if(fixedTime===null)sceneTime+=delta;else sceneTime=fixedTime;
+  if(menuOpen)return;
+  let x=0,z=0,y=0;if(keys.has('KeyW'))z++;if(keys.has('KeyS'))z--;if(keys.has('KeyA'))x--;if(keys.has('KeyD'))x++;if(keys.has('KeyQ'))y--;if(keys.has('KeyE'))y++;
+  const length=Math.hypot(x,z)||1,speed=delta*(keys.has('ShiftLeft')||keys.has('ShiftRight')?14:5),sy=Math.sin(camera.yaw),cy=Math.cos(camera.yaw);
+  previousPosition.set(camera.position);
+  camera.position[0]+=(x/length*cy+z/length*sy)*speed;camera.position[2]+=(x/length*sy-z/length*cy)*speed;camera.position[1]+=y*speed;
+  constrainPosition(camera.position,scene.obstacles,previousPosition);
+}
+function updateUniforms(){
+  const yaw=camera.yaw,pitch=camera.pitch,cy=Math.cos(yaw),sy=Math.sin(yaw),cp=Math.cos(pitch),sp=Math.sin(pitch);
+  viewMatrix(view,camera.position,yaw,pitch);perspective(projection,Math.PI*64/180,renderWidth/renderHeight,.12,700);multiply(vp,projection,view);uniform.set(vp,0);
+  uniform[16]=camera.position[0];uniform[17]=camera.position[1];uniform[18]=camera.position[2];uniform[19]=sceneTime;
+  uniform[20]=cy;uniform[21]=0;uniform[22]=sy;uniform[23]=0;
+  uniform[24]=sy*sp;uniform[25]=cp;uniform[26]=-cy*sp;uniform[27]=0;
+  uniform[28]=sy*cp;uniform[29]=-sp;uniform[30]=-cy*cp;uniform[31]=0;
+  uniform[32]=renderWidth;uniform[33]=renderHeight;uniform[34]=renderWidth/renderHeight*Math.tan(Math.PI*32/180);uniform[35]=Math.tan(Math.PI*32/180);
+  uniform[36]=PRESETS[quality].effects;uniform[37]=sceneTime;uniform[38]=quality==='High'?2:quality==='Medium'?1:0;uniform[39]=debug==='normals'?1:debug==='solid'?2:0;
+  device.queue.writeBuffer(uniformBuffer,0,uniform);
+}
+function updateHud(now){
+  if(now-lastHud<350)return;lastHud=now;
+  $('coordinates').textContent=`${camera.position[0].toFixed(1)} / ${camera.position[1].toFixed(1)} / ${camera.position[2].toFixed(1)} M`;
+  $('quality-label').textContent=quality.toUpperCase();$('location-label').textContent=currentSector();
+  if(routeCaption)$('sector').textContent=currentSectorCaption();
+  if(showStats){const r=getReport();$('stats').textContent=`${quality} · ${renderWidth}×${renderHeight} · ${scene.triangles.toLocaleString()} triangles\nFrame mean ${r.frame.meanMs?.toFixed(2)||'—'} ms · p99 ${r.frame.p99Ms?.toFixed(2)||'—'} ms\nGPU ${r.gpu.meanMs?.toFixed(2)||'—'} ms · ${deviceInfo.architecture}\n${deviceInfo.isFallbackAdapter?'SOFTWARE DIAGNOSTIC — hardware gate BLOCKED':'REFERENCE GPU NOT SELECTED — gate BLOCKED'}${flight?'\nFLIGHT '+Math.min(60,(now-flight.start)/1000).toFixed(1)+' / 60.0 s':''}`;}
+}
+function readGpuTiming(){
+  timestampRead.mapAsync(GPUMapMode.READ).then(()=>{
+    const values=new BigUint64Array(timestampRead.getMappedRange());const ms=Number(values[1]-values[0])/1e6;
+    if(gpuCount<gpuSamples.length&&ms>=0)gpuSamples[gpuCount++]=ms;timestampRead.unmap();timestampBusy=false;
+  }).catch(error=>{timingError=error.message;timestampBusy=false;});
+}
+function presentReadback(capturedView){
+  // This intentionally expensive path is for visual evidence, never the 60 FPS hardware gate.
+  const buffer=readbackBuffer,image=readbackImage,stride=readbackStride,width=renderWidth,height=renderHeight;
+  buffer.mapAsync(GPUMapMode.READ).then(()=>{
+    const source=new Uint8Array(buffer.getMappedRange()),target=image.data;
+    for(let y=0;y<height;y++){
+      let sourceOffset=y*stride,targetOffset=y*width*4;
+      for(let x=0;x<width;x++){
+        target[targetOffset]=source[sourceOffset+2];target[targetOffset+1]=source[sourceOffset+1];target[targetOffset+2]=source[sourceOffset];target[targetOffset+3]=255;sourceOffset+=4;targetOffset+=4;
+      }
+    }
+    buffer.unmap();
+    if(buffer===readbackBuffer){readbackContext.putImageData(image,0,0);presentedView=capturedView;presentedFrames++;startupSubmissionVerified=true;}
+    readbackBusy=false;if(pendingResize)resize();
+  }).catch(error=>{readbackBusy=false;fail('Offscreen diagnostic presentation failed: '+error.message);});
+}
+function render(now){
+  if(crashed)return;
+  if(readbackMode&&readbackBusy){requestAnimationFrame(render);return;}
+  const ms=lastFrame?now-lastFrame:0;lastFrame=now;const delta=Math.min(ms/1000,.05);
+  if(ms>0&&frameCount<frameSamples.length)frameSamples[frameCount++]=ms;
+  updateCamera(delta,now);updateUniforms();updateHud(now);
+  const textureView=readbackMode?readbackTexture.createView():context.getCurrentTexture().createView();
+  if(colorTexture)passDescriptor.colorAttachments[0].resolveTarget=textureView;else passDescriptor.colorAttachments[0].view=textureView;
+  const sample=timestampSet&&!timestampBusy&&animationFrame%30===0;
+  if(sample){timestampBusy=true;passDescriptor.timestampWrites={querySet:timestampSet,beginningOfPassWriteIndex:0,endOfPassWriteIndex:1};}else passDescriptor.timestampWrites=undefined;
+  const encoder=device.createCommandEncoder(),pass=encoder.beginRenderPass(passDescriptor);pass.setBindGroup(0,bindGroup);
+  if(debug!=='clear'){pass.setPipeline(skyPipeline);pass.draw(3);}
+  if(debug!=='clear'&&debug!=='sky'){pass.setPipeline(meshPipeline);pass.setVertexBuffer(0,meshBuffer);pass.draw(scene.vertices.length/12);pass.setPipeline(dustPipeline);pass.draw(6,PRESETS[quality].dust);}
+  pass.end();
+  if(sample){encoder.resolveQuerySet(timestampSet,0,2,timestampResolve,0);encoder.copyBufferToBuffer(timestampResolve,0,timestampRead,0,16);}
+  if(readbackMode){encoder.copyTextureToBuffer({texture:readbackTexture},{buffer:readbackBuffer,bytesPerRow:readbackStride,rowsPerImage:renderHeight},[renderWidth,renderHeight]);readbackBusy=true;}
+  device.queue.submit([encoder.finish()]);
+  if(!readbackMode&&!startupVerificationStarted){
+    // One startup fence catches failed driver/shared-image presentation. Never synchronize every frame.
+    startupVerificationStarted=true;
+    device.queue.onSubmittedWorkDone().then(()=>{startupSubmissionVerified=true;}).catch(error=>fail('GPU presentation failed: '+error.message+'. Try a compatible desktop GPU/browser.'));
+  }
+  if(sample)readGpuTiming();
+  if(readbackMode)presentReadback(activeView);else{presentedView=activeView;presentedFrames++;}
+  animationFrame++;requestAnimationFrame(render);
+}
+
+canvas.addEventListener('click',()=>{if(ready&&!menuOpen){flight=null;canvas.requestPointerLock?.();}});
+$('explore').addEventListener('click',()=>{setMenu(false);canvas.requestPointerLock?.();});
+$('menu-toggle').addEventListener('click',()=>setMenu(!menuOpen));
+$('audio-toggle').addEventListener('click',()=>audio.toggle());
+$('flythrough').addEventListener('click',startFlythrough);
+$('download-report').addEventListener('click',()=>{const blob=new Blob([JSON.stringify(getReport(),null,2)],{type:'application/json'}),link=document.createElement('a');link.href=URL.createObjectURL(blob);link.download='echo-9-performance.json';link.click();URL.revokeObjectURL(link.href);});
+for(const button of document.querySelectorAll('[data-view]'))button.addEventListener('click',()=>{setView(button.dataset.view);setMenu(false);});
+for(const button of document.querySelectorAll('[data-quality]'))button.addEventListener('click',()=>setQuality(button.dataset.quality));
+window.addEventListener('resize',resize);
+window.addEventListener('keydown',event=>{
+  if(event.code==='Escape'){setMenu(!menuOpen);return;}if(event.target instanceof HTMLButtonElement&&event.code==='Space')return;
+  if(/^Digit[1-6]$/.test(event.code)){setView(Number(event.code.slice(-1)));setMenu(false);}
+  if(event.code==='KeyM'&&!event.repeat)audio.toggle();if(event.code==='KeyH'&&!event.repeat){showStats=!showStats;$('stats').hidden=!showStats;}
+  if(['KeyW','KeyA','KeyS','KeyD','KeyQ','KeyE','ShiftLeft','ShiftRight'].includes(event.code)){keys.add(event.code);event.preventDefault();flight=null;}
+});
+window.addEventListener('keyup',event=>keys.delete(event.code));window.addEventListener('blur',()=>keys.clear());
+document.addEventListener('mousemove',event=>{if(document.pointerLockElement===canvas&&!menuOpen){camera.yaw+=event.movementX*.0018;camera.pitch=clamp(camera.pitch+event.movementY*.0018,-1.45,1.45);}});
+document.addEventListener('pointerlockchange',()=>{document.body.classList.toggle('pointer-locked',document.pointerLockElement===canvas);});
+window.echo9={gpuInstance,get adapter(){return adapterReference;},get device(){return device;},get ready(){return ready&&startupSubmissionVerified&&(!readbackMode||presentedFrames>0);},setView,setQuality,setTime,startFlythrough,stopFlythrough,getReport,getState,setMenu,get stats(){return getReport();},camera,views:VIEWS};
+initialize();
+</script>
+</body></html>

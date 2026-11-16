@@ -1,0 +1,18 @@
+{
+  "artifact": "index.html",
+  "sha256": "5452f9efca7e83dc52dfb293522f297ff8172aab8df3491b04317160b9b68f2e",
+  "rawBytes": 68058,
+  "gzipBytes": 24346,
+  "seed": 15515657,
+  "triangles": 38958,
+  "vertices": 116874,
+  "estimatedGpuBytes": 88567712,
+  "diagnosticCpuPixelBytes": 8294400,
+  "quality": "High",
+  "renderResolution": [
+    1920,
+    1080
+  ],
+  "presentationMode": "readback",
+  "acceptance": "BLOCKED"
+}

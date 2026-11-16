@@ -1,0 +1,9 @@
+{
+  "browser": "156.0.8078.79",
+  "adapter": null,
+  "status": "BLOCKED",
+  "reason": "WebGPU requestAdapter returned null",
+  "errors": [
+    "No WebGPU adapter was found. Check hardware acceleration in Chrome or Edge and your graphics driver, then reload."
+  ]
+}

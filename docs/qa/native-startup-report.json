@@ -1,0 +1,6 @@
+{
+  "nativePresentationStatus": "BLOCKED",
+  "visibleError": "GPU presentation failed: A valid external Instance reference no longer exists.. Try a compatible desktop GPU/browser.",
+  "ready": false,
+  "diagnosticHandling": "PASS"
+}
