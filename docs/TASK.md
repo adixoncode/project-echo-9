@@ -33,3 +33,6 @@ Explicit diagnostic `?readback=1` was added because both available headless Chro
 Select a named hardware-accelerated desktop GPU, run the default swapchain path at High/1920×1080, collect the six views and a smooth flight, repeat independent visual/temporal review, and attach the full60-second report. Only then resolve the required gates and close Issue #1.
 
 Final artifact: 68,058 raw bytes / 24,346 gzip bytes. The SHA256 and measurements are recorded in `qa/artifact-manifest.json` and `qa/browser-report.json`. The final route completed in 60.1838s; no runtime errors were observed.
+
+## Visual-direction follow-up — Issue #2
+On 2026-11-16 Adrian rejected the achieved art direction (despite clean unit/browser checks). [Issue #2](https://github.com/adixoncode/project-echo-9/issues/2) governs a reference-first cinematic service-corridor proof of look. The comparison images are documented in [docs/references/](../references/README.md). No runtime implementation change or hardware acceptance is implied by reference upload.

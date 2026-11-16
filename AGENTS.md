@@ -25,3 +25,11 @@
 +- Cloud default adapter is unavailable; explicit SwiftShader is a fallback adapter. Native swapchain presentation fails even in a scene-independent minimal test. Explicit `?readback=1` shows actual offscreen WebGPU pixels with CPU copy overhead; it is diagnostic only. The shared desktop tool is unavailable.
 +- Hardware/temporal acceptance remains BLOCKED. No 60 FPS claim is authorized by this evidence. Select a reference desktop GPU and repeat the native presentation, independent temporal review and 60-second benchmark before closing Issue #1.
 +- Keep sparse GPU timestamp counts and actual presentation/render scale in reports. Route completion PASS does not imply visual/performance acceptance PASS.
+
+## Visual Overhaul / Issue #2 — reference-first art direction
+- Adrian rejected the initial cinematic look even though baseline software QA passed. The current stills are a TECHNICAL BASELINE, not accepted final art direction. Issue #1 remains open on hardware/temporal gates.
+- Reference images are kept in `docs/references/` (see README there). They are review-only documentation assets and must never enter the runtime `index.html` build.
+- For the approved first iteration, edit ONLY the cinematic service corridor hero shot. Before coding read the actual reference image; show a plan and wait for owner approval.
+- The independent visual critic must receive both the target image and the rendered comparison, without source or author explanation. Technical image defect severity alone is NOT an artistic acceptance gate.
+- Do not expand to observatory/hangar overhaul without Adrian's explicit acceptance of the corridor render. Prioritize visual quality over the optional 100 KB target. Keep procedural WebGPU/WGSL and no runtime assets unless Adrian separately approves a change.
+- Retain hardware 60 FPS and temporal gates as BLOCKED until measured on a reference GPU. Perform build, RunAllTests, QA documentation, AGENTS/task updates and push for approved source changes.
