@@ -10,7 +10,8 @@
     "RunAllTests": "npm run test:all",
     "qa": "node scripts/browser-qa.mjs",
     "qa:smoke": "node scripts/smoke-qa.mjs",
-    "qa:fallback": "node scripts/fallback-qa.mjs"
+    "qa:fallback": "node scripts/fallback-qa.mjs",
+    "qa:overhaul": "node scripts/overhaul-qa.mjs"
   },
   "devDependencies": {
     "playwright": "1.62.1"

@@ -4,7 +4,7 @@ import {fileURLToPath} from 'node:url';
 import {resolve,dirname} from 'node:path';
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
 export async function build(){
-  const files=['math.js','geometry.js','scene.js','shaders.js','main.js'];
+  const files=['math.js','geometry.js','scene.js','shaders.js','corridor.js','corridor-shaders.js','corridor-renderer.js','main.js'];
   let script='';
   for(const file of files){
     const source=await readFile(resolve(root,'src',file),'utf8');

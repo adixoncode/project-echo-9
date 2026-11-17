@@ -1,5 +1,7 @@
 # Independent visual review
 
+Historical Issue #1 technical image review without the later target reference. It does not establish accepted cinematic art direction. See [Issue #2 first-candidate reference-relative review](overhaul-v1/iteration-1/INDEPENDENT-REVIEW.md).
+
 Reviewer: independent GPT-6.1 Sol agent, high reasoning, fresh context. Input restricted to six 1920×1080 images and a short flight recording; no source, specification, implementation rationale or repair prompts. The reviewer inspected only that media and temporary video derivatives.
 
 ## Iteration 1

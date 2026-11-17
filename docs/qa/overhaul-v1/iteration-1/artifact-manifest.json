@@ -1,0 +1,112 @@
+{
+  "artifact": "index.html",
+  "sha256": "aeb80e7100df3c58c4e916426285f6140c3b2e49882edc85972f43ffd7277db6",
+  "rawBytes": 105761,
+  "gzipBytes": 34927,
+  "seed": 15515657,
+  "hero": {
+    "position": [
+      -2.35,
+      1.72,
+      27.5
+    ],
+    "target": [
+      -13.5,
+      1.78,
+      61
+    ],
+    "verticalFovDegrees": 64,
+    "state": {
+      "ready": true,
+      "position": [
+        -2.3499999046325684,
+        1.7200000286102295,
+        27.5
+      ],
+      "yaw": -2.8202899271972486,
+      "pitch": -0.0016993860988498693,
+      "sector": "SERVICE SPINE",
+      "quality": "High",
+      "renderSize": [
+        1920,
+        1080
+      ],
+      "hero": {
+        "position": [
+          -2.35,
+          1.72,
+          27.5
+        ],
+        "target": [
+          -13.5,
+          1.78,
+          61
+        ],
+        "verticalFov": 64
+      },
+      "clean": false,
+      "view": 4,
+      "presentedView": 4,
+      "presentedFrames": 19,
+      "presentationMode": "readback",
+      "menuOpen": false,
+      "audio": false,
+      "pointerLocked": false,
+      "time": 12,
+      "flight": null
+    }
+  },
+  "activeTriangles": 159494,
+  "corridor": {
+    "triangles": 128000,
+    "geometryBytes": 18432000,
+    "estimatedGpuBytes": 53821616,
+    "shadowMaps": {
+      "count": 2,
+      "resolution": 2048,
+      "format": "depth32float",
+      "filter": "4-tap comparison PCF",
+      "enabled": true,
+      "cached": true
+    },
+    "environment": {
+      "source": "Six native HDR renders of actual procedural corridor geometry, direct lights and geometric shadows",
+      "resolution": 128,
+      "faces": 6,
+      "mips": 8,
+      "prefilter": "128-sample GGX importance convolution per mip texel",
+      "parallaxCorrection": "Room-box projected reflected rays",
+      "enabled": true,
+      "cached": true
+    },
+    "atmosphere": {
+      "bounds": [
+        [
+          -3.9,
+          0,
+          24
+        ],
+        [
+          3.9,
+          5.6,
+          72
+        ]
+      ],
+      "extinctionPerMetre": 0.065,
+      "integration": "Shared-depth-clipped ray length inside physical corridor; 4 source samples, display-space composite"
+    },
+    "bakeMilliseconds": 1701.2000000001863,
+    "fixedExposure": 1.35
+  },
+  "estimatedGpuBytes": 142389328,
+  "diagnosticCpuPixelBytes": 8294400,
+  "reference": "docs/references/target-red-corridor.jpg",
+  "artDirection": "NOT ACCEPTED",
+  "referenceMatchReview": "FAIL",
+  "hardwareAcceptance": "BLOCKED",
+  "temporalAcceptance": "BLOCKED",
+  "authorizedIteration": 1,
+  "nextIteration": "NOT AUTHORIZED",
+  "cleanCaptureMethod": "DOM HUD/menu visibility only; same native WebGPU canvas pixels; no retouching. getState.clean records URL parameter, not live DOM visibility.",
+  "technicalRegression": "Exit shell repaired and mesh-ray tested before independent review; no post-review art changes."
+}

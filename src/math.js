@@ -56,7 +56,7 @@ export const VIEWS = [
   {name:'THE OBSERVATORY',sector:'01 / KEPLER DECK',position:[0,5.8,16],target:[0,9,-23],description:'The last light of a forgotten orbit.'},
   {name:'A WORLD WITHOUT END',sector:'01 / PANORAMIC ARRAY',position:[-10,7,-4],target:[2,12,-42],description:'Asterion. Six billion years of weather.'},
   {name:'THE LISTENING ARRAY',sector:'01 / RESEARCH GALLERY',position:[17,9.5,7],target:[-3,3,-7],description:'Still listening. Still waiting.'},
-  {name:'SERVICE SPINE',sector:'02 / MAINTENANCE',position:[0,3.6,33],target:[0,3.8,66],description:'Follow the amber pulse into the dark.'},
+  {name:'SERVICE SPINE',sector:'02 / MAINTENANCE',position:[-2.35,1.72,27.5],target:[-13.5,1.78,61],description:'Follow the red pulse into the dark.'},
   {name:'THE SILENT HANGAR',sector:'03 / DOCKING BAY',position:[-14,7,81],target:[5,6,108],description:'Departure clearance never came.'},
   {name:'VESSEL E-09',sector:'03 / SALVAGE PLATFORM',position:[16,5.5,112],target:[-3,4.2,101],description:'An unfinished journey, held in suspension.'}
 ];
@@ -84,7 +84,8 @@ export function constrainPosition(position, obstacles=[], previousPosition=null)
   }
   const z=position[2],limit=z<20.85?20.8:z<71.9?3.75:26;
   position[0]=clamp(position[0],-limit,limit);
-  position[1]=clamp(position[1],1.6,z>72?25:z>24?7:24);
+  const corridorCeiling=4.9-Math.max(0,Math.abs(position[0])-2.3)*1.15+clamp((z-66)/6,0,1)*3.5;
+  position[1]=clamp(position[1],1.6,z>72?25:z>24?corridorCeiling:24);
   if(z<18.5&&z>-19&&Math.abs(position[0])>16.05&&position[1]>4.65&&position[1]<6.2) {
     position[1]=position[1]<5.4?4.65:6.2;
   }

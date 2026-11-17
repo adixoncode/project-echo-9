@@ -18,5 +18,5 @@ try{
     await page.close();
   }
 }finally{await browser.close();}
-await writeFile(new URL('../docs/qa/fallback-report.json',import.meta.url),JSON.stringify(results,null,2)+'\n');
+await writeFile(process.env.QA_OUT||new URL('../docs/qa/fallback-report.json',import.meta.url),JSON.stringify(results,null,2)+'\n');
 console.log(JSON.stringify(results,null,2));

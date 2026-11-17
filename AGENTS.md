@@ -20,7 +20,7 @@
 +- Sources: `src/math.js` (camera/route/collision), `geometry.js`, `scene.js`, `shaders.js`, `main.js`, template and styles. `scripts/build.mjs` embeds all runtime content into `index.html`.
 +- Commands: `npm run build`; `npm run RunAllTests` / `npm run test:all`; `npm run qa`; `npm run qa:smoke`; `npm run qa:fallback`. Browser tools require Playwright and Chromium; use `CHROMIUM_PATH` to select an installed executable.
 +- Server port: 4173. Avoid managed desktop ports 8000/8085 for new servers.
-+- Final source build: 68,058 bytes raw, 24,346 bytes gzip; 10 correctness tests PASS. Do not confuse archive size with GPU memory or performance.
++- Baseline Issue #1 build: 68,058 bytes raw, 24,346 bytes gzip; 10 correctness tests PASS. Do not confuse archive size with GPU memory or performance.
 +- Independent critic has reviewed actual full-HD media in fresh context. Ring filtering, HUD contrast, stale flight labels and camera obstruction were addressed iteratively. Keep review history and source hashes in `docs/qa/`.
 +- Cloud default adapter is unavailable; explicit SwiftShader is a fallback adapter. Native swapchain presentation fails even in a scene-independent minimal test. Explicit `?readback=1` shows actual offscreen WebGPU pixels with CPU copy overhead; it is diagnostic only. The shared desktop tool is unavailable.
 +- Hardware/temporal acceptance remains BLOCKED. No 60 FPS claim is authorized by this evidence. Select a reference desktop GPU and repeat the native presentation, independent temporal review and 60-second benchmark before closing Issue #1.
@@ -33,3 +33,19 @@
 - The independent visual critic must receive both the target image and the rendered comparison, without source or author explanation. Technical image defect severity alone is NOT an artistic acceptance gate.
 - Do not expand to observatory/hangar overhaul without Adrian's explicit acceptance of the corridor render. Prioritize visual quality over the optional 100 KB target. Keep procedural WebGPU/WGSL and no runtime assets unless Adrian separately approves a change.
 - Retain hardware 60 FPS and temporal gates as BLOCKED until measured on a reference GPU. Perform build, RunAllTests, QA documentation, AGENTS/task updates and push for approved source changes.
+
+## Issue #2 — approved iteration 1, 2026-11-17
+- Owner approved ONLY the first corridor iteration in this session. Prioritize architecture, composition, directional lighting and actual geometric shadows. PBR/GGX must include credible procedural-room environment reflections.
+- Preserve observatory/hangar geometry, materials, lighting, controls and the existing route. Use independent corridor generation and scoped rendering; do not conceal changes by swapping geometry at a camera threshold.
+- Produce actual 1920×1080 HUD and clean renders, reference comparison and an independent reference-relative review. The reviewer receives target image and actual render, no code or author rationale.
+- Run build, RunAllTests and other-sector regressions. Preserve previous evidence. Save this iteration under `docs/qa/overhaul-v1/iteration-1/`.
+- Technical debugging within iteration 1 is allowed. After the first candidate's independent review, report and STOP; no second artistic iteration without explicit owner approval. ART DIRECTION remains NOT ACCEPTED until Adrian approves the result.
+- Keep unverified native/hardware GPU gates BLOCKED. Approved closeout includes documentation/AGENTS/task updates and commit/push on main; leave Issue #1 open.
+
+
+## Issue #2 iteration 1 closeout
+- Candidate: 105,761 raw bytes /34,927 gzip; 15 RunAllTests, 17 browser smoke and 3 fallback checks PASS. See `docs/qa/overhaul-v1/iteration-1/RESULTS.md` and exact artifact manifest.
+- Three observatory poses and hangar view5 are pixel-identical to baseline. View6 differs only in the visible corridor entrance; outside that region hangar pixels and all legacy geometry/material/RNG data remain unchanged.
+- Independent GPT-6 Astra media-only reference review found meaningful architectural improvement but reference match FAIL: critical under-lighting/hierarchy and major visible shadow/reflection shortcomings. ART DIRECTION remains NOT ACCEPTED pending owner evaluation.
+- Do not conflate technically functioning shadow maps/local HDR probe with artistic success. No source art changes follow that review. STOP: iteration 2 is NOT authorized; wait for Adrian's assessment.
+- Hardware/native and temporal acceptance remain BLOCKED; Issue #1 stays open. Source changes on main are the first candidate, not approved final art.

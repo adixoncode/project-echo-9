@@ -36,3 +36,12 @@ Final artifact: 68,058 raw bytes / 24,346 gzip bytes. The SHA256 and measurement
 
 ## Visual-direction follow-up — Issue #2
 On 2026-11-16 Adrian rejected the achieved art direction (despite clean unit/browser checks). [Issue #2](https://github.com/adixoncode/project-echo-9/issues/2) governs a reference-first cinematic service-corridor proof of look. The comparison images are documented in [docs/references/](../references/README.md). No runtime implementation change or hardware acceptance is implied by reference upload.
+
+
+## Issue #2 — first candidate delivered, 2026-11-17
+
+Only corridor iteration 1 was approved. It adds independently generated heavy architecture, geometric shadows and actual-room GGX environment reflections. Original flight and other-sector geometry/material/RNG data are preserved. Four sector frames are identical; the remaining hangar frame differs only at the visible corridor entrance.
+
+Build/RunAllTests 15/15, browser smoke 17/17 and fallback 3/3 PASS. Artifact105,761 raw / 34,927 gzip. Actual1920×1080 clean/HUD renders, reference comparison, regression evidence and independent review: [iteration 1 results](qa/overhaul-v1/iteration-1/RESULTS.md).
+
+**Reference-match review FAIL; ART DIRECTION NOT ACCEPTED.** Architecture improved, but exposure/light hierarchy and the visual effect of shadows/reflections remain below reference. This static image shortcoming is not attributed to missing hardware. GPU/temporal gates remain BLOCKED. No second artistic iteration started. STOP pending Adrian's evaluation. Issue #1 remains open.

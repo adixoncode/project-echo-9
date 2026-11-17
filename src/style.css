@@ -11,3 +11,6 @@
 .brand small{font-size:10px;color:#aec5d0}.telemetry{color:#b8cdd6;text-shadow:0 1px 5px #000}.telemetry strong{color:#e0edf2}.top-actions{color:#d4e4eb;text-shadow:0 1px 5px #000}
 .controls{font-size:10px;letter-spacing:.65px;color:#bcd0da;text-shadow:0 1px 4px #000}.controls span b{color:#ecf6fa}.status{color:#d4e6ed}.view-tabs button{color:#bad0db}.view-tabs button.selected{background:rgba(35,108,133,.4);color:#e6fbff}.eyebrow{color:#9bebfa}#view-note{font-size:13px;color:#d3e1e8}.footer{border-color:rgba(173,211,224,.38)}
 @media(max-width:1000px){.controls{font-size:9px;gap:12px}.brand small{font-size:9px}}
+
+/* Clean evidence changes only DOM visibility, never camera or rendering. */
+body.clean #hud,body.clean #menu{display:none!important}

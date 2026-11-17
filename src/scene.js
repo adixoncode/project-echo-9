@@ -111,6 +111,7 @@ export function buildScene(seed=WORLD_SEED){
     B(x,.8,14.2,2.1,1.6,2.7,metal,0,2);obstacle(x,.8,14.2,2.1,1.6,2.7);
     for(const dx of [-.8,.8])B(x+dx,.85,14.2,.09,1.7,2.8,amber,.2);
   }
+  const corridorStart=g.data.length/12;
   // Service spine: dense utility surfaces and alternating interrupted emergency light.
   B(0,-.4,46,9,.8,48,metal,0,1);
   B(0,8.15,46,9,.5,48,navy,0,2);
@@ -147,6 +148,7 @@ export function buildScene(seed=WORLD_SEED){
     g.torus(side*3.5,3.6,z,.52,.08,red,.35,'vertical',24);
     for(let j=0;j<5;j++)L([side*3.1,7.8,z+j*.1],[side*2.3,6.0,z+3+j*.1],.05,dark);
   }
+  const corridorEnd=g.data.length/12;
   // Hangar: a huge modular truss volume, blue docking aperture and amber gantry.
   B(0,-.7,101,56,1.4,60,metal,0,1);
   B(0,27.8,101,56,1,60,dark,0,2);
@@ -234,5 +236,5 @@ export function buildScene(seed=WORLD_SEED){
     const z=-22+rand()*152,side=z>72?25:z>23?3.6:20;
     dust.push((rand()-.5)*side*2,1+rand()*(z>72?24:z>23?6:20),z,.3+rand()*.7);
   }
-  return {vertices:g.finish(),triangles:g.triangles,obstacles,instrumentBounds,dust:new Float32Array(dust),seed};
+  return {vertices:g.finish(),triangles:g.triangles,corridorDrawRange:{firstVertex:corridorStart,vertexCount:corridorEnd-corridorStart},obstacles,instrumentBounds,dust:new Float32Array(dust),seed};
 }

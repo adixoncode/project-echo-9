@@ -1,5 +1,7 @@
 import {clamp,lookAngles,viewMatrix,perspective,multiply,VIEWS,sampleFlight,constrainPosition,WORLD_SEED} from './math.js';
 import {buildScene} from './scene.js';
+import {buildCorridor,CORRIDOR_HERO} from './corridor.js';
+import {CorridorRenderer} from './corridor-renderer.js';
 import {SKY_SHADER,MESH_SHADER,DUST_SHADER} from './shaders.js';
 
 const $=id=>document.getElementById(id);
@@ -11,8 +13,10 @@ const camera={position:new Float32Array(VIEWS[0].position),yaw:0,pitch:0};
 const projection=new Float32Array(16),view=new Float32Array(16),vp=new Float32Array(16),uniform=new Float32Array(40);
 const flightPosition=new Float32Array(3),flightTarget=new Float32Array(3),previousPosition=new Float32Array(3);
 const frameSamples=new Float64Array(18000),gpuSamples=new Float64Array(2048);
-let frameCount=0,gpuCount=0,lastFrame=0,sceneTime=0,fixedTime=testMode?12:null,flight=null,activeView=1,menuOpen=!testMode;
+let frameCount=0,gpuCount=0,lastFrame=0,sceneTime=0,fixedTime=testMode?12:null,flight=null,activeView=1,menuOpen=!testMode&&!params.has('clean');
+document.body.classList.toggle('clean',params.has('clean'));
 const gpuInstance=navigator.gpu;
+let corridorScene,corridorRenderer,navigationObstacles;
 let adapterReference,device,context,format,uniformBuffer,scene,meshBuffer,particleBuffer,bindGroup,skyPipeline,meshPipeline,dustPipeline;
 let depthTexture,colorTexture,renderWidth=0,renderHeight=0,deviceInfo={},timestampSet,timestampResolve,timestampRead,timestampBusy=false,timingError=null;
 let startupVerificationStarted=false,startupSubmissionVerified=false,routeCaption=false;
@@ -34,9 +38,9 @@ function setQuality(name){
   const key=Object.keys(PRESETS).find(x=>x.toLowerCase()===String(name).toLowerCase());if(!key)throw Error('Unknown quality preset');
   if(flight&&quality!==key)flight.configurationChanged=true;
   quality=key;document.querySelectorAll('[data-quality]').forEach(b=>{b.classList.toggle('selected',b.dataset.quality===quality);b.setAttribute('aria-pressed',String(b.dataset.quality===quality));});
-  if(ready){createPipelines();resize();}return quality;
+  if(ready){createPipelines();corridorRenderer?.setSamples(PRESETS[quality].samples);resize();}return quality;
 }
-function getState(){return {ready:ready&&startupSubmissionVerified&&(!readbackMode||presentedFrames>0),position:Array.from(camera.position),yaw:camera.yaw,pitch:camera.pitch,sector:currentSector(),quality,renderSize:[renderWidth,renderHeight],view:activeView,presentedView,presentedFrames,presentationMode:readbackMode?'readback':'swapchain',menuOpen,audio:audio.enabled,pointerLocked:document.pointerLockElement===canvas,time:sceneTime,flight:flight?{elapsed:Math.min(60,(performance.now()-flight.start)/1000),duration:60}:null};}
+function getState(){return {ready:ready&&startupSubmissionVerified&&(!readbackMode||presentedFrames>0),position:Array.from(camera.position),yaw:camera.yaw,pitch:camera.pitch,sector:currentSector(),quality,renderSize:[renderWidth,renderHeight],hero:CORRIDOR_HERO,clean:params.has('clean'),view:activeView,presentedView,presentedFrames,presentationMode:readbackMode?'readback':'swapchain',menuOpen,audio:audio.enabled,pointerLocked:document.pointerLockElement===canvas,time:sceneTime,flight:flight?{elapsed:Math.min(60,(performance.now()-flight.start)/1000),duration:60}:null};}
 function summarize(samples,count){
   if(!count)return {count:0,meanMs:null,p99Ms:null,maxMs:null};
   const sorted=Array.from(samples.subarray(0,count)).sort((a,b)=>a-b);let sum=0;for(const n of sorted)sum+=n;
@@ -44,7 +48,7 @@ function summarize(samples,count){
 }
 function getReport(){
   const cpu=flightReport?.frame||summarize(frameSamples,frameCount),gpu=flightReport?.gpu||summarize(gpuSamples,gpuCount);
-  return {project:'PROJECT ECHO-9',seed:WORLD_SEED,status:'BLOCKED',reason:readbackMode?'CPU readback presentation is diagnostic only; hardware swapchain measurement is required.':deviceInfo.isFallbackAdapter?'Software adapter; a reference hardware GPU is required for the 60 FPS gate.':'Reference GPU has not been agreed; measurements are diagnostic until hardware is selected.',measurementStatus:flightReport?flightReport.status:frameCount?'IN_PROGRESS':'NOT_RUN',adapter:deviceInfo,browser:navigator.userAgent,resolution:[renderWidth,renderHeight],cssResolution:[innerWidth,innerHeight],devicePixelRatio:devicePixelRatio,quality,presentationMode:readbackMode?'readback':'swapchain',readbackOverhead:readbackMode?'GPU copy, async map, BGRA→RGBA conversion and 2D upload included in frame times':null,renderScale:PRESETS[quality].scale,msaa:PRESETS[quality].samples,triangles:scene?.triangles||0,vertices:scene?.vertices.length/12||0,estimatedGpuBytes:scene?scene.vertices.byteLength+scene.dust.byteLength+160+renderWidth*renderHeight*4*(PRESETS[quality].samples+(PRESETS[quality].samples>1?PRESETS[quality].samples:0)+1)+(readbackMode?readbackStride*renderHeight:0):0,diagnosticCpuPixelBytes:readbackMode?renderWidth*renderHeight*4:0,frame:cpu,gpu:{...gpu,samplingEveryNthFrame:30,status:timingError?'BLOCKED':timestampSet?(gpuCount?'PASS':'PENDING'):'BLOCKED',reason:timestampSet?timingError:'timestamp-query not supported by the current adapter'},flythrough:flightReport||{durationSeconds:60,status:flight?'RUNNING':'NOT_RUN'},runtimeErrors:crashed?['Rendering stopped; see on-screen error']:[],elapsedSeconds:(performance.now()-startedAt)/1000};
+  return {project:'PROJECT ECHO-9',seed:WORLD_SEED,status:'BLOCKED',reason:readbackMode?'CPU readback presentation is diagnostic only; hardware swapchain measurement is required.':deviceInfo.isFallbackAdapter?'Software adapter; a reference hardware GPU is required for the 60 FPS gate.':'Reference GPU has not been agreed; measurements are diagnostic until hardware is selected.',measurementStatus:flightReport?flightReport.status:frameCount?'IN_PROGRESS':'NOT_RUN',adapter:deviceInfo,browser:navigator.userAgent,resolution:[renderWidth,renderHeight],cssResolution:[innerWidth,innerHeight],devicePixelRatio:devicePixelRatio,quality,presentationMode:readbackMode?'readback':'swapchain',readbackOverhead:readbackMode?'GPU copy, async map, BGRA→RGBA conversion and 2D upload included in frame times':null,renderScale:PRESETS[quality].scale,msaa:PRESETS[quality].samples,triangles:scene?scene.triangles-scene.corridorDrawRange.vertexCount/3+(corridorScene?.triangles||0):0,vertices:scene?scene.vertices.length/12-scene.corridorDrawRange.vertexCount+(corridorScene?.vertices.length/12||0):0,legacyVertices:scene?.vertices.length/12||0,corridor:corridorRenderer?.report()||null,estimatedGpuBytes:scene?scene.vertices.byteLength+scene.dust.byteLength+160+(corridorRenderer?.report().estimatedGpuBytes||0)+renderWidth*renderHeight*4*(PRESETS[quality].samples+(PRESETS[quality].samples>1?PRESETS[quality].samples:0)+1)+(readbackMode?readbackStride*renderHeight:0):0,diagnosticCpuPixelBytes:readbackMode?renderWidth*renderHeight*4:0,frame:cpu,gpu:{...gpu,samplingEveryNthFrame:30,status:timingError?'BLOCKED':timestampSet?(gpuCount?'PASS':'PENDING'):'BLOCKED',reason:timestampSet?timingError:'timestamp-query not supported by the current adapter'},flythrough:flightReport||{durationSeconds:60,status:flight?'RUNNING':'NOT_RUN'},runtimeErrors:crashed?['Rendering stopped; see on-screen error']:[],elapsedSeconds:(performance.now()-startedAt)/1000};
 }
 function startFlythrough(){
   if(document.pointerLockElement)document.exitPointerLock();setMenu(false);frameCount=0;gpuCount=0;flightReport=null;fixedTime=null;sceneTime=0;flight={start:performance.now(),startQuality:quality,startWidth:renderWidth,startHeight:renderHeight,configurationChanged:false};lastFrame=0;activeView=0;routeCaption=true;
@@ -96,7 +100,8 @@ function resize(){
   if(flight&&(renderWidth!==flight.startWidth||renderHeight!==flight.startHeight))flight.configurationChanged=true;
   canvas.width=renderWidth;canvas.height=renderHeight;
   depthTexture?.destroy();colorTexture?.destroy();
-  depthTexture=device.createTexture({size:[renderWidth,renderHeight],format:'depth24plus',sampleCount:PRESETS[quality].samples,usage:GPUTextureUsage.RENDER_ATTACHMENT});
+  depthTexture=device.createTexture({size:[renderWidth,renderHeight],format:'depth24plus',sampleCount:PRESETS[quality].samples,usage:GPUTextureUsage.RENDER_ATTACHMENT|GPUTextureUsage.TEXTURE_BINDING});
+  corridorRenderer?.setDepth(depthTexture,PRESETS[quality].samples);
   colorTexture=PRESETS[quality].samples>1?device.createTexture({size:[renderWidth,renderHeight],format,sampleCount:PRESETS[quality].samples,usage:GPUTextureUsage.RENDER_ATTACHMENT}):null;
   passDescriptor={colorAttachments:[{view:null,resolveTarget:undefined,clearValue:{r:0,g:0,b:0,a:1},loadOp:'clear',storeOp:'store'}],depthStencilAttachment:{view:depthTexture.createView(),depthClearValue:1,depthLoadOp:'clear',depthStoreOp:'store'},timestampWrites:undefined};
   if(colorTexture)passDescriptor.colorAttachments[0].view=colorTexture.createView();
@@ -132,7 +137,11 @@ async function initialize(){
     if(features.length){
       timestampSet=device.createQuerySet({type:'timestamp',count:2});timestampResolve=device.createBuffer({size:16,usage:GPUBufferUsage.QUERY_RESOLVE|GPUBufferUsage.COPY_SRC});timestampRead=device.createBuffer({size:16,usage:GPUBufferUsage.COPY_DST|GPUBufferUsage.MAP_READ});
     }
-    createPipelines();await compilationChecks;resize();setView(params.get('view')||1);setQuality(quality);setMenu(menuOpen);
+    createPipelines();await compilationChecks;
+    corridorScene=buildCorridor();navigationObstacles=scene.obstacles.concat(corridorScene.obstacles);
+    corridorRenderer=new CorridorRenderer(device,format,uniformBuffer,corridorScene,{shadows:params.get('shadows')!=='0',probe:params.get('probe')!=='0'});
+    await corridorRenderer.initialize(PRESETS[quality].samples);
+    resize();await corridorRenderer.atmosphereCheck;setView(params.get('view')||1);setQuality(quality);setMenu(menuOpen);
     ready=true;$('loading').hidden=true;document.body.classList.add('ready');
     if(params.has('flythrough'))startFlythrough();requestAnimationFrame(render);
   }catch(error){fail(error.message);}
@@ -148,7 +157,7 @@ function updateCamera(delta,now){
   const length=Math.hypot(x,z)||1,speed=delta*(keys.has('ShiftLeft')||keys.has('ShiftRight')?14:5),sy=Math.sin(camera.yaw),cy=Math.cos(camera.yaw);
   previousPosition.set(camera.position);
   camera.position[0]+=(x/length*cy+z/length*sy)*speed;camera.position[2]+=(x/length*sy-z/length*cy)*speed;camera.position[1]+=y*speed;
-  constrainPosition(camera.position,scene.obstacles,previousPosition);
+  constrainPosition(camera.position,navigationObstacles,previousPosition);
 }
 function updateUniforms(){
   const yaw=camera.yaw,pitch=camera.pitch,cy=Math.cos(yaw),sy=Math.sin(yaw),cp=Math.cos(pitch),sp=Math.sin(pitch);
@@ -198,12 +207,22 @@ function render(now){
   updateCamera(delta,now);updateUniforms();updateHud(now);
   const textureView=readbackMode?readbackTexture.createView():context.getCurrentTexture().createView();
   if(colorTexture)passDescriptor.colorAttachments[0].resolveTarget=textureView;else passDescriptor.colorAttachments[0].view=textureView;
+  const renderFog=debug!=='clear'&&debug!=='sky';
   const sample=timestampSet&&!timestampBusy&&animationFrame%30===0;
-  if(sample){timestampBusy=true;passDescriptor.timestampWrites={querySet:timestampSet,beginningOfPassWriteIndex:0,endOfPassWriteIndex:1};}else passDescriptor.timestampWrites=undefined;
+  if(sample){timestampBusy=true;passDescriptor.timestampWrites={querySet:timestampSet,beginningOfPassWriteIndex:0};if(!renderFog)passDescriptor.timestampWrites.endOfPassWriteIndex=1;}else passDescriptor.timestampWrites=undefined;
   const encoder=device.createCommandEncoder(),pass=encoder.beginRenderPass(passDescriptor);pass.setBindGroup(0,bindGroup);
   if(debug!=='clear'){pass.setPipeline(skyPipeline);pass.draw(3);}
-  if(debug!=='clear'&&debug!=='sky'){pass.setPipeline(meshPipeline);pass.setVertexBuffer(0,meshBuffer);pass.draw(scene.vertices.length/12);pass.setPipeline(dustPipeline);pass.draw(6,PRESETS[quality].dust);}
+  if(debug!=='clear'&&debug!=='sky'){
+    // Legacy sectors retain their original shader and vertex bytes. Only the old corridor
+    // range is replaced; the new physical corridor is drawn from every camera position.
+    pass.setPipeline(meshPipeline);pass.setVertexBuffer(0,meshBuffer);
+    const range=scene.corridorDrawRange;
+    pass.draw(range.firstVertex);pass.draw(scene.vertices.length/12-range.firstVertex-range.vertexCount,1,range.firstVertex+range.vertexCount);
+    corridorRenderer.draw(pass);
+    pass.setPipeline(dustPipeline);pass.setBindGroup(0,bindGroup);pass.draw(6,PRESETS[quality].dust);
+  }
   pass.end();
+  if(renderFog)corridorRenderer.drawAtmosphere(encoder,textureView,sample?timestampSet:null);
   if(sample){encoder.resolveQuerySet(timestampSet,0,2,timestampResolve,0);encoder.copyBufferToBuffer(timestampResolve,0,timestampRead,0,16);}
   if(readbackMode){encoder.copyTextureToBuffer({texture:readbackTexture},{buffer:readbackBuffer,bytesPerRow:readbackStride,rowsPerImage:renderHeight},[renderWidth,renderHeight]);readbackBusy=true;}
   device.queue.submit([encoder.finish()]);
@@ -235,5 +254,5 @@ window.addEventListener('keydown',event=>{
 window.addEventListener('keyup',event=>keys.delete(event.code));window.addEventListener('blur',()=>keys.clear());
 document.addEventListener('mousemove',event=>{if(document.pointerLockElement===canvas&&!menuOpen){camera.yaw+=event.movementX*.0018;camera.pitch=clamp(camera.pitch+event.movementY*.0018,-1.45,1.45);}});
 document.addEventListener('pointerlockchange',()=>{document.body.classList.toggle('pointer-locked',document.pointerLockElement===canvas);});
-window.echo9={gpuInstance,get adapter(){return adapterReference;},get device(){return device;},get ready(){return ready&&startupSubmissionVerified&&(!readbackMode||presentedFrames>0);},setView,setQuality,setTime,startFlythrough,stopFlythrough,getReport,getState,setMenu,get stats(){return getReport();},camera,views:VIEWS};
+window.echo9={gpuInstance,get adapter(){return adapterReference;},get device(){return device;},get ready(){return ready&&startupSubmissionVerified&&(!readbackMode||presentedFrames>0);},setView,setQuality,setTime,startFlythrough,stopFlythrough,getReport,getState,setMenu,get stats(){return getReport();},camera,views:VIEWS,hero:CORRIDOR_HERO};
 initialize();

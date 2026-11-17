@@ -32,4 +32,4 @@ try{
 }catch(error){check('Smoke completion',false,error.message);}
 finally{await context.close();await browser.close();}
 const result={mode:'Software WebGPU offscreen readback diagnostics; audio audibility and hardware swapchain remain unverified',checks,errors};
-await writeFile(new URL('../docs/qa/smoke-report.json',import.meta.url),JSON.stringify(result,null,2)+'\n');console.log(JSON.stringify(result,null,2));
+await writeFile(process.env.QA_OUT||new URL('../docs/qa/smoke-report.json',import.meta.url),JSON.stringify(result,null,2)+'\n');console.log(JSON.stringify(result,null,2));

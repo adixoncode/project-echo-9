@@ -6,6 +6,7 @@ import {build} from '../scripts/build.mjs';
 import {seededRandom,lookAngles,viewMatrix,perspective,multiply,constrainPosition,sampleFlight,VIEWS,WORLD_SEED,FLIGHT_POINTS} from '../src/math.js';
 import {buildScene} from '../src/scene.js';
 import {Geometry} from '../src/geometry.js';
+import {buildCorridor,CORRIDOR_HERO,CORRIDOR_LIGHTS,CORRIDOR_PROBE} from '../src/corridor.js';
 
 const digest=bytes=>createHash('sha256').update(Buffer.from(bytes.buffer,bytes.byteOffset,bytes.byteLength)).digest('hex');
 const near=(a,b,tolerance=1e-5)=>assert.ok(Math.abs(a-b)<tolerance,`${a} ≠ ${b}`);
@@ -91,6 +92,50 @@ test('procedural geometry is deterministic, finite, structurally rich and change
     }
   }
   for(let i=0;i<scene.vertices.length;i+=12){const length=Math.hypot(scene.vertices[i+3],scene.vertices[i+4],scene.vertices[i+5]);assert.ok(length<1.001);}
+});
+test('corridor is separately seeded, physically tessellated and has valid PBR attributes',()=>{
+  const corridor=buildCorridor(),again=buildCorridor(),different=buildCorridor((WORLD_SEED^0xC0771D0)+1);
+  assert.equal(digest(corridor.vertices),digest(again.vertices));assert.notEqual(digest(corridor.vertices),digest(different.vertices));
+  assert.ok(corridor.triangles>50000,'architecture is actually tessellated');assert.equal(corridor.vertices.length,corridor.triangles*36);
+  let bevelNormals=0,emissiveVertices=0,underfloorVertices=0;
+  for(let i=0;i<corridor.vertices.length;i+=12){
+    const v=corridor.vertices;assert.ok(v.subarray(i,i+12).every(Number.isFinite));
+    near(Math.hypot(v[i+3],v[i+4],v[i+5]),1,.001);
+    if(Math.max(Math.abs(v[i+3]),Math.abs(v[i+4]),Math.abs(v[i+5]))<.92)bevelNormals++;
+    if(v[i+9]>0)emissiveVertices++;
+    if(v[i+1]<-.1)underfloorVertices++;
+    assert.ok(v[i+10]>=.18&&v[i+10]<=.95,'perceptual roughness in a physical range');assert.ok(v[i+11]>=0&&v[i+11]<=1,'metal fraction in 0..1');
+  }
+  assert.ok(bevelNormals>10000,'real angled faces and smooth pipe normals');assert.ok(underfloorVertices>1000,'recessed floor geometry exists below the grating');assert.ok(emissiveVertices>0);
+  assert.deepEqual(VIEWS[3].position,CORRIDOR_HERO.position);assert.deepEqual(VIEWS[3].target,CORRIDOR_HERO.target);
+  assert.equal(CORRIDOR_LIGHTS.length,2);assert.equal(CORRIDOR_PROBE.mips,Math.log2(CORRIDOR_PROBE.size)+1);
+  assert.ok(CORRIDOR_LIGHTS.every(light=>light.position.every(Number.isFinite)&&light.far>1&&light.fov>0&&light.fov<180));
+  assert.ok(CORRIDOR_PROBE.position.every((v,i)=>v>CORRIDOR_PROBE.min[i]&&v<CORRIDOR_PROBE.max[i]));
+});
+test('flared corridor exit has an opaque pressure shell in every cross-sectional direction',()=>{
+  const corridor=buildCorridor(),range=corridor.exitShellRange;
+  const vertices=corridor.vertices.subarray(range.firstVertex*12,(range.firstVertex+range.vertexCount)*12);
+  function rayHitsTriangle(origin,direction,offset){
+    const a=Array.from(vertices.subarray(offset,offset+3)),b=Array.from(vertices.subarray(offset+12,offset+15)),c=Array.from(vertices.subarray(offset+24,offset+27));
+    const sub=(a,b)=>a.map((v,i)=>v-b[i]),cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]],dot=(a,b)=>a.reduce((s,v,i)=>s+v*b[i],0);
+    const edge1=sub(b,a),edge2=sub(c,a),p=cross(direction,edge2),determinant=dot(edge1,p);if(Math.abs(determinant)<1e-9)return false;
+    const inverse=1/determinant,t=sub(origin,a),u=dot(t,p)*inverse;if(u<-.00001||u>1.00001)return false;
+    const q=cross(t,edge1),v=dot(direction,q)*inverse;if(v<-.00001||u+v>1.00001)return false;
+    return dot(edge2,q)*inverse>0;
+  }
+  for(const z of [66.3,67.2,68.9,70.4,71.9])for(let angle=0;angle<64;angle++){
+    const theta=angle/64*Math.PI*2,direction=[Math.cos(theta),Math.sin(theta),0];let hit=false;
+    for(let offset=0;offset<vertices.length;offset+=36)if(rayHitsTriangle([0,3,z],direction,offset)){hit=true;break;}
+    assert.ok(hit,`unskinned exit at z=${z}, angle=${angle}`);
+  }
+});
+test('original approved flight and all saved cameras remain clear of the new corridor',()=>{
+  // Golden route fingerprint from baseline 7e967f0. This task may not move the flight.
+  assert.equal(createHash('sha256').update(JSON.stringify(FLIGHT_POINTS)).digest('hex'),'1e7eefbd8441973ef80a658eb488f9603719b402c44d4462ea505233ffad272a');
+  const legacy=buildScene(),corridor=buildCorridor(),obstacles=legacy.obstacles.concat(corridor.obstacles),p=new Float32Array(3),t=new Float32Array(3);
+  for(let seconds=0;seconds<=60;seconds+=.025){sampleFlight(seconds,p,t);const constrained=Array.from(p);constrainPosition(constrained,obstacles);for(let axis=0;axis<3;axis++)near(constrained[axis],p[axis],.001);}
+  for(const saved of VIEWS){const p=saved.position.slice();constrainPosition(p,obstacles);assert.deepEqual(p,saved.position);}
+  const stopped=constrainPosition([-3.5,1.7,28.2],obstacles);assert.ok(stopped[0]>-2.9||stopped[2]<27||stopped[2]>29,'new service cabinet blocks manual flight');
 });
 test('cuboid helper produces twelve triangles and outward normals',()=>{
   const g=new Geometry();g.box(0,0,0,2,2,2,[1,1,1]);const vertices=g.finish();assert.equal(g.triangles,12);

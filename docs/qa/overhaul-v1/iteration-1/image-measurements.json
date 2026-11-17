@@ -1,0 +1,41 @@
+{
+  "method": "Unnormalized encoded-sRGB luminance statistics; different compositions, diagnostic only",
+  "measurements": {
+    "reference": {
+      "meanDisplayLuminance": 0.09033045353941407,
+      "medianDisplayLuminance": 0.040595294117647056,
+      "darkPixelFractionBelow24of255": 0.6051144070095487,
+      "highlightFractionAbove220of255": 0.0005772908528645834
+    },
+    "before": {
+      "meanDisplayLuminance": 0.35124725486262404,
+      "medianDisplayLuminance": 0.3338031372549019,
+      "darkPixelFractionBelow24of255": 0.031123649691358026,
+      "highlightFractionAbove220of255": 0.013482831790123457
+    },
+    "after": {
+      "meanDisplayLuminance": 0.04955991552854938,
+      "medianDisplayLuminance": 0.039781960784313716,
+      "darkPixelFractionBelow24of255": 0.9176760223765432,
+      "highlightFractionAbove220of255": 0.0
+    }
+  },
+  "ablations": [
+    {
+      "name": "no-shadows",
+      "changedPixelFraction": 0.07167148919753086,
+      "meanAbsoluteRgbDifference": 0.22282519933127573,
+      "maxChannelDifference": 97,
+      "status": "PASS",
+      "meaning": "Feature contributes actual pixels; this is not an art-direction score"
+    },
+    {
+      "name": "no-environment",
+      "changedPixelFraction": 0.9525308641975309,
+      "meanAbsoluteRgbDifference": 3.188731031378601,
+      "maxChannelDifference": 96,
+      "status": "PASS",
+      "meaning": "Feature contributes actual pixels; this is not an art-direction score"
+    }
+  ]
+}

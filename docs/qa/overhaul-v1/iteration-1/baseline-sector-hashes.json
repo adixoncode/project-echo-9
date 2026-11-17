@@ -1,0 +1,26 @@
+{
+  "baseCommit": "7e967f0",
+  "runtimeBaseCommit": "7164bff",
+  "seed": 15515657,
+  "totalFloats": 1402488,
+  "legacyVerticesSha256": "991044b1367af520a7282c3b6996eb889c1d1cfa86d30db1051ef489ed47acf0",
+  "dustSha256": "6b92700881d177ae55fe9b8f6a9689a5560318d28e46f3f6f03071166c8f7fdf",
+  "sectors": {
+    "observatory": {
+      "floatRange": [
+        0,
+        523872
+      ],
+      "sha256": "205f9bd2beba553bd8c414696d707d71cbec4807981b7c078bbbba9091632f49",
+      "triangles": 14552
+    },
+    "hangar": {
+      "floatRange": [
+        792576,
+        1402488
+      ],
+      "sha256": "cdb1280307cf170c5aa9f11b49e365db921f3a45b8907989ca8c937d1550ee21",
+      "triangles": 16942
+    }
+  }
+}

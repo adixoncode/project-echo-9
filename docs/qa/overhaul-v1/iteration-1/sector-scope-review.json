@@ -1,0 +1,13 @@
+{
+  "reviewer": "root agent: actual full images and magnified portal inspected",
+  "artifactSha256": "aeb80e7100df3c58c4e916426285f6140c3b2e49882edc85972f43ffd7277db6",
+  "reviews": [
+    {
+      "view": 6,
+      "beforeSha256": "6c06f59b7fac59c24b2494304438a07cb7d80c3a9dd82f3b16290aa2527f7dd4",
+      "afterSha256": "2b3ba7ae9ddce2f796c9f8f2918344adce38ea2787f258e5db51dcc50782ac6c",
+      "status": "PASS",
+      "reason": "All changed pixels are confined to the visible corridor entrance/pressure-frame region [1520,409,1795,643]. The rest of the hangar image is pixel-identical; legacy hangar geometry/material hashes are unchanged. The previously found roof gap is closed in the final capture. This accepts scope preservation only, not art direction."
+    }
+  ]
+}
