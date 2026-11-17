@@ -1,0 +1,60 @@
+{
+  "crops": [
+    {
+      "source": "before-red-only.png",
+      "sourceSha256": "d810083034a94c69d416a700b8df88119c04a8564773e5ed82e9d18a713fc93b",
+      "output": "before-red-only-crop.png",
+      "bounds": [
+        160,
+        420,
+        420,
+        640
+      ],
+      "artifactSha256": "0c74856a3e4da2e9097dc8054026097be3452dae759f7874636724edd42809f9",
+      "flags": "onlyLight=1&probe=0&bloom=0",
+      "method": "Exact pixel crop; no resize/color changes"
+    },
+    {
+      "source": "after-red-only.png",
+      "sourceSha256": "bc0ecfd07f4042727204d3a91b96ab276e3246a775fafc61c52b44159a84ed79",
+      "output": "after-red-only-crop.png",
+      "bounds": [
+        160,
+        420,
+        420,
+        640
+      ],
+      "artifactSha256": "590d86735e840cad1fa4d116c4d17ab38913329c4d46be35239bd95ee789a51a",
+      "flags": "onlyLight=1&probe=0&bloom=0",
+      "method": "Exact pixel crop; no resize/color changes"
+    },
+    {
+      "source": "before-red-no-atmosphere.png",
+      "sourceSha256": "180a60ffa206ed27ddae59a0a6907a637d1f6912a22b802ab3a51f2f4599ed86",
+      "output": "before-red-no-atmosphere-crop.png",
+      "bounds": [
+        160,
+        420,
+        420,
+        640
+      ],
+      "artifactSha256": "0c74856a3e4da2e9097dc8054026097be3452dae759f7874636724edd42809f9",
+      "flags": "onlyLight=1&probe=0&fog=0&bloom=0",
+      "method": "Exact pixel crop; no resize/color changes"
+    },
+    {
+      "source": "after-red-no-atmosphere.png",
+      "sourceSha256": "b42db1c44702a9b6ce3031c60f4f48bcb7d9e3e1383eaa0a26745578598b3787",
+      "output": "after-red-no-atmosphere-crop.png",
+      "bounds": [
+        160,
+        420,
+        420,
+        640
+      ],
+      "artifactSha256": "590d86735e840cad1fa4d116c4d17ab38913329c4d46be35239bd95ee789a51a",
+      "flags": "onlyLight=1&probe=0&fog=0&bloom=0",
+      "method": "Exact pixel crop; no resize/color changes"
+    }
+  ]
+}

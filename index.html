@@ -686,13 +686,14 @@ function light(id,position,target,color,power,fov,shadow=-1,size=[.30,.19,.10],m
   return {id,position,target,color,power,fov,far:38,shadow,size,mount,radius:.18,direction:normalize(target.map((v,i)=>v-position[i])),outerCos:Math.cos(fov*Math.PI/360),innerCos:Math.cos(fov*.31*Math.PI/180),emission:power/(400*size[0]*size[1])};
 }
 const CORRIDOR_LIGHT_TABLE=[
-  light('cold-rib-key',[-1,4.3,31.8],[-3.75,2.4,35.3],[.57,.74,.94],280,104,0),
-  light('red-depth-key',[.45,4.75,44.1],[.45,.45,45.2],[1,.025,.011],360,148,1,[.20,.28,.20],'pendant'),
-  light('cold-left-graze',[1.35,4.55,29.8],[3.7,2.15,33.1],[.53,.68,.84],105,96),
-  light('cold-middle-rib',[-.3,4.65,38.7],[-3.7,2.4,41.4],[.45,.61,.79],110,96),
-  light('red-middle',[.45,4.75,52.5],[.2,.55,54.5],[1,.022,.008],110,120,-1,[.20,.28,.20],'pendant'),
-  light('red-far',[.45,4.75,61.7],[.2,.4,63],[1,.022,.008],90,120,-1,[.20,.28,.20],'pendant'),
-  light('cold-service-bay',[-4.3,3.6,33.5],[-1.5,1.6,35],[.55,.71,.87],30,110,-1,[.72,.36,.07],'wall')
+  light('cold-rib-key',[-1,4.3,31.8],[-3.75,2.4,35.3],[.57,.74,.94],150,104,0),
+  light('red-depth-key',[.45,4.75,44.1],[.45,.45,45.2],[1,.048,.021],165,124,1,[.20,.28,.20],'pendant'),
+  light('cold-left-graze',[1.35,4.55,29.8],[3.7,2.15,33.1],[.53,.68,.84],72,96),
+  light('cold-middle-rib',[-.3,4.65,38.7],[-3.7,2.4,41.4],[.45,.61,.79],74,96),
+  light('red-middle',[.45,4.75,52.5],[.2,.55,54.5],[1,.055,.024],88,116,-1,[.20,.28,.20],'pendant'),
+  light('red-far',[.45,4.75,61.7],[.2,.4,63],[1,.068,.032],74,116,-1,[.20,.28,.20],'pendant'),
+  light('cold-service-bay',[-4.3,3.6,33.5],[-1.5,1.6,35],[.55,.71,.87],22,110,-1,[.72,.36,.07],'wall'),
+  light('cold-exit-veil',[-.4,6.5,69.4],[0,2.4,62.5],[.34,.46,.60],36,124)
 ];
 const CORRIDOR_LIGHTS=CORRIDOR_LIGHT_TABLE.filter(light=>light.shadow>=0);
 function packCorridorLights(lights=CORRIDOR_LIGHT_TABLE){
@@ -755,13 +756,25 @@ fn lightRadiance(p:vec3<f32>,normal:vec3<f32>,index:i32)->vec3<f32>{
 // Vertex material = (emission, perceptual roughness, metallic fraction), all in linear light.
 const CORRIDOR_HERO={position:[-2.35,1.72,27.5],target:[-13.5,1.78,61],verticalFov:64};
 const CORRIDOR_PROBE={position:[0,2.55,38],min:[-3.9,-.25,23],max:[3.9,5.6,72],size:128,mips:8};
+const CORRIDOR_SURFACES={paint:1,darkSteel:2,brushedTube:3,grate:4,rubber:5,wornMetal:6};
 function buildCorridor(seed=WORLD_SEED^0xC0771D0){
   const random=seededRandom(seed),g=new Geometry(),obstacles=[];
   const paint=[.048,.055,.062],dark=[.017,.021,.026],alloy=[.32,.34,.35],steel=[.19,.215,.23],oxide=[.12,.045,.024];
+  // Separate corridor-only stream: primitive-local metres, authored material family,
+  // and half extents. The existing world's 48-byte geometry layout stays untouched.
+  const surfaceData=[];let primitive={center:[0,0,0],half:[1,1,1],basis:null,family:2};
+  const vertex=g.vertex.bind(g);
+  g.vertex=(p,n,color,emission,rough,metal)=>{
+    vertex(p,n,color,emission,rough,metal);
+    const q=p.map((v,i)=>v-primitive.center[i]),local=primitive.basis?primitive.basis.map(axis=>axis.reduce((s,v,i)=>s+v*q[i],0)):q;
+    surfaceData.push(...local,primitive.family,...primitive.half,0);
+  };
+  const familyFor=(color,metal)=>color===dark?CORRIDOR_SURFACES.darkSteel:color===steel||color===alloy||color===oxide?CORRIDOR_SURFACES.wornMetal:CORRIDOR_SURFACES.paint;
   // Chamfered boxes have six broad faces, twelve real bevel strips and eight corners.
   // Profiles therefore catch narrow highlights even without a normal-map texture.
-  function chamfer(center,size,b,color=paint,rough=.59,metal=.45,emission=0,basis=null){
+  function chamfer(center,size,b,color=paint,rough=.59,metal=.45,emission=0,basis=null,family=familyFor(color,metal)){
     const h=size.map(v=>v*.5);b=Math.min(b,...h.map(v=>v*.8));
+    primitive={center,half:h,basis,family};
     const world=p=>basis?center.map((v,i)=>v+basis[0][i]*p[0]+basis[1][i]*p[1]+basis[2][i]*p[2]):p.map((v,i)=>v+center[i]);
     const face=points=>{
       const p=points.map(world),n=normalize(cross(p[1].map((v,i)=>v-p[0][i]),p[2].map((v,i)=>v-p[0][i])));
@@ -780,7 +793,7 @@ function buildCorridor(seed=WORLD_SEED^0xC0771D0){
     }
     for(const sx of [-1,1])for(const sy of [-1,1])for(const sz of [-1,1])face([[sx*h[0],sy*(h[1]-b),sz*(h[2]-b)],[sx*(h[0]-b),sy*h[1],sz*(h[2]-b)],[sx*(h[0]-b),sy*(h[1]-b),sz*h[2]]]);
   }
-  const box=(x,y,z,w,h,d,b=.035,col=paint,rough=.59,metal=.45,emission=0)=>chamfer([x,y,z],[w,h,d],b,col,rough,metal,emission);
+  const box=(x,y,z,w,h,d,b=.035,col=paint,rough=.59,metal=.45,emission=0,family=familyFor(col,metal))=>chamfer([x,y,z],[w,h,d],b,col,rough,metal,emission,null,family);
   function profile(a,b,w,d,bevel=.035,col=paint,rough=.52,metal=.65){
     const direction=normalize(b.map((v,i)=>v-a[i])),u=normalize(cross(direction,Math.abs(direction[2])>.95?[0,1,0]:[0,0,1])),v=cross(u,direction);
     chamfer(a.map((q,i)=>(q+b[i])*.5),[w,Math.hypot(...b.map((q,i)=>q-a[i])),d],bevel,col,rough,metal,0,[u,direction,v]);
@@ -789,6 +802,9 @@ function buildCorridor(seed=WORLD_SEED^0xC0771D0){
   function tube(points,r,col=steel,rough=.38,metal=.9,sides=16){
     const ranges=[0,1,2].map(axis=>Math.max(...points.map(p=>p[axis]))-Math.min(...points.map(p=>p[axis])));
     const reference=[0,0,0];reference[ranges.indexOf(Math.min(...ranges))]=1;
+    let along=points.at(-1).map((v,i)=>v-points[0][i]);if(Math.hypot(...along)<.001)along=points[Math.floor(points.length/2)].map((v,i)=>v-points[0][i]);
+    const direction=normalize(along),axis=normalize(cross(direction,reference));
+    primitive={center:points[0].map((v,i)=>(v+points.at(-1)[i])*.5),half:[r,Math.max(.05,Math.hypot(...ranges))*.5,r],basis:[axis,direction,cross(axis,direction)],family:col===dark?(metal<.3?CORRIDOR_SURFACES.rubber:CORRIDOR_SURFACES.darkSteel):CORRIDOR_SURFACES.brushedTube};
     const rings=points.map((p,i)=>{
       const a=points[Math.max(0,i-1)],b=points[Math.min(points.length-1,i+1)],dir=normalize(b.map((v,j)=>v-a[j]));
       const u=normalize(cross(dir,reference)),v=cross(dir,u);
@@ -852,13 +868,15 @@ function buildCorridor(seed=WORLD_SEED^0xC0771D0){
   for(const z of ribZ)for(let j=0;j<8;j++){
     const rise=z>70?1.43:1;const a=[octagon[j][0],octagon[j][1]*rise,z],b=[octagon[(j+1)%8][0],octagon[(j+1)%8][1]*rise,z];
     profile(a,b,.34,.7,.045,paint,.45,.7);
-    for(const dz of [-.38,.38])profile([a[0],a[1],z+dz],[b[0],b[1],z+dz],.53,.12,.028,steel,.39,.85);
+    // Pressure-frame front flanges are coated structure, with the same narrow
+    // substrate chips as the webs; exposed pipe stock remains conductive metal.
+    for(const dz of [-.38,.38])profile([a[0],a[1],z+dz],[b[0],b[1],z+dz],.53,.12,.028,paint,.64,.08);
     if(j===2||j===6)for(const y of [1.1,2.6,3.7])box(a[0]>0?3.65:-3.65,y,z,.2,.14,.8,.025,alloy,.33,.95);
   }
   // A service trench is genuinely open between grating bars; the underfloor structure is visible.
   box(0,-.22,47.5,4.3,.12,48,.025,dark,.78,.12);
-  for(let z=23.25;z<72;z+=.19)box(0,.025,z,4.14,.08,.055,.012,steel,.36,.9);
-  for(let x=-2.05;x<=2.05;x+=.27)box(x,-.035,47.5,.045,.1,48,.01,alloy,.42,.9);
+  for(let z=23.25;z<72;z+=.19)box(0,.025,z,4.14,.08,.055,.012,steel,.36,.9,0,CORRIDOR_SURFACES.grate);
+  for(let x=-2.05;x<=2.05;x+=.27)box(x,-.035,47.5,.045,.1,48,.01,alloy,.42,.9,0,CORRIDOR_SURFACES.grate);
   for(const x of [-2.18,2.18])box(x,.015,47.5,.17,.13,48,.018,steel,.3,.92);
   for(let z=24;z<72;z+=3.1){
     for(const side of [-1,1]){
@@ -870,7 +888,7 @@ function buildCorridor(seed=WORLD_SEED^0xC0771D0){
   // Deep overhead cable trays and asymmetric ceiling inspection modules.
   for(const x of [-1.95,1.55]){
     box(x,5.29,44.5,.45,.36,42,.04,dark,.61,.65);
-    for(let z=24;z<66;z+=.42)box(x,5.08,z,.53,.08,.075,.014,steel,.46,.85);
+    for(let z=24;z<66;z+=.42)box(x,5.08,z,.53,.08,.075,.014,dark,.71,.65);
   }
   for(let z=25;z<66;z+=3.1){
     box(-.15,5.62,z,2.5,.24,2.95,.065,paint,.68,.3);
@@ -894,12 +912,15 @@ function buildCorridor(seed=WORLD_SEED^0xC0771D0){
       // Diffuser is visible from both axial directions; the dark housing sits above it.
       box(...source.position,...source.size,.035,source.color,.28,0,source.emission);
       box(source.position[0],source.position[1]+.22,source.position[2],.40,.12,.38,.025,dark,.5,.75);
-      for(const dx of [-.145,.145])box(source.position[0]+dx,source.position[1],source.position[2],.025,.40,.28,.006,dark,.45,.8);
+      // The mounting ears belong above the diffuser. Extending these opaque bars
+      // below its emission plane accidentally put them across the flood aperture;
+      // the shadow near plane then sliced them into a huge false diagonal shutter.
+      for(const dx of [-.145,.145])box(source.position[0]+dx,source.position[1]+.20,source.position[2],.025,.12,.28,.006,dark,.45,.8);
     }else{
       chamfer(back,[source.size[0]+.14,source.size[1]+.12,.17],.025,dark,.5,.75,0,basis);
       chamfer(front,[source.size[0],source.size[1],.035],.012,source.color,.28,0,source.emission,basis);
     }
-    if(source.mount!=='wall')tube([[source.position[0],source.position[1]+.12,source.position[2]],[source.position[0],5.56,source.position[2]]],.025,steel,.4,.9,10);
+    if(source.mount!=='wall')tube([[source.position[0],source.position[1]+.12,source.position[2]],[source.position[0],Math.max(5.56,source.position[1]+.5),source.position[2]]],.025,steel,.4,.9,10);
   }
   // Offset wall cable loops, an exposed valve and a small field-repair plate.
   for(const side of [-1,1])for(const z of [32.1,44.6,58.4]){
@@ -911,6 +932,7 @@ function buildCorridor(seed=WORLD_SEED^0xC0771D0){
   // Without this skin, rays from the hangar escape between the low ceiling and tall rib.
   // Both axial ends remain open, and the skin lies outside the original flight clearance.
   const exitShellStart=g.data.length/12;
+  primitive={center:[0,0,47.5],half:[4,5,24],basis:null,family:CORRIDOR_SURFACES.darkSteel};
   const exitSections=[66.2,68.5,71.6,72.25].map(z=>{
     const rise=1+Math.max(0,Math.min(1,(z-66.8)/4.8))*.43;
     return octagon.map(([x,y])=>[x*1.055,y===0?-.25:y*rise+.2,z]);
@@ -924,15 +946,15 @@ function buildCorridor(seed=WORLD_SEED^0xC0771D0){
   for(const side of [-1,1])box(side*4.05,4,70.8,.35,8,.5,.07,dark,.6,.65);
   box(0,8,70.8,8.5,.4,.5,.08,steel,.43,.8);
   box(0,8.15,69.3,8.5,.2,5.7,.04,dark,.68,.3);
-  return {vertices:g.finish(),triangles:g.triangles,obstacles,exitShellRange,seed,hero:CORRIDOR_HERO,probe:CORRIDOR_PROBE,lights:CORRIDOR_LIGHT_TABLE};
+  return {vertices:g.finish(),surfaces:new Float32Array(surfaceData),triangles:g.triangles,obstacles,exitShellRange,seed,hero:CORRIDOR_HERO,probe:CORRIDOR_PROBE,lights:CORRIDOR_LIGHT_TABLE};
 }
 
 // corridor-shaders.js
-const CORRIDOR_SHADER=COMMON+CORRIDOR_LIGHTING_WGSL+/* wgsl */`
-struct CorridorIn {@location(0) position:vec3<f32>,@location(1) normal:vec3<f32>,@location(2) color:vec3<f32>,@location(3) material:vec3<f32>};
-struct CorridorOut {@builtin(position) position:vec4<f32>,@location(0) world:vec3<f32>,@location(1) normal:vec3<f32>,@location(2) color:vec3<f32>,@location(3) material:vec3<f32>};
+const CORRIDOR_SHADER='diagnostic(off, derivative_uniformity);\n'+COMMON+CORRIDOR_LIGHTING_WGSL+/* wgsl */`
+struct CorridorIn {@location(0) position:vec3<f32>,@location(1) normal:vec3<f32>,@location(2) color:vec3<f32>,@location(3) material:vec3<f32>,@location(4) local:vec4<f32>,@location(5) shape:vec4<f32>};
+struct CorridorOut {@builtin(position) position:vec4<f32>,@location(0) world:vec3<f32>,@location(1) normal:vec3<f32>,@location(2) color:vec3<f32>,@location(3) material:vec3<f32>,@location(4) local:vec4<f32>,@location(5) shape:vec4<f32>};
 @vertex fn corridorVertex(input:CorridorIn)->CorridorOut{
-  var o:CorridorOut;o.position=u.viewProjection*vec4(input.position,1.);o.world=input.position;o.normal=input.normal;o.color=input.color;o.material=input.material;return o;
+  var o:CorridorOut;o.position=u.viewProjection*vec4(input.position,1.);o.world=input.position;o.normal=input.normal;o.color=input.color;o.material=input.material;o.local=input.local;o.shape=input.shape;return o;
 }
 fn fresnelSchlick(cosine:f32,f0:vec3<f32>)->vec3<f32>{return f0+(1.-f0)*pow(1.-clamp(cosine,0.,1.),5.);}
 fn ggx(n:vec3<f32>,v:vec3<f32>,l:vec3<f32>,base:vec3<f32>,roughness:f32,metal:f32)->vec3<f32>{
@@ -966,23 +988,76 @@ fn environmentBRDF(rough:f32,nv:f32)->vec2<f32>{
   let r=rough*c0+c1;let a004=min(r.x*r.x,exp2(-9.28*nv))*r.x+r.y;
   return vec2(-1.04,1.04)*a004+r.zw;
 }
+// Original ECHO-9 adaptation of footprint-filtered procedural detail. Unresolved
+// octaves converge to their mean instead of turning into speckle or moire.
+fn materialNoise(q:vec3<f32>)->f32{
+  let footprint=max(length(dpdx(q)),length(dpdy(q)));
+  let resolved=select(1.,1.-smoothstep(.16,.62,footprint),lighting.options.w>.5);
+  return mix(.5,noise(q),resolved);
+}
 fn surfaceColor(input:CorridorOut,n:vec3<f32>,v:vec3<f32>,useEnvironment:bool,receiverNormal:vec3<f32>)->vec3<f32>{
   let p=input.world;let emission=input.material.x;
   if(emission>0.){return input.color*emission;}
-  let broadVariation=noise(p*vec3(3.1,.85,2.1));let stains=noise(p*vec3(7.,.55,4.));
-  let wear=pow(max(0.,noise(p*vec3(17.,4.,13.))-.58),2.)*.5;
-  var base=input.color*(.84+.23*broadVariation);
-  // Low-amplitude wear changes roughness and reflectance, never replaces geometry.
-  base=mix(base,vec3(.105,.05,.025),smoothstep(.69,.86,stains)*.18);
-  let floorFacing=abs(n.y)>.8;
-  let rough=clamp(input.material.y+select(.11,.08,floorFacing)+(stains-.5)*.15+wear,.25,.92);let metal=clamp(input.material.z-stains*.035,0.,1.);
-  var shadingNormal=n;
-  if(floorFacing){
-    shadingNormal=normalize(n+vec3(sin(p.z*.83+p.x*1.9)*.026,0.,sin(p.x*2.4+p.z*.19)*.015));
+  let local=input.local.xyz;let family=i32(input.local.w+.5);
+  let coarse=materialNoise(p*vec3(.75,.42,.6));
+  let mottling=materialNoise(p*vec3(3.7,2.9,3.2));
+  let grain=materialNoise(p*vec3(21.,18.,23.));
+  let fine=materialNoise(p*vec3(92.,85.,96.));
+  let brush=materialNoise(vec3(local.x*75.,local.y*.8,local.z*75.));
+  let streak=materialNoise(vec3(p.x*18.,p.y*.65,p.z*19.));
+  let broken=materialNoise(p*vec3(36.,22.,31.));
+  let distances=max(input.shape.xyz-abs(local),vec3(0.));
+  // Second-smallest distance is the in-face distance to a real primitive edge.
+  // It ignores the zero distance along the face normal and follows chamfered ribs.
+  let edge=min(max(distances.x,distances.y),min(max(distances.x,distances.z),max(distances.y,distances.z)));
+  let chip=(1.-smoothstep(.008,.048,edge))*smoothstep(.32,.72,mottling*.55+broken*.45);
+  let joint=(1.-smoothstep(.045,.17,edge))*(1.-chip);
+  let runoff=smoothstep(.48,.72,streak)*smoothstep(.23,.8,coarse);
+  var base=input.color;var rough=input.material.y;var metal=input.material.z;
+  var slope=vec2((grain-.5)*.065,(mottling-.5)*.035);
+  if(family==1){
+    // Pigmented paint is dielectric. Exposed chips reveal the conductive substrate.
+    base*=.88+coarse*.14+mottling*.08;
+    base=mix(base,vec3(.15,.165,.17),chip*.72);
+    base*=1.-joint*.48-runoff*.23;
+    rough=clamp(.64+(mottling-.5)*.20+runoff*.11-chip*.22,.39,.92);
+    metal=mix(.07,.82,chip);
+  }else if(family==2){
+    base*=.86+coarse*.14+mottling*.10;
+    base=mix(base,vec3(.065,.074,.08),chip*.35);base*=1.-joint*.32;
+    rough=clamp(.70+(grain-.5)*.16+runoff*.1-chip*.17,.48,.92);metal=.72;
+    slope*=.6;
+  }else if(family==3){
+    // Brushing runs along each authored tube, distinct from cross-panel wear.
+    let oxidation=smoothstep(.5,.76,coarse*.6+streak*.4);
+    base*=.42+coarse*.23+brush*.13;
+    base=mix(base,vec3(.052,.049,.044),oxidation*.34);
+    rough=clamp(.45+(mottling-.5)*.20+(brush-.5)*.13+oxidation*.14,.32,.78);metal=.88;
+    slope=vec2((brush-.5)*.10,(grain-.5)*.018);
+  }else if(family==4){
+    // Oxidised grate crests catch broken reflections; troughs retain grease.
+    let crest=smoothstep(.015,.04,local.y+input.shape.y);
+    base*=.39+coarse*.28+grain*.13;
+    base=mix(base,vec3(.038,.027,.019),runoff*.23);
+    rough=clamp(.59+(grain-.5)*.22+runoff*.13-crest*.04,.43,.88);metal=.78;
+    slope*=.55;
+  }else if(family==5){
+    base=vec3(.009,.011,.013)*(.75+coarse*.35);
+    rough=.83+(mottling-.5)*.09;metal=.015;slope*=.45;
   }else{
-    let tangent=normalize(cross(n,vec3(0.,1.,0.)));let bitangent=cross(n,tangent);
-    shadingNormal=normalize(n+tangent*(noise(p*vec3(.45,3.,.45))-.5)*.025+bitangent*(noise(p*vec3(2.,.3,2.))-.5)*.012);
+    base*=.65+coarse*.14+mottling*.09;
+    base=mix(base,vec3(.08,.043,.026),runoff*.23);base*=1.-joint*.32;
+    rough=clamp(.53+(mottling-.5)*.22+(grain-.5)*.11+runoff*.16-chip*.10,.34,.88);metal=.85;
   }
+  base*=.94+(fine-.5)*.055;
+  let helper=select(vec3(0.,1.,0.),vec3(1.,0.,0.),abs(n.y)>.92);
+  let tangent=normalize(cross(n,helper));let bitangent=cross(n,tangent);
+  let shadingNormal=normalize(n+tangent*slope.x+bitangent*slope.y);
+  // Unresolved micro-slope and across-pixel normal variation widen the GGX lobe.
+  // This is an industrial-material model, not the source ocean's LEAN constants.
+  let footprint=max(length(dpdx(p)),length(dpdy(p)));
+  let variance=dot(dpdx(shadingNormal),dpdx(shadingNormal))+dot(dpdy(shadingNormal),dpdy(shadingNormal));
+  if(lighting.options.w>.5){rough=pow(clamp(pow(rough,4.)+min(.045,variance*.35)+smoothstep(.008,.075,footprint)*.008,.001,1.),.25);}
   var color=directRadiance(p,shadingNormal,v,base,rough,metal,receiverNormal);
   if(useEnvironment && lighting.options.y>.5){
     let nv=max(dot(shadingNormal,v),.001);let reflected=reflect(-v,shadingNormal);
@@ -1052,7 +1127,10 @@ struct PostVertex {@builtin(position) position:vec4<f32>,@location(0) uv:vec2<f3
 `;
 const POST_OPTIONS=/* wgsl */`
 struct PostOptions {display:vec4<f32>,volume:vec4<f32>,glare:vec4<f32>};
-fn extinction(p:vec3<f32>,maximum:f32)->f32{return maximum*(.12+.88*smoothstep(34.,52.,p.z))+.035*smoothstep(61.,70.,p.z);}
+fn extinction(p:vec3<f32>,maximum:f32)->f32{
+  // Continuous optical density through the real corridor; no flat depth slice.
+  return maximum*(.10+.90*smoothstep(32.,59.,p.z))+.026*smoothstep(56.,73.,p.z);
+}
 struct RaySegment {direction:vec3<f32>,surfaceDistance:f32,begin:f32,end:f32};
 fn raySegment(uv:vec2<f32>,depth:f32)->RaySegment{
   var o:RaySegment;o.direction=normalize(u.forward.xyz+u.right.xyz*uv.x*u.resolution.z+u.up.xyz*uv.y*u.resolution.w);
@@ -1072,12 +1150,17 @@ function corridorVolumeShader(multisampled){return COMMON+CORRIDOR_LIGHTING_WGSL
   let segment=raySegment(input.uv,depth);let distance=segment.end-segment.begin;
   var scatter=vec3(0.);var transmittance=1.;let step=distance/24.;let anisotropy=options.volume.z;
   if(distance>.002){for(var i=0;i<24;i++){
-    let p=u.camera.xyz+segment.direction*(segment.begin+(f32(i)+.5)*step);let sigma=extinction(p,options.volume.x);let stepT=exp(-sigma*step);var incident=vec3(0.);
+    let p=u.camera.xyz+segment.direction*(segment.begin+(f32(i)+.5)*step);let sigma=extinction(p,options.volume.x);let stepT=exp(-sigma*step);
+    // Broad reflected room light supplies a low-energy, occlusion-captured bounce.
+    // It comes from the actual HDR room probe, not an unrelated sky/fog color.
+    var incident=textureSampleLevel(environment,environmentSampler,segment.direction,lighting.probe.w).rgb*.28;
     for(var lightIndex=0;lightIndex<i32(corridorLights.info.x);lightIndex++){
       let source=corridorLights.entries[lightIndex];let displacement=p-source.positionPower.xyz;let distance2=dot(displacement,displacement);let travel=displacement*inverseSqrt(max(distance2,.00000001));let cosine=dot(travel,-segment.direction);
       let phase=(1.-anisotropy*anisotropy)/(12.5663706*pow(max(.001,1.+anisotropy*anisotropy-2.*anisotropy*cosine),1.5));
       // Finite quadrature footprint averages the source near-field instead of sampling a point singularity.
-      incident+=lightRadiance(p,vec3(0.),lightIndex)*phase*distance2/(distance2+.4225);
+      var sourceOpticalDepth=0.;let sourceDistance=sqrt(distance2);
+      for(var s=0;s<3;s++){sourceOpticalDepth+=extinction(mix(source.positionPower.xyz,p,(f32(s)+.5)/3.),options.volume.x)*sourceDistance/3.;}
+      incident+=lightRadiance(p,vec3(0.),lightIndex)*exp(-sourceOpticalDepth)*phase*distance2/(distance2+.4225);
     }
     scatter+=transmittance*options.volume.y*(1.-stepT)*incident;transmittance*=stepT;
   }}
@@ -1110,6 +1193,33 @@ fn bilateralScatter(pixel:vec2<f32>,distance:f32)->vec3<f32>{
   return vec4(max(color,vec3(0.)),select(surface.a,1.,distance>.002));
 }
 `;}
+/* AgX inset/outset matrices and contrast fit adapted from Noniv/web-ocean,
+js/wgsl/post.js, commit a07c7fd522ef0a897601c114f927a49d93d95520.
+The polynomial is already display encoded. ECHO-9 writes to rgba/bgra8unorm,
+so adding COMMON's gamma transform here would encode the display twice.
+The following license is embedded in the offline HTML along with this source.
+MIT License
+
+Copyright (c) 2026 Maksymilian Dendura
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
 const CORRIDOR_FINAL_SHADER=COMMON+POST_VERTEX+/* wgsl */`
 struct PostOptions {display:vec4<f32>,volume:vec4<f32>,glare:vec4<f32>};
 @group(0) @binding(1) var composed:texture_2d<f32>;
@@ -1120,6 +1230,22 @@ struct PostOptions {display:vec4<f32>,volume:vec4<f32>,glare:vec4<f32>};
 @group(0) @binding(6) var bloom2:texture_2d<f32>;
 @group(0) @binding(7) var bloom3:texture_2d<f32>;
 @group(0) @binding(8) var bloomSampler:sampler;
+fn agxDisplay(linearRadiance:vec3<f32>)->vec3<f32>{
+  let inset=mat3x3<f32>(.842479062253094,.0423282422610123,.0423756549057051,
+    .0784335999999992,.878468636469772,.0784336,
+    .0792237451477643,.0791661274605434,.879142973793104);
+  let outset=mat3x3<f32>(1.19687900512017,-.0528968517574562,-.0529716355144438,
+    -.0980208811401368,1.15190312990417,-.0980434501171241,
+    -.0990297440797205,-.0989611768448433,1.15107367264116);
+  let x=clamp((log2(max(inset*linearRadiance,vec3(1e-10)))+12.47393)/16.5,vec3(0.),vec3(1.));
+  let x2=x*x;let x4=x2*x2;
+  let encoded=15.5*x4*x2-40.14*x4*x+31.96*x4-6.868*x2*x+.4298*x2+.1191*x-.00232;
+  return clamp(outset*encoded,vec3(0.),vec3(1.));
+}
+fn displayDither(pixel:vec2<f32>)->f32{
+  // Stable pixel-anchored triangular dither: deterministic for stills and motion.
+  return (hash(vec3(pixel,7.))+hash(vec3(pixel.yx+vec2(29.,71.),19.))-1.)/1020.;
+}
 @fragment fn finalFragment(input:PostVertex)->@location(0) vec4<f32>{
   let pixel=vec2<i32>(input.position.xy);let color=textureLoad(composed,pixel,0);
   if(color.a<=0. || options.display.w<.5){return textureLoad(legacy,pixel,0);}
@@ -1129,7 +1255,10 @@ struct PostOptions {display:vec4<f32>,volume:vec4<f32>,glare:vec4<f32>};
     let glare=textureSampleLevel(bloom0,bloomSampler,uv,0.).rgb*.45+textureSampleLevel(bloom1,bloomSampler,uv,0.).rgb*.30+textureSampleLevel(bloom2,bloomSampler,uv,0.).rgb*.17+textureSampleLevel(bloom3,bloomSampler,uv,0.).rgb*.08;
     radiance+=glare*options.glare.x;
   }
-  return vec4(tone(max(radiance,vec3(0.))*options.display.x),1.);
+  let exposed=max(radiance,vec3(0.))*options.display.x;
+  var display:vec3<f32>;
+  if(options.glare.w>.5){display=agxDisplay(exposed);}else{display=tone(exposed);}
+  return vec4(clamp(display+displayDither(input.position.xy),vec3(0.),vec3(1.)),1.);
 }
 `;
 const CORRIDOR_BLOOM_SHADER=POST_VERTEX+/* wgsl */`
@@ -1158,8 +1287,8 @@ fn sampleRadiance(uv:vec2<f32>)->vec3<f32>{
 // corridor-post.js
 const CORRIDOR_STAGE='final';
 class CorridorPost{
-  constructor(device,format,mainUniform,{fog=true,bloom=true}={}){
-    this.device=device;this.format=format;this.mainUniform=mainUniform;this.fogEnabled=fog;this.bloomEnabled=bloom;this.exposure=1.35;this.textures=[];this.readbackBusy=false;this.buffers=[];
+  constructor(device,format,mainUniform,{fog=true,bloom=true,grade='agx'}={}){
+    this.device=device;this.format=format;this.mainUniform=mainUniform;this.fogEnabled=fog;this.bloomEnabled=bloom;this.grade=grade;this.exposure=1.35;this.textures=[];this.readbackBusy=false;this.buffers=[];
   }
   setLighting(layout,group){this.lightingLayout=layout;this.lightingGroup=group;}
   resize(depth,samples,width,height){
@@ -1176,7 +1305,7 @@ class CorridorPost{
     this.volume=make('Half-resolution shadowed scattering / receiver distance','rgba16float',Math.ceil(width/2),Math.ceil(height/2));
     this.legacyView=this.legacy.createView();this.sceneView=this.scene.createView();this.composedView=this.composed.createView();this.volumeView=this.volume.createView();
     this.hdrAttachment={view:this.msaa?this.msaa.createView():this.sceneView,resolveTarget:this.msaa?this.sceneView:undefined,clearValue:{r:0,g:0,b:0,a:0},loadOp:'clear',storeOp:'store'};
-    this.optionBuffer=buffer(48);this.options=new Float32Array([this.exposure,this.fogEnabled?1:0,this.bloomEnabled?1:0,1,.065,.16,.20,24,.06,1.35,.5,0]);device.queue.writeBuffer(this.optionBuffer,0,this.options);
+    this.optionBuffer=buffer(48);this.options=new Float32Array([this.exposure,this.fogEnabled?1:0,this.bloomEnabled?1:0,1,.073,.20,.16,24,.045,1.35,.5,this.grade==='agx'?1:0]);device.queue.writeBuffer(this.optionBuffer,0,this.options);
     const uniform={binding:0,visibility:GPUShaderStage.VERTEX|GPUShaderStage.FRAGMENT,buffer:{type:'uniform'}};
     const volumeLayout=device.createBindGroupLayout({entries:[uniform,{binding:1,visibility:GPUShaderStage.FRAGMENT,texture:{sampleType:'depth',multisampled:samples>1}},{binding:2,visibility:GPUShaderStage.FRAGMENT,buffer:{type:'uniform'}}]});
     const volumeModule=module('Same-source, shadowed 24-step Beer-Lambert scattering',corridorVolumeShader(samples>1));
@@ -1219,12 +1348,13 @@ class CorridorPost{
       return {stage:CORRIDOR_STAGE,presentation:'Actual GPU texture copies; scene before scattering, composite after scattering before bloom/final tone',scene:reports[0],composite:reports[1],exposure:this.exposure};
     }finally{for(const buffer of buffers)buffer.destroy();this.readbackBusy=false;}
   }
-  report(){return {stage:CORRIDOR_STAGE,sceneFormat:'rgba16float',compositeFormat:'rgba16float',alpha:'Per-material/ray-bounded corridor coverage; HDR dust preserves destination alpha',toneMapping:'Lighting + reflection → shadowed scattering → linear HDR bloom → one final exposure/filmic/gamma; exact legacy display bypass elsewhere',exposure:this.exposure,estimatedGpuBytes:this.gpuBytes||0,fog:{enabled:this.fogEnabled,resolution:[Math.ceil(this.width/2),Math.ceil(this.height/2)],steps:24,extinctionNear:.0078,extinctionFar:.10,albedo:.16,anisotropy:.2,finiteSourceFootprint:.65,source:'Same authored light table and geometric shadow maps',reconstruction:'Receiver-distance bilateral 2x2; full-resolution transmittance'},bloom:{enabled:this.bloomEnabled,levels:4,threshold:1.35,knee:.5,strength:.06,source:'Only scoped linear HDR luminance above threshold'}};}
+  report(){return {stage:CORRIDOR_STAGE,sceneFormat:'rgba16float',compositeFormat:'rgba16float',alpha:'Per-material/ray-bounded corridor coverage; HDR dust preserves destination alpha',displayCurve:this.grade,dither:'Stable triangular, quarter code-value amplitude; legacy bypass remains exact',toneMapping:'Lighting + reflection → shadowed scattering → linear HDR bloom → one final exposure/filmic/gamma; exact legacy display bypass elsewhere',exposure:this.exposure,estimatedGpuBytes:this.gpuBytes||0,fog:{enabled:this.fogEnabled,resolution:[Math.ceil(this.width/2),Math.ceil(this.height/2)],steps:24,extinctionNear:.0073,extinctionFar:.099,albedo:.20,anisotropy:.16,finiteSourceFootprint:.65,source:'Same authored light table/shadows, three-step source-path extinction and actual-room probe bounce',reconstruction:'Receiver-distance bilateral 2x2; full-resolution transmittance'},bloom:{enabled:this.bloomEnabled,levels:4,threshold:1.35,knee:.5,strength:.045,source:'Only scoped linear HDR luminance above threshold'}};}
 }
 
 // corridor-renderer.js
 
 const CORRIDOR_VERTEX_LAYOUT={arrayStride:48,attributes:[{shaderLocation:0,offset:0,format:'float32x3'},{shaderLocation:1,offset:12,format:'float32x3'},{shaderLocation:2,offset:24,format:'float32x3'},{shaderLocation:3,offset:36,format:'float32x3'}]};
+const CORRIDOR_SURFACE_LAYOUT={arrayStride:32,attributes:[{shaderLocation:4,offset:0,format:'float32x4'},{shaderLocation:5,offset:16,format:'float32x4'}]};
 function cameraMatrix(position,target,fov,near,far){
   const back=normalize(position.map((v,i)=>v-target[i])),right=normalize(cross([0,1,0],back)),up=cross(back,right);
   const view=new Float32Array([right[0],up[0],back[0],0,right[1],up[1],back[1],0,right[2],up[2],back[2],0,-dot(right,position),-dot(up,position),-dot(back,position),1]);
@@ -1240,20 +1370,21 @@ function cubeCamera(position,face){
   return multiply(new Float32Array(16),perspective(new Float32Array(16),Math.PI*.5,1,.06,100),view);
 }
 class CorridorRenderer{
-  constructor(device,format,mainUniform,geometry,{shadows=true,probe=true,fog=true,bloom=true}={}){
-    this.device=device;this.format=format;this.mainUniform=mainUniform;this.post=new CorridorPost(device,format,mainUniform,{fog,bloom});this.geometry=geometry;this.shadowResolution=2048;this.probeOptions=CORRIDOR_PROBE;this.shadowsEnabled=shadows;this.probeEnabled=probe;this.bakeMilliseconds=null;
+  constructor(device,format,mainUniform,geometry,{shadows=true,probe=true,fog=true,bloom=true,onlyLight=-1,detailAA=true,grade='agx'}={}){
+    this.device=device;this.format=format;this.mainUniform=mainUniform;this.post=new CorridorPost(device,format,mainUniform,{fog,bloom,grade});this.geometry=geometry;this.shadowResolution=2048;this.probeOptions=CORRIDOR_PROBE;this.shadowsEnabled=shadows;this.probeEnabled=probe;this.bakeMilliseconds=null;
     this.vertexBuffer=device.createBuffer({label:'Beveled service-spine architecture',size:geometry.vertices.byteLength,usage:GPUBufferUsage.VERTEX|GPUBufferUsage.COPY_DST});device.queue.writeBuffer(this.vertexBuffer,0,geometry.vertices);
+    this.surfaceBuffer=device.createBuffer({label:'Primitive-local used-metal material coordinates',size:geometry.surfaces.byteLength,usage:GPUBufferUsage.VERTEX|GPUBufferUsage.COPY_DST});device.queue.writeBuffer(this.surfaceBuffer,0,geometry.surfaces);this.detailAA=detailAA;
     this.cameraLayout=device.createBindGroupLayout({entries:[{binding:0,visibility:GPUShaderStage.VERTEX|GPUShaderStage.FRAGMENT,buffer:{type:'uniform'}}]});
     this.mainCameraGroup=device.createBindGroup({layout:this.cameraLayout,entries:[{binding:0,resource:{buffer:mainUniform}}]});
     this.lightingLayout=device.createBindGroupLayout({entries:[{binding:0,visibility:GPUShaderStage.VERTEX|GPUShaderStage.FRAGMENT,buffer:{type:'uniform'}},{binding:1,visibility:GPUShaderStage.FRAGMENT,texture:{sampleType:'depth',viewDimension:'2d-array'}},{binding:2,visibility:GPUShaderStage.FRAGMENT,sampler:{type:'comparison'}},{binding:3,visibility:GPUShaderStage.FRAGMENT,texture:{sampleType:'float',viewDimension:'cube'}},{binding:4,visibility:GPUShaderStage.FRAGMENT,sampler:{type:'filtering'}},{binding:5,visibility:GPUShaderStage.FRAGMENT,buffer:{type:'uniform'}}]});
     this.lightingBuffer=device.createBuffer({size:192,usage:GPUBufferUsage.UNIFORM|GPUBufferUsage.COPY_DST});
-    this.shadowTexture=device.createTexture({label:'Two cached geometric spotlight shadow maps',size:[this.shadowResolution,this.shadowResolution,2],format:'depth32float',usage:GPUTextureUsage.RENDER_ATTACHMENT|GPUTextureUsage.TEXTURE_BINDING});
+    this.shadowTexture=device.createTexture({label:'Two cached geometric spotlight shadow maps',size:[this.shadowResolution,this.shadowResolution,2],format:'depth32float',usage:GPUTextureUsage.RENDER_ATTACHMENT|GPUTextureUsage.TEXTURE_BINDING|GPUTextureUsage.COPY_SRC});
     this.shadowSampler=device.createSampler({compare:'less-equal',minFilter:'linear',magFilter:'linear',addressModeU:'clamp-to-edge',addressModeV:'clamp-to-edge'});
     const p=CORRIDOR_PROBE;
     this.rawProbe=device.createTexture({label:'Actual room radiance: six HDR views',size:[p.size,p.size,6],format:'rgba16float',usage:GPUTextureUsage.RENDER_ATTACHMENT|GPUTextureUsage.TEXTURE_BINDING|GPUTextureUsage.COPY_SRC});
     this.filteredProbe=device.createTexture({label:'GGX roughness-prefiltered local room reflection',size:[p.size,p.size,6],mipLevelCount:p.mips,format:'rgba16float',usage:GPUTextureUsage.TEXTURE_BINDING|GPUTextureUsage.STORAGE_BINDING|GPUTextureUsage.COPY_DST});
     this.probeSampler=device.createSampler({minFilter:'linear',magFilter:'linear',mipmapFilter:'linear',addressModeU:'clamp-to-edge',addressModeV:'clamp-to-edge'});
-    this.lightTableBuffer=device.createBuffer({size:528,usage:GPUBufferUsage.UNIFORM|GPUBufferUsage.COPY_DST});device.queue.writeBuffer(this.lightTableBuffer,0,packCorridorLights());
+    this.lightTableBuffer=device.createBuffer({size:528,usage:GPUBufferUsage.UNIFORM|GPUBufferUsage.COPY_DST});device.queue.writeBuffer(this.lightTableBuffer,0,packCorridorLights(CORRIDOR_LIGHT_TABLE.map((l,i)=>onlyLight<0||i===onlyLight?l:{...l,power:0})));this.onlyLight=onlyLight;
     this.lightingGroup=device.createBindGroup({layout:this.lightingLayout,entries:[{binding:0,resource:{buffer:this.lightingBuffer}},{binding:1,resource:this.shadowTexture.createView({dimension:'2d-array'})},{binding:2,resource:this.shadowSampler},{binding:3,resource:this.filteredProbe.createView({dimension:'cube'})},{binding:4,resource:this.probeSampler},{binding:5,resource:{buffer:this.lightTableBuffer}}]});
     this.post.setLighting(this.lightingLayout,this.lightingGroup);
     this.lightingData=new Float32Array(48);
@@ -1261,7 +1392,7 @@ class CorridorRenderer{
       const matrix=cameraMatrix(light.position,light.target,light.fov*Math.PI/180,.15,light.far);this.lightingData.set(matrix,index*16);
       const buffer=device.createBuffer({size:64,usage:GPUBufferUsage.UNIFORM|GPUBufferUsage.COPY_DST});device.queue.writeBuffer(buffer,0,matrix);return {matrix,buffer};
     });
-    this.lightingData.set([...p.position,p.mips-1],32);this.lightingData.set([...p.min,0],36);this.lightingData.set([...p.max,0],40);this.lightingData.set([1,probe?1:0,this.shadowResolution,0],44);device.queue.writeBuffer(this.lightingBuffer,0,this.lightingData);
+    this.lightingData.set([...p.position,p.mips-1],32);this.lightingData.set([...p.min,0],36);this.lightingData.set([...p.max,0],40);this.lightingData.set([1,probe?1:0,this.shadowResolution,detailAA?1:0],44);device.queue.writeBuffer(this.lightingBuffer,0,this.lightingData);
     this.layout=device.createPipelineLayout({bindGroupLayouts:[this.cameraLayout,this.lightingLayout]});
   }
   async initialize(samples=4){
@@ -1273,7 +1404,7 @@ class CorridorRenderer{
       const info=await module.getCompilationInfo(),errors=info.messages.filter(message=>message.type==='error');if(errors.length)throw Error(errors.map(error=>`Corridor WGSL line${error.lineNum}: ${error.message}`).join('\n'));
     }
     this.setSamples(samples);
-    this.probePipeline=device.createRenderPipeline({layout:this.layout,vertex:{module:this.module,entryPoint:'corridorVertex',buffers:[CORRIDOR_VERTEX_LAYOUT]},fragment:{module:this.module,entryPoint:'corridorProbeFragment',targets:[{format:'rgba16float'}]},primitive:{topology:'triangle-list',cullMode:'none'},depthStencil:{format:'depth24plus',depthWriteEnabled:true,depthCompare:'less'}});
+    this.probePipeline=device.createRenderPipeline({layout:this.layout,vertex:{module:this.module,entryPoint:'corridorVertex',buffers:[CORRIDOR_VERTEX_LAYOUT,CORRIDOR_SURFACE_LAYOUT]},fragment:{module:this.module,entryPoint:'corridorProbeFragment',targets:[{format:'rgba16float'}]},primitive:{topology:'triangle-list',cullMode:'none'},depthStencil:{format:'depth24plus',depthWriteEnabled:true,depthCompare:'less'}});
     const shadowLayout=device.createBindGroupLayout({entries:[{binding:0,visibility:GPUShaderStage.VERTEX,buffer:{type:'uniform'}}]});
     const shadowPipeline=device.createRenderPipeline({layout:device.createPipelineLayout({bindGroupLayouts:[shadowLayout]}),vertex:{module:shadowModule,entryPoint:'shadowVertex',buffers:[{arrayStride:48,attributes:[{shaderLocation:0,offset:0,format:'float32x3'}]}]},primitive:{topology:'triangle-list',cullMode:'none'},depthStencil:{format:'depth32float',depthWriteEnabled:true,depthCompare:'less',depthBias:1,depthBiasSlopeScale:.5}});
     const encoder=device.createCommandEncoder({label:'One-time corridor lighting bake'});
@@ -1289,7 +1420,7 @@ class CorridorRenderer{
       const buffer=device.createBuffer({size:160,usage:GPUBufferUsage.UNIFORM|GPUBufferUsage.COPY_DST});device.queue.writeBuffer(buffer,0,uniform);this.probeCameraBuffers.push(buffer);
       const group=device.createBindGroup({layout:this.cameraLayout,entries:[{binding:0,resource:{buffer}}]});
       const pass=encoder.beginRenderPass({colorAttachments:[{view:this.rawProbe.createView({dimension:'2d',baseArrayLayer:face,arrayLayerCount:1}),clearValue:{r:0,g:0,b:0,a:1},loadOp:'clear',storeOp:'store'}],depthStencilAttachment:{view:probeDepth.createView(),depthClearValue:1,depthLoadOp:'clear',depthStoreOp:'store'}});
-      pass.setPipeline(this.probePipeline);pass.setBindGroup(0,group);pass.setBindGroup(1,this.lightingGroup);pass.setVertexBuffer(0,this.vertexBuffer);pass.draw(this.geometry.vertices.length/12);pass.end();
+      pass.setPipeline(this.probePipeline);pass.setBindGroup(0,group);pass.setBindGroup(1,this.lightingGroup);pass.setVertexBuffer(0,this.vertexBuffer);pass.setVertexBuffer(1,this.surfaceBuffer);pass.draw(this.geometry.vertices.length/12);pass.end();
     }
     encoder.copyTextureToTexture({texture:this.rawProbe},{texture:this.filteredProbe},[p.size,p.size,6]);
     const filter=device.createComputePipeline({layout:'auto',compute:{module:filterModule,entryPoint:'prefilter'}});this.filterBuffers=[];
@@ -1305,12 +1436,28 @@ class CorridorRenderer{
   }
   setSamples(samples){
     if(!this.module)return;
-    this.pipeline=this.device.createRenderPipeline({label:'Beveled corridor: GGX / PCF / local HDR reflections',layout:this.layout,vertex:{module:this.module,entryPoint:'corridorVertex',buffers:[CORRIDOR_VERTEX_LAYOUT]},fragment:{module:this.module,entryPoint:'corridorFragment',targets:[{format:this.format},{format:'rgba16float'}]},primitive:{topology:'triangle-list',cullMode:'none'},depthStencil:{format:'depth24plus',depthWriteEnabled:true,depthCompare:'less'},multisample:{count:samples}});
+    this.pipeline=this.device.createRenderPipeline({label:'Beveled corridor: GGX / PCF / local HDR reflections',layout:this.layout,vertex:{module:this.module,entryPoint:'corridorVertex',buffers:[CORRIDOR_VERTEX_LAYOUT,CORRIDOR_SURFACE_LAYOUT]},fragment:{module:this.module,entryPoint:'corridorFragment',targets:[{format:this.format},{format:'rgba16float'}]},primitive:{topology:'triangle-list',cullMode:'none'},depthStencil:{format:'depth24plus',depthWriteEnabled:true,depthCompare:'less'},multisample:{count:samples}});
   }
   setDepth(texture,samples,width,height){this.post.resize(texture,samples,width,height);this.atmosphereCheck=this.post.check;}
   drawAtmosphere(encoder,target,timestampSet=null,enabled=true){this.post.draw(encoder,target,timestampSet,enabled);}
-  draw(pass){pass.setPipeline(this.pipeline);pass.setBindGroup(0,this.mainCameraGroup);pass.setBindGroup(1,this.lightingGroup);pass.setVertexBuffer(0,this.vertexBuffer);pass.draw(this.geometry.vertices.length/12);}
-  report(){const p=CORRIDOR_PROBE;let filteredBytes=0;for(let mip=0;mip<p.mips;mip++)filteredBytes+=(p.size>>mip)**2*6*8;return {triangles:this.geometry.triangles,geometryBytes:this.geometry.vertices.byteLength,estimatedGpuBytes:this.geometry.vertices.byteLength+2*this.shadowResolution**2*4+p.size**2*6*8+filteredBytes+192+(this.post.gpuBytes||0),shadowMaps:{count:2,resolution:this.shadowResolution,format:'depth32float',filter:'Receiver-plane-corrected bilinear 2x2 PCF',enabled:this.shadowsEnabled,cached:true},environment:{source:'Six native HDR renders of actual procedural corridor geometry, direct lights and geometric shadows',resolution:CORRIDOR_PROBE.size,faces:6,mips:CORRIDOR_PROBE.mips,prefilter:'128-sample GGX importance convolution per mip texel',parallaxCorrection:'Room-box projected reflected rays',enabled:this.probeEnabled,cached:true},hdr:this.post.report(),bakeMilliseconds:this.bakeMilliseconds,lightTable:CORRIDOR_LIGHT_TABLE,fixedExposure:1.35};}
+  draw(pass){pass.setPipeline(this.pipeline);pass.setBindGroup(0,this.mainCameraGroup);pass.setBindGroup(1,this.lightingGroup);pass.setVertexBuffer(0,this.vertexBuffer);pass.setVertexBuffer(1,this.surfaceBuffer);pass.draw(this.geometry.vertices.length/12);}
+  setDiagnostics({grade,detailAA}={}){
+    if(grade!==undefined){this.post.grade=grade==='legacy'?'legacy':'agx';this.post.options[11]=this.post.grade==='agx'?1:0;}
+    if(detailAA!==undefined){this.detailAA=Boolean(detailAA);this.lightingData[47]=this.detailAA?1:0;this.device.queue.writeBuffer(this.lightingBuffer,0,this.lightingData);}
+    return {grade:this.post.grade,detailAA:this.detailAA,cachedProbeHeldConstant:true};
+  }
+  // Developer-only, on-demand provenance: actual depth32float texels, no scene mutation.
+  async shadowDiagnostics(samples,index=1){
+    const device=this.device,r=this.shadowResolution,buffer=device.createBuffer({size:r*r*4,usage:GPUBufferUsage.COPY_DST|GPUBufferUsage.MAP_READ}),encoder=device.createCommandEncoder();
+    encoder.copyTextureToBuffer({texture:this.shadowTexture,origin:[0,0,index],aspect:'depth-only'},{buffer,bytesPerRow:r*4,rowsPerImage:r},[r,r,1]);device.queue.submit([encoder.finish()]);
+    try{await buffer.mapAsync(GPUMapMode.READ);const depths=new Float32Array(buffer.getMappedRange()),matrix=this.shadowCameras[index].matrix;
+      return samples.map(sample=>{const p=sample.world.map((v,i)=>v+sample.normal[i]*.006),clip=[0,1,2,3].map(row=>matrix[row]*p[0]+matrix[4+row]*p[1]+matrix[8+row]*p[2]+matrix[12+row]),uv=[clip[0]/clip[3]*.5+.5,-clip[1]/clip[3]*.5+.5],base=uv.map(v=>Math.floor(v*r-.5)),taps=[];
+        for(let y=0;y<2;y++)for(let x=0;x<2;x++){const q=[Math.max(0,Math.min(r-1,base[0]+x)),Math.max(0,Math.min(r-1,base[1]+y))];taps.push({texel:q,uv:q.map(v=>(v+.5)/r),storedDepth:depths[q[1]*r+q[0]]});}
+        return {pixel:sample.pixel,world:sample.world,receiverClip:clip.map(v=>v/clip[3]),shadowUv:uv,taps};
+      });
+    }finally{buffer.unmap();buffer.destroy();}
+  }
+  report(){const p=CORRIDOR_PROBE;let filteredBytes=0;for(let mip=0;mip<p.mips;mip++)filteredBytes+=(p.size>>mip)**2*6*8;return {triangles:this.geometry.triangles,geometryBytes:this.geometry.vertices.byteLength,surfaceBytes:this.geometry.surfaces.byteLength,materials:{families:6,coordinates:"Authored primitive-local metres and half extents",detailAA:this.detailAA},diagnostics:{onlyLight:this.onlyLight},estimatedGpuBytes:this.geometry.vertices.byteLength+this.geometry.surfaces.byteLength+2*this.shadowResolution**2*4+p.size**2*6*8+filteredBytes+192+(this.post.gpuBytes||0),shadowMaps:{count:2,resolution:this.shadowResolution,format:'depth32float',filter:'Receiver-plane-corrected bilinear 2x2 PCF',enabled:this.shadowsEnabled,cached:true},environment:{source:'Six native HDR renders of actual procedural corridor geometry, direct lights and geometric shadows',resolution:CORRIDOR_PROBE.size,faces:6,mips:CORRIDOR_PROBE.mips,prefilter:'128-sample GGX importance convolution per mip texel',parallaxCorrection:'Room-box projected reflected rays',enabled:this.probeEnabled,cached:true},hdr:this.post.report(),bakeMilliseconds:this.bakeMilliseconds,lightTable:CORRIDOR_LIGHT_TABLE,fixedExposure:1.35};}
 }
 
 // main.js
@@ -1450,7 +1597,7 @@ async function initialize(){
     }
     createPipelines();await compilationChecks;
     corridorScene=buildCorridor();navigationObstacles=scene.obstacles.concat(corridorScene.obstacles);
-    corridorRenderer=new CorridorRenderer(device,format,uniformBuffer,corridorScene,{shadows:params.get('shadows')!=='0',probe:params.get('probe')!=='0',fog:params.get('fog')!=='0',bloom:params.get('bloom')!=='0'});
+    corridorRenderer=new CorridorRenderer(device,format,uniformBuffer,corridorScene,{shadows:params.get('shadows')!=='0',probe:params.get('probe')!=='0',fog:params.get('fog')!=='0',bloom:params.get('bloom')!=='0',onlyLight:testMode?Number(params.get('onlyLight')??-1):-1,detailAA:params.get('detailAA')!=='0',grade:params.get('grade')==='legacy'?'legacy':'agx'});
     await corridorRenderer.initialize(PRESETS[quality].samples);
     resize();await corridorRenderer.atmosphereCheck;setView(params.get('view')||1);setQuality(quality);setMenu(menuOpen);
     ready=true;$('loading').hidden=true;document.body.classList.add('ready');
@@ -1565,7 +1712,7 @@ window.addEventListener('keydown',event=>{
 window.addEventListener('keyup',event=>keys.delete(event.code));window.addEventListener('blur',()=>keys.clear());
 document.addEventListener('mousemove',event=>{if(document.pointerLockElement===canvas&&!menuOpen){camera.yaw+=event.movementX*.0018;camera.pitch=clamp(camera.pitch+event.movementY*.0018,-1.45,1.45);}});
 document.addEventListener('pointerlockchange',()=>{document.body.classList.toggle('pointer-locked',document.pointerLockElement===canvas);});
-window.echo9={gpuInstance,get adapter(){return adapterReference;},get device(){return device;},get ready(){return ready&&startupSubmissionVerified&&(!readbackMode||presentedFrames>0);},getHdrDiagnostics:()=>corridorRenderer.post.diagnostics(),setView,setQuality,setTime,startFlythrough,stopFlythrough,getReport,getState,setMenu,get stats(){return getReport();},camera,views:VIEWS,hero:CORRIDOR_HERO};
+window.echo9={gpuInstance,get adapter(){return adapterReference;},get device(){return device;},get ready(){return ready&&startupSubmissionVerified&&(!readbackMode||presentedFrames>0);},getHdrDiagnostics:()=>corridorRenderer.post.diagnostics(),setCorridorDiagnostics:options=>corridorRenderer.setDiagnostics(options),getShadowDiagnostics:(samples,index)=>corridorRenderer.shadowDiagnostics(samples,index),setView,setQuality,setTime,startFlythrough,stopFlythrough,getReport,getState,setMenu,get stats(){return getReport();},camera,views:VIEWS,hero:CORRIDOR_HERO};
 initialize();
 </script>
 </body></html>

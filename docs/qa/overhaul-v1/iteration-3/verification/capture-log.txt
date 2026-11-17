@@ -1,0 +1,66 @@
+
+> project-echo-9@1.0.0 qa:overhaul
+> node scripts/overhaul-qa.mjs
+
+after: captured sector regression view 1
+after: captured sector regression view 2
+after: captured sector regression view 3
+after: captured sector regression view 5
+after: captured sector regression view 6
+{
+  "tag": "after",
+  "artifactSha256": "8e6cec19966228ee8f5a0ec4b39b9a7a7d22be85237e4d5a89b521c38091d281",
+  "hero": {
+    "position": [
+      -2.35,
+      1.72,
+      27.5
+    ],
+    "target": [
+      -13.5,
+      1.78,
+      61
+    ],
+    "verticalFovDegrees": 64,
+    "state": {
+      "ready": true,
+      "position": [
+        -2.3499999046325684,
+        1.7200000286102295,
+        27.5
+      ],
+      "yaw": -2.8202899271972486,
+      "pitch": -0.0016993860988498693,
+      "sector": "SERVICE SPINE",
+      "quality": "High",
+      "renderSize": [
+        1920,
+        1080
+      ],
+      "hero": {
+        "position": [
+          -2.35,
+          1.72,
+          27.5
+        ],
+        "target": [
+          -13.5,
+          1.78,
+          61
+        ],
+        "verticalFov": 64
+      },
+      "clean": false,
+      "view": 4,
+      "presentedView": 4,
+      "presentedFrames": 13,
+      "presentationMode": "readback",
+      "menuOpen": false,
+      "audio": false,
+      "pointerLocked": false,
+      "time": 12,
+      "flight": null
+    }
+  },
+  "errors": []
+}

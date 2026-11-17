@@ -1,0 +1,80 @@
+{
+  "artifactSha256": "8e6cec19966228ee8f5a0ec4b39b9a7a7d22be85237e4d5a89b521c38091d281",
+  "build": "PASS",
+  "RunAllTests": {
+    "status": "PASS",
+    "passed": 27,
+    "failed": 0
+  },
+  "smoke": {
+    "status": "PASS",
+    "passed": 17
+  },
+  "fallback": {
+    "status": "PASS",
+    "passed": 3
+  },
+  "sectorViews": {
+    "status": "PASS",
+    "pixelIdentical": [
+      1,
+      2,
+      3,
+      5
+    ],
+    "view6ChangedPixels": 56351,
+    "view6OnlyVisibleCorridor": true
+  },
+  "featureOff": {
+    "status": "PASS",
+    "count": 4,
+    "scope": "See ABLATION-SCOPE.md"
+  },
+  "finalGradeDetailAA": {
+    "status": "PASS",
+    "defaultEqualsAuthoritative": true,
+    "restoredEqualsDefault": true,
+    "probeHeldConstant": true
+  },
+  "productionTransferCalibration": "PASS",
+  "P0FinalShadowDepth": "PASS",
+  "route": {
+    "status": "PASS",
+    "reason": null,
+    "durationSeconds": 60,
+    "wallClockSeconds": 62.45789999999851,
+    "completedAt": "2026-11-17T10:35:42.511Z",
+    "quality": "High",
+    "frame": {
+      "count": 13,
+      "meanMs": 4747.238461538461,
+      "p99Ms": 26682.199999999997,
+      "maxMs": 26682.199999999997
+    },
+    "gpu": {
+      "count": 0,
+      "meanMs": null,
+      "p99Ms": null,
+      "maxMs": null
+    }
+  },
+  "finalGoalFramePresented": true,
+  "runtimeErrors": [],
+  "unexpectedRequests": [],
+  "hardwareGPU_60FPS_nativeTemporal": "BLOCKED",
+  "artDirection": "NOT ACCEPTED",
+  "evidenceSha256": {
+    "verification/build.txt": "6a02419ffd8808b27014d29bc95145ab97ad481f433e4d5f99f6426bbfe36f60",
+    "verification/build-and-tests.txt": "de48ee0e9e8c39813b1206f7eedb09fe7aa4e60a0f0fe291cf3cde668de64b95",
+    "verification/smoke-report.json": "3d9f43dc7701cb9b55ae4257bdf845a0b6ff765cebe7b889df9b832d9cad90fe",
+    "verification/fallback-report.json": "301eae399b745eb8d1f47ff12a68f5fe82119f6f2a67a540f63c82557b97d13e",
+    "after-capture.json": "2519df412ad46a2fb3803b7337aaccbb41eff62d39939fcf856b17763b04988d",
+    "final-ab.json": "6d7a5b421261d07164157c07ff91bfbe61c5116498d26464440d15c75bb31aae",
+    "tone-capability-probe.json": "e0558f8b6b1ce56942eecafd996e799fb8ce4fbd65a23b1185bd528dc5e8ca90",
+    "feature-ablations.json": "dd54029db88ea44523ed63c6e13c8a6deb160c2d9100414493822626a0ca20b4",
+    "sector-image-regressions.json": "4d32f5d8ad14c668bcf5b4d44f0f92fc458417a3caa5c20d8ae3b546edb35a3c",
+    "image-measurements.json": "5979a752f904f4e65262b517264c3eacf23a719555f2abd9f21c3255de931961",
+    "route/browser-report.json": "e20be469fda233ad58e7ad68ebc387d8f057942503da593682c830b2248f0f47",
+    "p0/final-shadow-verification.json": "9b78112934d43359f22f1197e3e333ef403d1e34a53402b125233a032d6f11bd"
+  }
+}

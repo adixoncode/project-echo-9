@@ -5,13 +5,14 @@ function light(id,position,target,color,power,fov,shadow=-1,size=[.30,.19,.10],m
   return {id,position,target,color,power,fov,far:38,shadow,size,mount,radius:.18,direction:normalize(target.map((v,i)=>v-position[i])),outerCos:Math.cos(fov*Math.PI/360),innerCos:Math.cos(fov*.31*Math.PI/180),emission:power/(400*size[0]*size[1])};
 }
 export const CORRIDOR_LIGHT_TABLE=[
-  light('cold-rib-key',[-1,4.3,31.8],[-3.75,2.4,35.3],[.57,.74,.94],280,104,0),
-  light('red-depth-key',[.45,4.75,44.1],[.45,.45,45.2],[1,.025,.011],360,148,1,[.20,.28,.20],'pendant'),
-  light('cold-left-graze',[1.35,4.55,29.8],[3.7,2.15,33.1],[.53,.68,.84],105,96),
-  light('cold-middle-rib',[-.3,4.65,38.7],[-3.7,2.4,41.4],[.45,.61,.79],110,96),
-  light('red-middle',[.45,4.75,52.5],[.2,.55,54.5],[1,.022,.008],110,120,-1,[.20,.28,.20],'pendant'),
-  light('red-far',[.45,4.75,61.7],[.2,.4,63],[1,.022,.008],90,120,-1,[.20,.28,.20],'pendant'),
-  light('cold-service-bay',[-4.3,3.6,33.5],[-1.5,1.6,35],[.55,.71,.87],30,110,-1,[.72,.36,.07],'wall')
+  light('cold-rib-key',[-1,4.3,31.8],[-3.75,2.4,35.3],[.57,.74,.94],150,104,0),
+  light('red-depth-key',[.45,4.75,44.1],[.45,.45,45.2],[1,.048,.021],165,124,1,[.20,.28,.20],'pendant'),
+  light('cold-left-graze',[1.35,4.55,29.8],[3.7,2.15,33.1],[.53,.68,.84],72,96),
+  light('cold-middle-rib',[-.3,4.65,38.7],[-3.7,2.4,41.4],[.45,.61,.79],74,96),
+  light('red-middle',[.45,4.75,52.5],[.2,.55,54.5],[1,.055,.024],88,116,-1,[.20,.28,.20],'pendant'),
+  light('red-far',[.45,4.75,61.7],[.2,.4,63],[1,.068,.032],74,116,-1,[.20,.28,.20],'pendant'),
+  light('cold-service-bay',[-4.3,3.6,33.5],[-1.5,1.6,35],[.55,.71,.87],22,110,-1,[.72,.36,.07],'wall'),
+  light('cold-exit-veil',[-.4,6.5,69.4],[0,2.4,62.5],[.34,.46,.60],36,124)
 ];
 export const CORRIDOR_LIGHTS=CORRIDOR_LIGHT_TABLE.filter(light=>light.shadow>=0);
 export function packCorridorLights(lights=CORRIDOR_LIGHT_TABLE){

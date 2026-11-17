@@ -1,0 +1,287 @@
+{
+  "method": "Original pixel extraction only; zero resampling/color adjustment. Material comparisons use controlled p0 vs materials lighting, final vs iteration2 includes relighting.",
+  "regions": {
+    "red-edge": [
+      160,
+      420,
+      420,
+      640
+    ],
+    "wall": [
+      800,
+      240,
+      1000,
+      660
+    ],
+    "pipes": [
+      730,
+      700,
+      1100,
+      1030
+    ],
+    "grate": [
+      80,
+      790,
+      650,
+      1040
+    ]
+  },
+  "crops": [
+    {
+      "stage": "iteration2",
+      "region": "red-edge",
+      "source": "before-clean.png",
+      "sourceSha256": "9592daaed8b3b3d692795a73daa22a36ff9e97da7370b478c4dc7b82563c2e61",
+      "artifactSha256": "8d0da9eb540d3373eee1a33fecd49381d46e64c797afb6dd28c0c76ebe8a3e08",
+      "metadata": "baseline-capture.json",
+      "bounds": [
+        160,
+        420,
+        420,
+        640
+      ],
+      "output": "details/iteration2-red-edge.png",
+      "outputSha256": "3aa882c47a57ef072f1f19d8237a58640c9a50c0c5b487f081d79f444bcc1830"
+    },
+    {
+      "stage": "iteration2",
+      "region": "wall",
+      "source": "before-clean.png",
+      "sourceSha256": "9592daaed8b3b3d692795a73daa22a36ff9e97da7370b478c4dc7b82563c2e61",
+      "artifactSha256": "8d0da9eb540d3373eee1a33fecd49381d46e64c797afb6dd28c0c76ebe8a3e08",
+      "metadata": "baseline-capture.json",
+      "bounds": [
+        800,
+        240,
+        1000,
+        660
+      ],
+      "output": "details/iteration2-wall.png",
+      "outputSha256": "68f6d9095ab7e4816e7be5473eb7860d075be4623df0ab445e88eaf4d5182564"
+    },
+    {
+      "stage": "iteration2",
+      "region": "pipes",
+      "source": "before-clean.png",
+      "sourceSha256": "9592daaed8b3b3d692795a73daa22a36ff9e97da7370b478c4dc7b82563c2e61",
+      "artifactSha256": "8d0da9eb540d3373eee1a33fecd49381d46e64c797afb6dd28c0c76ebe8a3e08",
+      "metadata": "baseline-capture.json",
+      "bounds": [
+        730,
+        700,
+        1100,
+        1030
+      ],
+      "output": "details/iteration2-pipes.png",
+      "outputSha256": "a6b3f593ba517365a071e6cb7f1c354ac41b95b52c389c10ec4d6154169f5f9d"
+    },
+    {
+      "stage": "iteration2",
+      "region": "grate",
+      "source": "before-clean.png",
+      "sourceSha256": "9592daaed8b3b3d692795a73daa22a36ff9e97da7370b478c4dc7b82563c2e61",
+      "artifactSha256": "8d0da9eb540d3373eee1a33fecd49381d46e64c797afb6dd28c0c76ebe8a3e08",
+      "metadata": "baseline-capture.json",
+      "bounds": [
+        80,
+        790,
+        650,
+        1040
+      ],
+      "output": "details/iteration2-grate.png",
+      "outputSha256": "c0c81543c673fef11333dab897b0b69ba78189295d595a1adc583a62196bc4cc"
+    },
+    {
+      "stage": "p0",
+      "region": "red-edge",
+      "source": "checkpoints/p0-clean.png",
+      "sourceSha256": "7c44e2ff6a3c8eb6b0f35cecde341a032ee0c184314242b6fcbbfabf03b651e7",
+      "artifactSha256": "590d86735e840cad1fa4d116c4d17ab38913329c4d46be35239bd95ee789a51a",
+      "metadata": "checkpoints/p0-capture.json",
+      "bounds": [
+        160,
+        420,
+        420,
+        640
+      ],
+      "output": "details/p0-red-edge.png",
+      "outputSha256": "591b8b9a316144793ff2cbaf403d1b2414119a5cabc15a660b116254fcb91b20"
+    },
+    {
+      "stage": "p0",
+      "region": "wall",
+      "source": "checkpoints/p0-clean.png",
+      "sourceSha256": "7c44e2ff6a3c8eb6b0f35cecde341a032ee0c184314242b6fcbbfabf03b651e7",
+      "artifactSha256": "590d86735e840cad1fa4d116c4d17ab38913329c4d46be35239bd95ee789a51a",
+      "metadata": "checkpoints/p0-capture.json",
+      "bounds": [
+        800,
+        240,
+        1000,
+        660
+      ],
+      "output": "details/p0-wall.png",
+      "outputSha256": "2815b3cf075107d4e00a8cf2dc7e31afd3c5ef6bd663c380eb77700483173040"
+    },
+    {
+      "stage": "p0",
+      "region": "pipes",
+      "source": "checkpoints/p0-clean.png",
+      "sourceSha256": "7c44e2ff6a3c8eb6b0f35cecde341a032ee0c184314242b6fcbbfabf03b651e7",
+      "artifactSha256": "590d86735e840cad1fa4d116c4d17ab38913329c4d46be35239bd95ee789a51a",
+      "metadata": "checkpoints/p0-capture.json",
+      "bounds": [
+        730,
+        700,
+        1100,
+        1030
+      ],
+      "output": "details/p0-pipes.png",
+      "outputSha256": "4affd71990f48794ab28eaf89bf79c555c907121bcdd44a349b2f2da8c964316"
+    },
+    {
+      "stage": "p0",
+      "region": "grate",
+      "source": "checkpoints/p0-clean.png",
+      "sourceSha256": "7c44e2ff6a3c8eb6b0f35cecde341a032ee0c184314242b6fcbbfabf03b651e7",
+      "artifactSha256": "590d86735e840cad1fa4d116c4d17ab38913329c4d46be35239bd95ee789a51a",
+      "metadata": "checkpoints/p0-capture.json",
+      "bounds": [
+        80,
+        790,
+        650,
+        1040
+      ],
+      "output": "details/p0-grate.png",
+      "outputSha256": "2bc1792413646400e13731a851cbb15df4b8ed9da50ebe7251ae6e55c39d1a95"
+    },
+    {
+      "stage": "materials",
+      "region": "red-edge",
+      "source": "checkpoints/materials-clean.png",
+      "sourceSha256": "f980e463bb34d369cbb1d6158a61891a9fec613008480721c582d08c3ad0a15b",
+      "artifactSha256": "106514e36fab72a46d890aee7bbe4bd3fe9df66c382a8ad2c5fe766f532c5e1d",
+      "metadata": "checkpoints/materials-capture.json",
+      "bounds": [
+        160,
+        420,
+        420,
+        640
+      ],
+      "output": "details/materials-red-edge.png",
+      "outputSha256": "fb0716c2ea0aaa84fb0d49c913259f09c2106fb508e9656be0a4558ab313ad74"
+    },
+    {
+      "stage": "materials",
+      "region": "wall",
+      "source": "checkpoints/materials-clean.png",
+      "sourceSha256": "f980e463bb34d369cbb1d6158a61891a9fec613008480721c582d08c3ad0a15b",
+      "artifactSha256": "106514e36fab72a46d890aee7bbe4bd3fe9df66c382a8ad2c5fe766f532c5e1d",
+      "metadata": "checkpoints/materials-capture.json",
+      "bounds": [
+        800,
+        240,
+        1000,
+        660
+      ],
+      "output": "details/materials-wall.png",
+      "outputSha256": "0a1eb3dea863e196beaf9da96d417e76261470503afeef0f5b7f2c230f260f7f"
+    },
+    {
+      "stage": "materials",
+      "region": "pipes",
+      "source": "checkpoints/materials-clean.png",
+      "sourceSha256": "f980e463bb34d369cbb1d6158a61891a9fec613008480721c582d08c3ad0a15b",
+      "artifactSha256": "106514e36fab72a46d890aee7bbe4bd3fe9df66c382a8ad2c5fe766f532c5e1d",
+      "metadata": "checkpoints/materials-capture.json",
+      "bounds": [
+        730,
+        700,
+        1100,
+        1030
+      ],
+      "output": "details/materials-pipes.png",
+      "outputSha256": "94df18e72398d5b7551769e40a98020923acdc550a9ee770fb7032cf206b41a1"
+    },
+    {
+      "stage": "materials",
+      "region": "grate",
+      "source": "checkpoints/materials-clean.png",
+      "sourceSha256": "f980e463bb34d369cbb1d6158a61891a9fec613008480721c582d08c3ad0a15b",
+      "artifactSha256": "106514e36fab72a46d890aee7bbe4bd3fe9df66c382a8ad2c5fe766f532c5e1d",
+      "metadata": "checkpoints/materials-capture.json",
+      "bounds": [
+        80,
+        790,
+        650,
+        1040
+      ],
+      "output": "details/materials-grate.png",
+      "outputSha256": "81d5ba89d5158d9ed6463da602c5dae05aff6e050f0710d417212c5bc59e1bdf"
+    },
+    {
+      "stage": "final",
+      "region": "red-edge",
+      "source": "after-clean.png",
+      "sourceSha256": "871fd3501be8f6d2a6b5e764768e7b47b28f4d813edf966376bc318ddca26a2b",
+      "artifactSha256": "8e6cec19966228ee8f5a0ec4b39b9a7a7d22be85237e4d5a89b521c38091d281",
+      "metadata": "after-capture.json",
+      "bounds": [
+        160,
+        420,
+        420,
+        640
+      ],
+      "output": "details/final-red-edge.png",
+      "outputSha256": "83726b446436a2c8dc1192834ad073ce11c10e114c66d1c4fbe4724a29da0fa3"
+    },
+    {
+      "stage": "final",
+      "region": "wall",
+      "source": "after-clean.png",
+      "sourceSha256": "871fd3501be8f6d2a6b5e764768e7b47b28f4d813edf966376bc318ddca26a2b",
+      "artifactSha256": "8e6cec19966228ee8f5a0ec4b39b9a7a7d22be85237e4d5a89b521c38091d281",
+      "metadata": "after-capture.json",
+      "bounds": [
+        800,
+        240,
+        1000,
+        660
+      ],
+      "output": "details/final-wall.png",
+      "outputSha256": "c54f8fe29dc1b7692c66fe0d806c730cade1aea8cb29d627641f00bd14608724"
+    },
+    {
+      "stage": "final",
+      "region": "pipes",
+      "source": "after-clean.png",
+      "sourceSha256": "871fd3501be8f6d2a6b5e764768e7b47b28f4d813edf966376bc318ddca26a2b",
+      "artifactSha256": "8e6cec19966228ee8f5a0ec4b39b9a7a7d22be85237e4d5a89b521c38091d281",
+      "metadata": "after-capture.json",
+      "bounds": [
+        730,
+        700,
+        1100,
+        1030
+      ],
+      "output": "details/final-pipes.png",
+      "outputSha256": "4019c62fe79e07a158af739e06c04241bcf30aaf86a35dc4471deb7d966ac1a8"
+    },
+    {
+      "stage": "final",
+      "region": "grate",
+      "source": "after-clean.png",
+      "sourceSha256": "871fd3501be8f6d2a6b5e764768e7b47b28f4d813edf966376bc318ddca26a2b",
+      "artifactSha256": "8e6cec19966228ee8f5a0ec4b39b9a7a7d22be85237e4d5a89b521c38091d281",
+      "metadata": "after-capture.json",
+      "bounds": [
+        80,
+        790,
+        650,
+        1040
+      ],
+      "output": "details/final-grate.png",
+      "outputSha256": "b164bfffbecc2262bb323f2fa15d170d2a04a333ca537acdc84c85232ad294cd"
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "artifactSha256": "8e6cec19966228ee8f5a0ec4b39b9a7a7d22be85237e4d5a89b521c38091d281",
+  "rawBytes": 140511,
+  "gzipBytes": 45417,
+  "baselineCommit": "56b0255e8b97ff3ac8458317e381202fc7e9fdb3",
+  "baselineArtifactSha256": "8d0da9eb540d3373eee1a33fecd49381d46e64c797afb6dd28c0c76ebe8a3e08",
+  "baselineRawBytes": 128893,
+  "baselineGzipBytes": 41027,
+  "seed": 15515657,
+  "time": 12,
+  "hero": {
+    "position": [
+      -2.35,
+      1.72,
+      27.5
+    ],
+    "target": [
+      -13.5,
+      1.78,
+      61
+    ],
+    "fov": 64
+  },
+  "viewport": [
+    1920,
+    1080
+  ],
+  "quality": "High",
+  "devicePixelRatio": 1,
+  "msaa": 4,
+  "hardwareAcceptance": "BLOCKED",
+  "artDirection": "NOT ACCEPTED"
+}

@@ -5,10 +5,10 @@ import {resolve} from 'node:path';
 import {createHash} from 'node:crypto';
 const {chromium}=createRequire(import.meta.url)('playwright');
 const root=resolve(import.meta.dirname,'..'),baseline=process.argv.includes('--baseline');
-const out=resolve(root,process.env.QA_DIR||'docs/qa/overhaul-v1/iteration-2');await mkdir(out,{recursive:true});
+const out=resolve(root,process.env.QA_DIR||'docs/qa/overhaul-v1/iteration-3');await mkdir(out,{recursive:true});
 const tag=process.env.QA_TAG||(baseline?'before':'after');
-const url=process.env.ECHO_URL||`http://localhost:${baseline?4175:4173}/index.html?test=1&readback=1&view=4&quality=High`;
-const artifact=process.env.ECHO_ARTIFACT||(baseline?'/tmp/echo9-v2-baseline/index.html':resolve(root,'index.html'));
+const url=process.env.ECHO_URL||`http://localhost:${baseline?4177:4173}/index.html?test=1&readback=1&view=4&quality=High`;
+const artifact=process.env.ECHO_ARTIFACT||(baseline?'/tmp/echo9-v3-baseline/index.html':resolve(root,'index.html'));
 const artifactSha256=createHash('sha256').update(await readFile(artifact)).digest('hex');
 const browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH||'/home/agent/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome',headless:true,args:['--no-sandbox','--enable-unsafe-webgpu','--use-angle=swiftshader']});
 const context=await browser.newContext({viewport:{width:1920,height:1080},deviceScaleFactor:1});
@@ -45,6 +45,10 @@ try{
  await page.screenshot({path:resolve(out,`${tag}-hud.png`)});
  metadata.report=await page.evaluate(()=>window.echo9.getReport());
  metadata.hdrDiagnostics=await page.evaluate(async()=>window.echo9.getHdrDiagnostics?await window.echo9.getHdrDiagnostics():null);
+ if(process.env.ECHO_SHADOW_SAMPLES){
+  const samples=JSON.parse(await readFile(resolve(root,process.env.ECHO_SHADOW_SAMPLES),'utf8')).samples;
+  metadata.shadowDiagnostics=await page.evaluate(samples=>window.echo9.getShadowDiagnostics(samples,1),samples);
+ }
  metadata.errors=errors;
  metadata.unexpectedRequests=requests.filter(r=>!r.startsWith(new URL(url).origin)&&!r.startsWith('data:'));
  if(errors.length||metadata.unexpectedRequests.length)process.exitCode=1;

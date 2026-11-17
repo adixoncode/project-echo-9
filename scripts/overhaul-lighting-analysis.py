@@ -4,11 +4,11 @@ import json,os
 import numpy as np
 from PIL import Image
 root=Path(__file__).resolve().parents[1]
-out=root/os.environ.get('QA_DIR','docs/qa/overhaul-v1/iteration-2')
+out=root/os.environ.get('QA_DIR','docs/qa/overhaul-v1/iteration-3')
 regions={'cold_middle_rib':[.43,.12,.50,.66], 'red_depth':[.23,.37,.36,.58],
          'floor_reflection':[.10,.56,.45,.94], 'dark_foreground':[.65,.08,1.,.90]}
 result={'method':'Same camera encoded-sRGB patches; regions from preimplementation image-space brief. Different reference framing is not scored with these regions. No thresholds establish artistic acceptance.', 'regions':regions,'captures':{}}
-for name,file in [('before','before-clean.png'),('hdr','checkpoints/hdr-clean.png'),('relit','checkpoints/relit-clean.png'),('after','after-clean.png')]:
+for name,file in [('before','before-clean.png'),('p0','checkpoints/p0-clean.png'),('materials','checkpoints/materials-clean.png'),('after','after-clean.png')]:
  path=out/file
  if not path.exists():continue
  rgb=np.asarray(Image.open(path).convert('RGB'),dtype=np.float64)/255

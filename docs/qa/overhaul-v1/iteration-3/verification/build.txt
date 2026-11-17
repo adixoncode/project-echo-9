@@ -1,0 +1,5 @@
+
+> project-echo-9@1.0.0 build
+> node scripts/build.mjs
+
+Built standalone index.html: 140,511 bytes raw · 45,417 bytes gzip

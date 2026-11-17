@@ -1,10 +1,10 @@
 import {COMMON} from './shaders.js';
 import {CORRIDOR_LIGHTING_WGSL} from './corridor-lights.js';
-export const CORRIDOR_SHADER=COMMON+CORRIDOR_LIGHTING_WGSL+/* wgsl */`
-struct CorridorIn {@location(0) position:vec3<f32>,@location(1) normal:vec3<f32>,@location(2) color:vec3<f32>,@location(3) material:vec3<f32>};
-struct CorridorOut {@builtin(position) position:vec4<f32>,@location(0) world:vec3<f32>,@location(1) normal:vec3<f32>,@location(2) color:vec3<f32>,@location(3) material:vec3<f32>};
+export const CORRIDOR_SHADER='diagnostic(off, derivative_uniformity);\n'+COMMON+CORRIDOR_LIGHTING_WGSL+/* wgsl */`
+struct CorridorIn {@location(0) position:vec3<f32>,@location(1) normal:vec3<f32>,@location(2) color:vec3<f32>,@location(3) material:vec3<f32>,@location(4) local:vec4<f32>,@location(5) shape:vec4<f32>};
+struct CorridorOut {@builtin(position) position:vec4<f32>,@location(0) world:vec3<f32>,@location(1) normal:vec3<f32>,@location(2) color:vec3<f32>,@location(3) material:vec3<f32>,@location(4) local:vec4<f32>,@location(5) shape:vec4<f32>};
 @vertex fn corridorVertex(input:CorridorIn)->CorridorOut{
-  var o:CorridorOut;o.position=u.viewProjection*vec4(input.position,1.);o.world=input.position;o.normal=input.normal;o.color=input.color;o.material=input.material;return o;
+  var o:CorridorOut;o.position=u.viewProjection*vec4(input.position,1.);o.world=input.position;o.normal=input.normal;o.color=input.color;o.material=input.material;o.local=input.local;o.shape=input.shape;return o;
 }
 fn fresnelSchlick(cosine:f32,f0:vec3<f32>)->vec3<f32>{return f0+(1.-f0)*pow(1.-clamp(cosine,0.,1.),5.);}
 fn ggx(n:vec3<f32>,v:vec3<f32>,l:vec3<f32>,base:vec3<f32>,roughness:f32,metal:f32)->vec3<f32>{
@@ -38,23 +38,76 @@ fn environmentBRDF(rough:f32,nv:f32)->vec2<f32>{
   let r=rough*c0+c1;let a004=min(r.x*r.x,exp2(-9.28*nv))*r.x+r.y;
   return vec2(-1.04,1.04)*a004+r.zw;
 }
+// Original ECHO-9 adaptation of footprint-filtered procedural detail. Unresolved
+// octaves converge to their mean instead of turning into speckle or moire.
+fn materialNoise(q:vec3<f32>)->f32{
+  let footprint=max(length(dpdx(q)),length(dpdy(q)));
+  let resolved=select(1.,1.-smoothstep(.16,.62,footprint),lighting.options.w>.5);
+  return mix(.5,noise(q),resolved);
+}
 fn surfaceColor(input:CorridorOut,n:vec3<f32>,v:vec3<f32>,useEnvironment:bool,receiverNormal:vec3<f32>)->vec3<f32>{
   let p=input.world;let emission=input.material.x;
   if(emission>0.){return input.color*emission;}
-  let broadVariation=noise(p*vec3(3.1,.85,2.1));let stains=noise(p*vec3(7.,.55,4.));
-  let wear=pow(max(0.,noise(p*vec3(17.,4.,13.))-.58),2.)*.5;
-  var base=input.color*(.84+.23*broadVariation);
-  // Low-amplitude wear changes roughness and reflectance, never replaces geometry.
-  base=mix(base,vec3(.105,.05,.025),smoothstep(.69,.86,stains)*.18);
-  let floorFacing=abs(n.y)>.8;
-  let rough=clamp(input.material.y+select(.11,.08,floorFacing)+(stains-.5)*.15+wear,.25,.92);let metal=clamp(input.material.z-stains*.035,0.,1.);
-  var shadingNormal=n;
-  if(floorFacing){
-    shadingNormal=normalize(n+vec3(sin(p.z*.83+p.x*1.9)*.026,0.,sin(p.x*2.4+p.z*.19)*.015));
+  let local=input.local.xyz;let family=i32(input.local.w+.5);
+  let coarse=materialNoise(p*vec3(.75,.42,.6));
+  let mottling=materialNoise(p*vec3(3.7,2.9,3.2));
+  let grain=materialNoise(p*vec3(21.,18.,23.));
+  let fine=materialNoise(p*vec3(92.,85.,96.));
+  let brush=materialNoise(vec3(local.x*75.,local.y*.8,local.z*75.));
+  let streak=materialNoise(vec3(p.x*18.,p.y*.65,p.z*19.));
+  let broken=materialNoise(p*vec3(36.,22.,31.));
+  let distances=max(input.shape.xyz-abs(local),vec3(0.));
+  // Second-smallest distance is the in-face distance to a real primitive edge.
+  // It ignores the zero distance along the face normal and follows chamfered ribs.
+  let edge=min(max(distances.x,distances.y),min(max(distances.x,distances.z),max(distances.y,distances.z)));
+  let chip=(1.-smoothstep(.008,.048,edge))*smoothstep(.32,.72,mottling*.55+broken*.45);
+  let joint=(1.-smoothstep(.045,.17,edge))*(1.-chip);
+  let runoff=smoothstep(.48,.72,streak)*smoothstep(.23,.8,coarse);
+  var base=input.color;var rough=input.material.y;var metal=input.material.z;
+  var slope=vec2((grain-.5)*.065,(mottling-.5)*.035);
+  if(family==1){
+    // Pigmented paint is dielectric. Exposed chips reveal the conductive substrate.
+    base*=.88+coarse*.14+mottling*.08;
+    base=mix(base,vec3(.15,.165,.17),chip*.72);
+    base*=1.-joint*.48-runoff*.23;
+    rough=clamp(.64+(mottling-.5)*.20+runoff*.11-chip*.22,.39,.92);
+    metal=mix(.07,.82,chip);
+  }else if(family==2){
+    base*=.86+coarse*.14+mottling*.10;
+    base=mix(base,vec3(.065,.074,.08),chip*.35);base*=1.-joint*.32;
+    rough=clamp(.70+(grain-.5)*.16+runoff*.1-chip*.17,.48,.92);metal=.72;
+    slope*=.6;
+  }else if(family==3){
+    // Brushing runs along each authored tube, distinct from cross-panel wear.
+    let oxidation=smoothstep(.5,.76,coarse*.6+streak*.4);
+    base*=.42+coarse*.23+brush*.13;
+    base=mix(base,vec3(.052,.049,.044),oxidation*.34);
+    rough=clamp(.45+(mottling-.5)*.20+(brush-.5)*.13+oxidation*.14,.32,.78);metal=.88;
+    slope=vec2((brush-.5)*.10,(grain-.5)*.018);
+  }else if(family==4){
+    // Oxidised grate crests catch broken reflections; troughs retain grease.
+    let crest=smoothstep(.015,.04,local.y+input.shape.y);
+    base*=.39+coarse*.28+grain*.13;
+    base=mix(base,vec3(.038,.027,.019),runoff*.23);
+    rough=clamp(.59+(grain-.5)*.22+runoff*.13-crest*.04,.43,.88);metal=.78;
+    slope*=.55;
+  }else if(family==5){
+    base=vec3(.009,.011,.013)*(.75+coarse*.35);
+    rough=.83+(mottling-.5)*.09;metal=.015;slope*=.45;
   }else{
-    let tangent=normalize(cross(n,vec3(0.,1.,0.)));let bitangent=cross(n,tangent);
-    shadingNormal=normalize(n+tangent*(noise(p*vec3(.45,3.,.45))-.5)*.025+bitangent*(noise(p*vec3(2.,.3,2.))-.5)*.012);
+    base*=.65+coarse*.14+mottling*.09;
+    base=mix(base,vec3(.08,.043,.026),runoff*.23);base*=1.-joint*.32;
+    rough=clamp(.53+(mottling-.5)*.22+(grain-.5)*.11+runoff*.16-chip*.10,.34,.88);metal=.85;
   }
+  base*=.94+(fine-.5)*.055;
+  let helper=select(vec3(0.,1.,0.),vec3(1.,0.,0.),abs(n.y)>.92);
+  let tangent=normalize(cross(n,helper));let bitangent=cross(n,tangent);
+  let shadingNormal=normalize(n+tangent*slope.x+bitangent*slope.y);
+  // Unresolved micro-slope and across-pixel normal variation widen the GGX lobe.
+  // This is an industrial-material model, not the source ocean's LEAN constants.
+  let footprint=max(length(dpdx(p)),length(dpdy(p)));
+  let variance=dot(dpdx(shadingNormal),dpdx(shadingNormal))+dot(dpdy(shadingNormal),dpdy(shadingNormal));
+  if(lighting.options.w>.5){rough=pow(clamp(pow(rough,4.)+min(.045,variance*.35)+smoothstep(.008,.075,footprint)*.008,.001,1.),.25);}
   var color=directRadiance(p,shadingNormal,v,base,rough,metal,receiverNormal);
   if(useEnvironment && lighting.options.y>.5){
     let nv=max(dot(shadingNormal,v),.001);let reflected=reflect(-v,shadingNormal);

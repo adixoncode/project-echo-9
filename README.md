@@ -78,4 +78,12 @@ The approved second iteration keeps the corridor camera/seed/route and other sec
 
 `&fog=0` and `&bloom=0` join the existing shadow/probe diagnostic switches. `window.echo9.getHdrDiagnostics()` performs an on-demand readback of actual HDR buffers; it is not part of normal frame timing. `QA_DIR` selects a separate output directory for browser/overhaul QA; `QA_OUT` selects smoke/fallback report paths.
 
-Current images, source hashes, staged diagnostics, tests, approximations and independent review are in [iteration 2 results](docs/qa/overhaul-v1/iteration-2/RESULTS.md). The full route is functionally verified using software readback; native performance and smoothness remain BLOCKED. Art direction is NOT ACCEPTED pending Adrian's assessment. STOP after this candidate: no iteration 3 or other-sector overhaul without separate owner approval.
+Historical iteration2 images, source hashes, staged diagnostics, tests, approximations and independent review are in [iteration 2 results](docs/qa/overhaul-v1/iteration-2/RESULTS.md). Its stop was subsequently superseded only by Adrian's explicit iteration3 approval in Issue #3. Native performance and smoothness remain BLOCKED; neither iteration is accepted art until Adrian approves.
+
+## Corridor iteration 3 — materials, red-light continuity and depth
+
+Issue #3 authorizes this corridor-only candidate. A near-emitter mounting ear clipped by the shadow camera caused the abrupt red-wall boundary; the physical fixture correction preserves genuine occlusion. Six procedural surface families add edge/joint wear, footprint filtering and GGX specular AA. Restrained relighting, source-path atmospheric extinction and an AgX final transfer refine the candidate without changing camera/route or other-sector content.
+
+Actual FullHD clean/HUD images, matched P0 crops, same-light material stages, AgX/detail-AA A/B, pixel regressions and independent reference-relative review are in [iteration3 results](docs/qa/overhaul-v1/iteration-3/RESULTS.md). See [technical limits](docs/qa/overhaul-v1/iteration-3/TECHNICAL-REPORT.md), [reproduction](docs/qa/overhaul-v1/iteration-3/REPRODUCE.md) and [third-party attribution](THIRD_PARTY_NOTICES.md). The standalone artifact is140,511 raw /45,417 gzip bytes. Diagnostic `&grade=legacy` and `&detailAA=0` support static comparisons; inherited feature switches have [explicit cached-contribution limits](docs/qa/overhaul-v1/iteration-3/ABLATION-SCOPE.md).
+
+**ART DIRECTION: NOT ACCEPTED. Hardware GPU /60FPS /native temporal acceptance: BLOCKED.** Technical checks and software renders do not imply portfolio-quality art or hardware performance. STOP after this reviewed candidate; no iteration4 or other-sector overhaul without Adrian's separate approval. Issue #1 remains open.

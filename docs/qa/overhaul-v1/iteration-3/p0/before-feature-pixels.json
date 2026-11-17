@@ -1,0 +1,145 @@
+{
+  "warning": "RGB differences are encoded display values, not linear scattering energy; cone and unoccluded source radiance are measured separately in before-measurements.json",
+  "samples": [
+    {
+      "pixel": [
+        300,
+        530
+      ],
+      "encodedRGB": {
+        "red-only": [
+          152,
+          15,
+          10
+        ],
+        "red-no-atmosphere": [
+          170,
+          17,
+          11
+        ],
+        "red-no-shadow": [
+          170,
+          17,
+          11
+        ]
+      },
+      "atmosphereEncodedDelta": [
+        -18,
+        -2,
+        -1
+      ]
+    },
+    {
+      "pixel": [
+        300,
+        540
+      ],
+      "encodedRGB": {
+        "red-only": [
+          14,
+          3,
+          2
+        ],
+        "red-no-atmosphere": [
+          1,
+          2,
+          2
+        ],
+        "red-no-shadow": [
+          167,
+          17,
+          11
+        ]
+      },
+      "atmosphereEncodedDelta": [
+        13,
+        1,
+        0
+      ]
+    },
+    {
+      "pixel": [
+        320,
+        520
+      ],
+      "encodedRGB": {
+        "red-only": [
+          140,
+          13,
+          9
+        ],
+        "red-no-atmosphere": [
+          159,
+          16,
+          10
+        ],
+        "red-no-shadow": [
+          159,
+          16,
+          10
+        ]
+      },
+      "atmosphereEncodedDelta": [
+        -19,
+        -3,
+        -1
+      ]
+    },
+    {
+      "pixel": [
+        320,
+        530
+      ],
+      "encodedRGB": {
+        "red-only": [
+          23,
+          3,
+          3
+        ],
+        "red-no-atmosphere": [
+          1,
+          2,
+          2
+        ],
+        "red-no-shadow": [
+          158,
+          15,
+          10
+        ]
+      },
+      "atmosphereEncodedDelta": [
+        22,
+        1,
+        1
+      ]
+    },
+    {
+      "pixel": [
+        280,
+        540
+      ],
+      "encodedRGB": {
+        "red-only": [
+          30,
+          4,
+          3
+        ],
+        "red-no-atmosphere": [
+          1,
+          2,
+          2
+        ],
+        "red-no-shadow": [
+          172,
+          17,
+          12
+        ]
+      },
+      "atmosphereEncodedDelta": [
+        29,
+        2,
+        1
+      ]
+    }
+  ]
+}

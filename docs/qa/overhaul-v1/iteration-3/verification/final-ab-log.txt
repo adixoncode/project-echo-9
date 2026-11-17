@@ -1,0 +1,13 @@
+Captured default-ab
+Captured legacy-grade
+Captured no-detail-aa
+Captured restored-default-ab
+<string>:5: DeprecationWarning: Image.Image.getdata is deprecated and will be removed in Pillow 14 (2027-10-15). Use get_flattened_data instead.
+<string>:5: DeprecationWarning: Image.Image.getdata is deprecated and will be removed in Pillow 14 (2027-10-15). Use get_flattened_data instead.
+{
+  "status": "PASS",
+  "artifactSha256": "8e6cec19966228ee8f5a0ec4b39b9a7a7d22be85237e4d5a89b521c38091d281",
+  "errors": [],
+  "unexpectedRequests": [],
+  "failure": null
+}

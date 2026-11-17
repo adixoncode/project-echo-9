@@ -1,0 +1,5 @@
+{
+  "artifactSha256": "0c74856a3e4da2e9097dc8054026097be3452dae759f7874636724edd42809f9",
+  "method": "Exact reconstruction from frozen P0 sources with the unchanged baseline corridor fixture; SHA matches actual before GPU metadata. No runtime checkout rollback.",
+  "rawBytes": 130490
+}

@@ -1,0 +1,4 @@
+Captured no-shadows
+Captured no-environment
+Captured no-atmosphere
+Captured no-bloom

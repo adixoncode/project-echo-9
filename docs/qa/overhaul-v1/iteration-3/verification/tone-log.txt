@@ -1,0 +1,238 @@
+{
+  "rawHalf": [
+    17408,
+    14336,
+    10854,
+    15360,
+    12739,
+    12739,
+    12739,
+    15360,
+    19456,
+    18432,
+    16384,
+    15360,
+    0,
+    0,
+    0,
+    15360,
+    14950,
+    14541,
+    13926,
+    0
+  ],
+  "encodedRGBA": [
+    250,
+    182,
+    133,
+    255,
+    127,
+    127,
+    127,
+    255,
+    255,
+    248,
+    231,
+    255,
+    0,
+    0,
+    0,
+    255,
+    38,
+    64,
+    89,
+    255
+  ],
+  "legacyRGBA": [
+    38,
+    64,
+    89,
+    255,
+    38,
+    64,
+    89,
+    255,
+    38,
+    64,
+    89,
+    255,
+    38,
+    64,
+    89,
+    255,
+    38,
+    64,
+    89,
+    255
+  ],
+  "errors": [],
+  "adapter": {
+    "vendor": "google",
+    "architecture": "swiftshader",
+    "isFallbackAdapter": true
+  },
+  "format": "rgba16float",
+  "msaa": 4,
+  "displayFormat": "rgba8unorm",
+  "samples": [
+    {
+      "input": [
+        4,
+        0.5,
+        0.05
+      ],
+      "halfRounded": [
+        4,
+        0.5,
+        0.04998779296875
+      ],
+      "actual": [
+        250,
+        182,
+        133,
+        255
+      ],
+      "expected": [
+        250,
+        182,
+        133,
+        255
+      ],
+      "maxDifferenceLSB": 0,
+      "wrongDoubleGammaWouldBe": [
+        253,
+        219,
+        190
+      ]
+    },
+    {
+      "input": [
+        0.18,
+        0.18,
+        0.18
+      ],
+      "halfRounded": [
+        0.1800537109375,
+        0.1800537109375,
+        0.1800537109375
+      ],
+      "actual": [
+        127,
+        127,
+        127,
+        255
+      ],
+      "expected": [
+        127,
+        127,
+        127,
+        255
+      ],
+      "maxDifferenceLSB": 0,
+      "wrongDoubleGammaWouldBe": [
+        186,
+        186,
+        186
+      ]
+    },
+    {
+      "input": [
+        16,
+        8,
+        2
+      ],
+      "halfRounded": [
+        16,
+        8,
+        2
+      ],
+      "actual": [
+        255,
+        248,
+        231,
+        255
+      ],
+      "expected": [
+        255,
+        248,
+        231,
+        255
+      ],
+      "maxDifferenceLSB": 0,
+      "wrongDoubleGammaWouldBe": [
+        255,
+        252,
+        244
+      ]
+    },
+    {
+      "input": [
+        0,
+        0,
+        0
+      ],
+      "halfRounded": [
+        0,
+        0,
+        0
+      ],
+      "actual": [
+        0,
+        0,
+        0,
+        255
+      ],
+      "expected": [
+        0,
+        0,
+        0,
+        255
+      ],
+      "maxDifferenceLSB": 0,
+      "wrongDoubleGammaWouldBe": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "input": [
+        0.8,
+        0.6,
+        0.4
+      ],
+      "halfRounded": [
+        0.7998046875,
+        0.60009765625,
+        0.39990234375
+      ],
+      "actual": [
+        38,
+        64,
+        89,
+        255
+      ],
+      "expected": [
+        38,
+        64,
+        89,
+        255
+      ],
+      "maxDifferenceLSB": 0,
+      "wrongDoubleGammaWouldBe": [
+        225,
+        218,
+        209
+      ]
+    }
+  ],
+  "status": "PASS",
+  "legacyBypassExact": true,
+  "grey18DoubleGammaDifferenceLSB": 59,
+  "artifactSha256": "8e6cec19966228ee8f5a0ec4b39b9a7a7d22be85237e4d5a89b521c38091d281",
+  "productionFunctionSha256": "4943398e3aeb8d985ca7c37c61c0f9f4f3e5404d4a313ef06731d221c3f4de95",
+  "productionFunction": "CORRIDOR_FINAL_SHADER.agxDisplay, exact extracted WGSL",
+  "transfer": "Linear HDR -> inset/log/contrast/outset -> encoded unorm; no extra gamma",
+  "hardwareAcceptance": "BLOCKED",
+  "scope": "Actual format/MSAA/production transfer and exact legacy bypass calibration; no performance or art acceptance"
+}

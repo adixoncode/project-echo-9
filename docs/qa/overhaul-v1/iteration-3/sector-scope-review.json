@@ -1,0 +1,20 @@
+{
+  "artifactSha256": "8e6cec19966228ee8f5a0ec4b39b9a7a7d22be85237e4d5a89b521c38091d281",
+  "reviewer": "Root, exact pixel differences plus actual hangar image and source-scope inspection",
+  "reviews": [
+    {
+      "view": 6,
+      "beforeSha256": "f6b0d4ad244822e4e432281925adc07e9d20667312f216e04cdc5204453d2371",
+      "afterSha256": "3a27a71299fcf612a73ce6e2aa52a8ba4a62ab5695e9b795a87920f54e03db7c",
+      "status": "PASS",
+      "changedPixels": 56351,
+      "changedBoundingBox": [
+        1520,
+        409,
+        1795,
+        644
+      ],
+      "reason": "All 56,351 changed pixels are confined to the visible corridor interior and mixed MSAA doorway edge [1520,409,1795,644]. The hangar scene/image outside this rectangle is exactly identical. Inspection confirms the corridor is the changed object; legacy geometry/material/RNG data and the other four sector frames remain identical. No normalization or generic tolerance."
+    }
+  ]
+}

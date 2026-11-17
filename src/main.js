@@ -139,7 +139,7 @@ async function initialize(){
     }
     createPipelines();await compilationChecks;
     corridorScene=buildCorridor();navigationObstacles=scene.obstacles.concat(corridorScene.obstacles);
-    corridorRenderer=new CorridorRenderer(device,format,uniformBuffer,corridorScene,{shadows:params.get('shadows')!=='0',probe:params.get('probe')!=='0',fog:params.get('fog')!=='0',bloom:params.get('bloom')!=='0'});
+    corridorRenderer=new CorridorRenderer(device,format,uniformBuffer,corridorScene,{shadows:params.get('shadows')!=='0',probe:params.get('probe')!=='0',fog:params.get('fog')!=='0',bloom:params.get('bloom')!=='0',onlyLight:testMode?Number(params.get('onlyLight')??-1):-1,detailAA:params.get('detailAA')!=='0',grade:params.get('grade')==='legacy'?'legacy':'agx'});
     await corridorRenderer.initialize(PRESETS[quality].samples);
     resize();await corridorRenderer.atmosphereCheck;setView(params.get('view')||1);setQuality(quality);setMenu(menuOpen);
     ready=true;$('loading').hidden=true;document.body.classList.add('ready');
@@ -254,5 +254,5 @@ window.addEventListener('keydown',event=>{
 window.addEventListener('keyup',event=>keys.delete(event.code));window.addEventListener('blur',()=>keys.clear());
 document.addEventListener('mousemove',event=>{if(document.pointerLockElement===canvas&&!menuOpen){camera.yaw+=event.movementX*.0018;camera.pitch=clamp(camera.pitch+event.movementY*.0018,-1.45,1.45);}});
 document.addEventListener('pointerlockchange',()=>{document.body.classList.toggle('pointer-locked',document.pointerLockElement===canvas);});
-window.echo9={gpuInstance,get adapter(){return adapterReference;},get device(){return device;},get ready(){return ready&&startupSubmissionVerified&&(!readbackMode||presentedFrames>0);},getHdrDiagnostics:()=>corridorRenderer.post.diagnostics(),setView,setQuality,setTime,startFlythrough,stopFlythrough,getReport,getState,setMenu,get stats(){return getReport();},camera,views:VIEWS,hero:CORRIDOR_HERO};
+window.echo9={gpuInstance,get adapter(){return adapterReference;},get device(){return device;},get ready(){return ready&&startupSubmissionVerified&&(!readbackMode||presentedFrames>0);},getHdrDiagnostics:()=>corridorRenderer.post.diagnostics(),setCorridorDiagnostics:options=>corridorRenderer.setDiagnostics(options),getShadowDiagnostics:(samples,index)=>corridorRenderer.shadowDiagnostics(samples,index),setView,setQuality,setTime,startFlythrough,stopFlythrough,getReport,getState,setMenu,get stats(){return getReport();},camera,views:VIEWS,hero:CORRIDOR_HERO};
 initialize();

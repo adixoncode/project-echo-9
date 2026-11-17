@@ -1,0 +1,126 @@
+{
+  "artifactSha256": "8e6cec19966228ee8f5a0ec4b39b9a7a7d22be85237e4d5a89b521c38091d281",
+  "method": "SHA256 of unchanged actual FullHD PNG files; comparison layouts/crops are separate documentation",
+  "images": [
+    {
+      "file": "after-clean.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "sha256": "871fd3501be8f6d2a6b5e764768e7b47b28f4d813edf966376bc318ddca26a2b"
+    },
+    {
+      "file": "after-hud.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "sha256": "8115ad5d88c90a1a6e50efdef701c1a69abbc5109b00b495e32bb3fc1b7740d6"
+    },
+    {
+      "file": "after-view-1.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "sha256": "ce123c82808526e5352fdf6a945a8b75d7202b4bb5128e9fab7dfdf35f833114"
+    },
+    {
+      "file": "after-view-2.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "sha256": "fdfe96f8662a532dea01675ee72fb7c0c0c0bdd4d4691227e38249165d2d3189"
+    },
+    {
+      "file": "after-view-3.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "sha256": "911e50164fed6d93f99f2b9319b9d443c54ef3ebbfc0cdf51f4edd2302b5db5f"
+    },
+    {
+      "file": "after-view-5.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "sha256": "5c9750fbcf24ebca889971638f4614d69dcd19bf6e4820e564e5ab848c464191"
+    },
+    {
+      "file": "after-view-6.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "sha256": "3a27a71299fcf612a73ce6e2aa52a8ba4a62ab5695e9b795a87920f54e03db7c"
+    },
+    {
+      "file": "default-ab.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "sha256": "871fd3501be8f6d2a6b5e764768e7b47b28f4d813edf966376bc318ddca26a2b"
+    },
+    {
+      "file": "legacy-grade.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "sha256": "1fae7c8e2771e77e22014f499b225f40811c76a2011bdbb403d3a5890f1d98b7"
+    },
+    {
+      "file": "no-detail-aa.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "sha256": "3f14bda39dd638870c74e3f37a3083e40a47b93c5ceb2bbf0f3d2cb6754e6cd2"
+    },
+    {
+      "file": "restored-default-ab.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "sha256": "871fd3501be8f6d2a6b5e764768e7b47b28f4d813edf966376bc318ddca26a2b"
+    },
+    {
+      "file": "no-shadows.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "sha256": "314885245ac22290ae5922579422aed2c14d9ca829a5f31259d467f4850c7fcb"
+    },
+    {
+      "file": "no-environment.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "sha256": "b10383ab2ed7001be97126db40610f52a5b6522d8a45a611b5c3fce15e902425"
+    },
+    {
+      "file": "no-atmosphere.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "sha256": "44dc99d8ec924b5edb1ccde9ecaace9ffe10b03ca7ec7d6318f6d1dce403e149"
+    },
+    {
+      "file": "no-bloom.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "sha256": "eae22f4b6ddbbfff8339f21249d40bae679a2789339c12e85476b6390b543ba9"
+    }
+  ]
+}

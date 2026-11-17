@@ -1,6 +1,6 @@
 /** Diagnostic feature-off renders of the same approved candidate; no artistic revisions. */
 import {createRequire} from 'node:module';import {writeFile,readFile} from 'node:fs/promises';import {resolve} from 'node:path';import {createHash} from 'node:crypto';
-const {chromium}=createRequire(import.meta.url)('playwright');const root=resolve(import.meta.dirname,'..'),out=resolve(root,process.env.QA_DIR||'docs/qa/overhaul-v1/iteration-2');
+const {chromium}=createRequire(import.meta.url)('playwright');const root=resolve(import.meta.dirname,'..'),out=resolve(root,process.env.QA_DIR||'docs/qa/overhaul-v1/iteration-3');
 const browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH||'/home/agent/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome',headless:true,args:['--no-sandbox','--enable-unsafe-webgpu','--use-angle=swiftshader']});
 const results=[];const sha=createHash('sha256').update(await readFile(resolve(root,'index.html'))).digest('hex');
 try{

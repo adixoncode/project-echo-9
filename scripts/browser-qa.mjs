@@ -9,6 +9,7 @@ const out = resolve(root, process.env.QA_DIR || 'docs/qa');
 await mkdir(out, { recursive: true });
 const software = process.argv.includes('--software');
 const benchmark = process.argv.includes('--benchmark');
+const routeOnly = process.argv.includes('--route-only');
 const selectedURL = new URL(process.env.ECHO_URL || 'http://localhost:4173/index.html?view=1&quality=High&test=1');
 if (process.argv.includes('--readback')) selectedURL.searchParams.set('readback', '1');
 const url = selectedURL.href;
@@ -37,7 +38,7 @@ try {
   if (!(await page.evaluate(() => window.echo9?.ready))) throw new Error('Renderer initialization failed: ' + errors.join('\n'));
   await page.waitForFunction(() => window.echo9.getState().presentedFrames > 0, null, { timeout: 90000 });
   const states = [];
-  for (let view = 1; view <= 6; view++) {
+  for (const view of (routeOnly ? [] : [1,2,3,4,5,6])) {
     const previousFrames = await page.evaluate(() => window.echo9.getState().presentedFrames);
     await page.evaluate(n => window.echo9.setView(n), view);
     await page.waitForFunction(({view,previousFrames}) => { const s=window.echo9.getState(); return s.presentedView===view && s.presentedFrames>previousFrames; }, {view,previousFrames}, { timeout: 90000 });
@@ -56,6 +57,7 @@ try {
     console.log(`Captured view ${view}`);
   }
   let report = null;
+  let finalPresentedState = null;
   const flightStates = [];
   if (benchmark) {
     await page.evaluate(() => window.echo9.startFlythrough());
@@ -68,9 +70,15 @@ try {
     await page.waitForFunction(() => window.echo9.getReport().flythrough.status !== 'RUNNING', null, { timeout: software ? 120000 : 30000 });
     report = await page.evaluate(() => window.echo9.getReport());
     if (report.flythrough.status !== 'PASS') throw new Error('Flight did not complete with fixed configuration: ' + JSON.stringify(report.flythrough));
+    // CPU route completion can precede the asynchronous software readback fence.
+    // Observe a freshly presented goal frame before declaring the collection done.
+    const completedFrames = await page.evaluate(() => window.echo9.getState().presentedFrames);
+    await page.waitForFunction(n => window.echo9.getState().presentedFrames > n, completedFrames, {timeout:software ? 240000 : 30000});
+    finalPresentedState = await page.evaluate(() => window.echo9.getState());
+    if(finalPresentedState.time!==60 || finalPresentedState.flight!==null || !finalPresentedState.ready)throw new Error('Final route frame was not presented');
   }
   const result = { capturedAt: new Date().toISOString(), artifactSha256, url, browser: browser.version(), viewport: {width:1920,height:1080}, softwareFlag: software,
-    adapter, hardwareAcceptance: !adapter || adapter.isFallbackAdapter || /swiftshader|llvmpipe/i.test(JSON.stringify(adapter)) ? 'BLOCKED' : 'PENDING_REFERENCE_GPU', states, flightStates, report, errors,
+    adapter, routeOnly, hardwareAcceptance: !adapter || adapter.isFallbackAdapter || /swiftshader|llvmpipe/i.test(JSON.stringify(adapter)) ? 'BLOCKED' : 'PENDING_REFERENCE_GPU', states, flightStates, finalPresentedState, report, errors,
     unexpectedRequests: requests.filter(r => !r.startsWith(new URL(url).origin) && !r.startsWith('data:')) };
   await writeFile(resolve(out, 'browser-report.json'), JSON.stringify(result, null, 2) + '\n');
   console.log(JSON.stringify(result, null, 2));

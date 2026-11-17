@@ -7,13 +7,25 @@ import {seededRandom,normalize,cross,WORLD_SEED} from './math.js';
 // Vertex material = (emission, perceptual roughness, metallic fraction), all in linear light.
 export const CORRIDOR_HERO={position:[-2.35,1.72,27.5],target:[-13.5,1.78,61],verticalFov:64};
 export const CORRIDOR_PROBE={position:[0,2.55,38],min:[-3.9,-.25,23],max:[3.9,5.6,72],size:128,mips:8};
+export const CORRIDOR_SURFACES={paint:1,darkSteel:2,brushedTube:3,grate:4,rubber:5,wornMetal:6};
 export function buildCorridor(seed=WORLD_SEED^0xC0771D0){
   const random=seededRandom(seed),g=new Geometry(),obstacles=[];
   const paint=[.048,.055,.062],dark=[.017,.021,.026],alloy=[.32,.34,.35],steel=[.19,.215,.23],oxide=[.12,.045,.024];
+  // Separate corridor-only stream: primitive-local metres, authored material family,
+  // and half extents. The existing world's 48-byte geometry layout stays untouched.
+  const surfaceData=[];let primitive={center:[0,0,0],half:[1,1,1],basis:null,family:2};
+  const vertex=g.vertex.bind(g);
+  g.vertex=(p,n,color,emission,rough,metal)=>{
+    vertex(p,n,color,emission,rough,metal);
+    const q=p.map((v,i)=>v-primitive.center[i]),local=primitive.basis?primitive.basis.map(axis=>axis.reduce((s,v,i)=>s+v*q[i],0)):q;
+    surfaceData.push(...local,primitive.family,...primitive.half,0);
+  };
+  const familyFor=(color,metal)=>color===dark?CORRIDOR_SURFACES.darkSteel:color===steel||color===alloy||color===oxide?CORRIDOR_SURFACES.wornMetal:CORRIDOR_SURFACES.paint;
   // Chamfered boxes have six broad faces, twelve real bevel strips and eight corners.
   // Profiles therefore catch narrow highlights even without a normal-map texture.
-  function chamfer(center,size,b,color=paint,rough=.59,metal=.45,emission=0,basis=null){
+  function chamfer(center,size,b,color=paint,rough=.59,metal=.45,emission=0,basis=null,family=familyFor(color,metal)){
     const h=size.map(v=>v*.5);b=Math.min(b,...h.map(v=>v*.8));
+    primitive={center,half:h,basis,family};
     const world=p=>basis?center.map((v,i)=>v+basis[0][i]*p[0]+basis[1][i]*p[1]+basis[2][i]*p[2]):p.map((v,i)=>v+center[i]);
     const face=points=>{
       const p=points.map(world),n=normalize(cross(p[1].map((v,i)=>v-p[0][i]),p[2].map((v,i)=>v-p[0][i])));
@@ -32,7 +44,7 @@ export function buildCorridor(seed=WORLD_SEED^0xC0771D0){
     }
     for(const sx of [-1,1])for(const sy of [-1,1])for(const sz of [-1,1])face([[sx*h[0],sy*(h[1]-b),sz*(h[2]-b)],[sx*(h[0]-b),sy*h[1],sz*(h[2]-b)],[sx*(h[0]-b),sy*(h[1]-b),sz*h[2]]]);
   }
-  const box=(x,y,z,w,h,d,b=.035,col=paint,rough=.59,metal=.45,emission=0)=>chamfer([x,y,z],[w,h,d],b,col,rough,metal,emission);
+  const box=(x,y,z,w,h,d,b=.035,col=paint,rough=.59,metal=.45,emission=0,family=familyFor(col,metal))=>chamfer([x,y,z],[w,h,d],b,col,rough,metal,emission,null,family);
   function profile(a,b,w,d,bevel=.035,col=paint,rough=.52,metal=.65){
     const direction=normalize(b.map((v,i)=>v-a[i])),u=normalize(cross(direction,Math.abs(direction[2])>.95?[0,1,0]:[0,0,1])),v=cross(u,direction);
     chamfer(a.map((q,i)=>(q+b[i])*.5),[w,Math.hypot(...b.map((q,i)=>q-a[i])),d],bevel,col,rough,metal,0,[u,direction,v]);
@@ -41,6 +53,9 @@ export function buildCorridor(seed=WORLD_SEED^0xC0771D0){
   function tube(points,r,col=steel,rough=.38,metal=.9,sides=16){
     const ranges=[0,1,2].map(axis=>Math.max(...points.map(p=>p[axis]))-Math.min(...points.map(p=>p[axis])));
     const reference=[0,0,0];reference[ranges.indexOf(Math.min(...ranges))]=1;
+    let along=points.at(-1).map((v,i)=>v-points[0][i]);if(Math.hypot(...along)<.001)along=points[Math.floor(points.length/2)].map((v,i)=>v-points[0][i]);
+    const direction=normalize(along),axis=normalize(cross(direction,reference));
+    primitive={center:points[0].map((v,i)=>(v+points.at(-1)[i])*.5),half:[r,Math.max(.05,Math.hypot(...ranges))*.5,r],basis:[axis,direction,cross(axis,direction)],family:col===dark?(metal<.3?CORRIDOR_SURFACES.rubber:CORRIDOR_SURFACES.darkSteel):CORRIDOR_SURFACES.brushedTube};
     const rings=points.map((p,i)=>{
       const a=points[Math.max(0,i-1)],b=points[Math.min(points.length-1,i+1)],dir=normalize(b.map((v,j)=>v-a[j]));
       const u=normalize(cross(dir,reference)),v=cross(dir,u);
@@ -104,13 +119,15 @@ export function buildCorridor(seed=WORLD_SEED^0xC0771D0){
   for(const z of ribZ)for(let j=0;j<8;j++){
     const rise=z>70?1.43:1;const a=[octagon[j][0],octagon[j][1]*rise,z],b=[octagon[(j+1)%8][0],octagon[(j+1)%8][1]*rise,z];
     profile(a,b,.34,.7,.045,paint,.45,.7);
-    for(const dz of [-.38,.38])profile([a[0],a[1],z+dz],[b[0],b[1],z+dz],.53,.12,.028,steel,.39,.85);
+    // Pressure-frame front flanges are coated structure, with the same narrow
+    // substrate chips as the webs; exposed pipe stock remains conductive metal.
+    for(const dz of [-.38,.38])profile([a[0],a[1],z+dz],[b[0],b[1],z+dz],.53,.12,.028,paint,.64,.08);
     if(j===2||j===6)for(const y of [1.1,2.6,3.7])box(a[0]>0?3.65:-3.65,y,z,.2,.14,.8,.025,alloy,.33,.95);
   }
   // A service trench is genuinely open between grating bars; the underfloor structure is visible.
   box(0,-.22,47.5,4.3,.12,48,.025,dark,.78,.12);
-  for(let z=23.25;z<72;z+=.19)box(0,.025,z,4.14,.08,.055,.012,steel,.36,.9);
-  for(let x=-2.05;x<=2.05;x+=.27)box(x,-.035,47.5,.045,.1,48,.01,alloy,.42,.9);
+  for(let z=23.25;z<72;z+=.19)box(0,.025,z,4.14,.08,.055,.012,steel,.36,.9,0,CORRIDOR_SURFACES.grate);
+  for(let x=-2.05;x<=2.05;x+=.27)box(x,-.035,47.5,.045,.1,48,.01,alloy,.42,.9,0,CORRIDOR_SURFACES.grate);
   for(const x of [-2.18,2.18])box(x,.015,47.5,.17,.13,48,.018,steel,.3,.92);
   for(let z=24;z<72;z+=3.1){
     for(const side of [-1,1]){
@@ -122,7 +139,7 @@ export function buildCorridor(seed=WORLD_SEED^0xC0771D0){
   // Deep overhead cable trays and asymmetric ceiling inspection modules.
   for(const x of [-1.95,1.55]){
     box(x,5.29,44.5,.45,.36,42,.04,dark,.61,.65);
-    for(let z=24;z<66;z+=.42)box(x,5.08,z,.53,.08,.075,.014,steel,.46,.85);
+    for(let z=24;z<66;z+=.42)box(x,5.08,z,.53,.08,.075,.014,dark,.71,.65);
   }
   for(let z=25;z<66;z+=3.1){
     box(-.15,5.62,z,2.5,.24,2.95,.065,paint,.68,.3);
@@ -146,12 +163,15 @@ export function buildCorridor(seed=WORLD_SEED^0xC0771D0){
       // Diffuser is visible from both axial directions; the dark housing sits above it.
       box(...source.position,...source.size,.035,source.color,.28,0,source.emission);
       box(source.position[0],source.position[1]+.22,source.position[2],.40,.12,.38,.025,dark,.5,.75);
-      for(const dx of [-.145,.145])box(source.position[0]+dx,source.position[1],source.position[2],.025,.40,.28,.006,dark,.45,.8);
+      // The mounting ears belong above the diffuser. Extending these opaque bars
+      // below its emission plane accidentally put them across the flood aperture;
+      // the shadow near plane then sliced them into a huge false diagonal shutter.
+      for(const dx of [-.145,.145])box(source.position[0]+dx,source.position[1]+.20,source.position[2],.025,.12,.28,.006,dark,.45,.8);
     }else{
       chamfer(back,[source.size[0]+.14,source.size[1]+.12,.17],.025,dark,.5,.75,0,basis);
       chamfer(front,[source.size[0],source.size[1],.035],.012,source.color,.28,0,source.emission,basis);
     }
-    if(source.mount!=='wall')tube([[source.position[0],source.position[1]+.12,source.position[2]],[source.position[0],5.56,source.position[2]]],.025,steel,.4,.9,10);
+    if(source.mount!=='wall')tube([[source.position[0],source.position[1]+.12,source.position[2]],[source.position[0],Math.max(5.56,source.position[1]+.5),source.position[2]]],.025,steel,.4,.9,10);
   }
   // Offset wall cable loops, an exposed valve and a small field-repair plate.
   for(const side of [-1,1])for(const z of [32.1,44.6,58.4]){
@@ -163,6 +183,7 @@ export function buildCorridor(seed=WORLD_SEED^0xC0771D0){
   // Without this skin, rays from the hangar escape between the low ceiling and tall rib.
   // Both axial ends remain open, and the skin lies outside the original flight clearance.
   const exitShellStart=g.data.length/12;
+  primitive={center:[0,0,47.5],half:[4,5,24],basis:null,family:CORRIDOR_SURFACES.darkSteel};
   const exitSections=[66.2,68.5,71.6,72.25].map(z=>{
     const rise=1+Math.max(0,Math.min(1,(z-66.8)/4.8))*.43;
     return octagon.map(([x,y])=>[x*1.055,y===0?-.25:y*rise+.2,z]);
@@ -176,5 +197,5 @@ export function buildCorridor(seed=WORLD_SEED^0xC0771D0){
   for(const side of [-1,1])box(side*4.05,4,70.8,.35,8,.5,.07,dark,.6,.65);
   box(0,8,70.8,8.5,.4,.5,.08,steel,.43,.8);
   box(0,8.15,69.3,8.5,.2,5.7,.04,dark,.68,.3);
-  return {vertices:g.finish(),triangles:g.triangles,obstacles,exitShellRange,seed,hero:CORRIDOR_HERO,probe:CORRIDOR_PROBE,lights:CORRIDOR_LIGHT_TABLE};
+  return {vertices:g.finish(),surfaces:new Float32Array(surfaceData),triangles:g.triangles,obstacles,exitShellRange,seed,hero:CORRIDOR_HERO,probe:CORRIDOR_PROBE,lights:CORRIDOR_LIGHT_TABLE};
 }

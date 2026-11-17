@@ -1,0 +1,22 @@
+{
+  "commit": "56b0255e8b97ff3ac8458317e381202fc7e9fdb3",
+  "artifactSha256": "8d0da9eb540d3373eee1a33fecd49381d46e64c797afb6dd28c0c76ebe8a3e08",
+  "images": "Exact copies of actual same-artifact iteration2 captures; no retouching",
+  "fixedCamera": [
+    -2.35,
+    1.72,
+    27.5
+  ],
+  "target": [
+    -13.5,
+    1.78,
+    61
+  ],
+  "fov": 64,
+  "seed": 15515657,
+  "time": 12,
+  "renderSize": [
+    1920,
+    1080
+  ]
+}
