@@ -1,0 +1,136 @@
+{
+  "records": [
+    {
+      "source": "docs/references/target-red-corridor.jpg",
+      "sha256": "da365a90202cb3809c7dbfd9bce71d93ede37ba6f34a4150e2030c7c4b0033ab",
+      "output": "thumbnails/target.png",
+      "method": "Lanczos320x180 only; no retouching"
+    },
+    {
+      "source": "docs/qa/overhaul-v1/iteration-4b/round-3/production-C3.png",
+      "sha256": "6d078114dfb0a6ba30c6f6665b8309d1109c52ed257b13a8011dd308d57d64a0",
+      "output": "thumbnails/production-C3.png",
+      "method": "Lanczos320x180 only; no retouching"
+    },
+    {
+      "source": "docs/qa/overhaul-v1/iteration-4b/round-3/neutral-C3.png",
+      "sha256": "44ae62156d85845b20489567eebbd33610ef2d58a7ec79c4bc76069e85b4d701",
+      "output": "thumbnails/neutral-C3.png",
+      "method": "Lanczos320x180 only; no retouching"
+    },
+    {
+      "source": "docs/qa/overhaul-v1/iteration-4b/round-2/production-C2.png",
+      "sha256": "153657a067a8d70590a02b8ceebec1049f05c4c5701fa8ce30d990d159636952",
+      "output": "thumbnails/R2-production.png",
+      "method": "Lanczos320x180 only; no retouching"
+    },
+    {
+      "source": "docs/qa/overhaul-v1/iteration-4b/round-2/neutral-C2.png",
+      "sha256": "2ed730f7432fac6db01eb200317e28ab5dc63768c53457cc5bc3464f145e1d2c",
+      "output": "thumbnails/R2-neutral.png",
+      "method": "Lanczos320x180 only; no retouching"
+    },
+    {
+      "source": "docs/qa/overhaul-v1/iteration-4b/round-3/old-lights-C3.png",
+      "sha256": "a0a56bab31ed42192b5371832d8c05e851c649d1ae2db96c8cd47fa0c1e99eba",
+      "output": "thumbnails/old-lights-C3.png",
+      "method": "Lanczos320x180 only; no retouching"
+    },
+    {
+      "source": "docs/qa/overhaul-v1/iteration-4b/round-3/production-C3-hud.png",
+      "sha256": "beafa2ed0b0e44e49aed9effeb19c11130490f8981f2e24bd2586a26f2bf994c",
+      "output": "thumbnails/production-C3-hud.png",
+      "method": "Lanczos320x180 only; no retouching"
+    },
+    {
+      "source": "docs/qa/overhaul-v1/iteration-4b/round-3/production-C3.png",
+      "output": "details/production-C3-near.png",
+      "bounds": [
+        1000,
+        120,
+        1920,
+        1080
+      ],
+      "method": "Exact unscaled source pixels"
+    },
+    {
+      "source": "docs/qa/overhaul-v1/iteration-4b/round-3/production-C3.png",
+      "output": "details/production-C3-middle.png",
+      "bounds": [
+        100,
+        120,
+        1120,
+        1000
+      ],
+      "method": "Exact unscaled source pixels"
+    },
+    {
+      "source": "docs/qa/overhaul-v1/iteration-4b/round-3/production-C3.png",
+      "output": "details/production-C3-far.png",
+      "bounds": [
+        200,
+        260,
+        860,
+        760
+      ],
+      "method": "Exact unscaled source pixels"
+    },
+    {
+      "source": "docs/qa/overhaul-v1/iteration-4b/round-3/neutral-C3.png",
+      "output": "details/neutral-C3-near.png",
+      "bounds": [
+        1000,
+        120,
+        1920,
+        1080
+      ],
+      "method": "Exact unscaled source pixels"
+    },
+    {
+      "source": "docs/qa/overhaul-v1/iteration-4b/round-3/neutral-C3.png",
+      "output": "details/neutral-C3-middle.png",
+      "bounds": [
+        100,
+        120,
+        1120,
+        1000
+      ],
+      "method": "Exact unscaled source pixels"
+    },
+    {
+      "source": "docs/qa/overhaul-v1/iteration-4b/round-3/neutral-C3.png",
+      "output": "details/neutral-C3-far.png",
+      "bounds": [
+        200,
+        260,
+        860,
+        760
+      ],
+      "method": "Exact unscaled source pixels"
+    }
+  ],
+  "regions": {
+    "near": [
+      1000,
+      120,
+      1920,
+      1080
+    ],
+    "middle": [
+      100,
+      120,
+      1120,
+      1000
+    ],
+    "far": [
+      200,
+      260,
+      860,
+      760
+    ]
+  },
+  "R2C3Comparison": "A=R2C2, B=C3; production top, neutral bottom. Different existing candidates/cameras, not a controlled geometry A/B.",
+  "lightingComparison": "A=oldrendererlights, B=finalrendererlights, finalgeometry+materialstreams+camera heldfixed; runtime hashes establish identity.",
+  "referenceComparison": "targetleft Lanczos1920x1080; C3right exact pixels",
+  "sceneImageColorAdjustments": false
+}

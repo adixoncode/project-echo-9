@@ -1,0 +1,36 @@
+{
+  "baselineCommit": "d51f4f55a3c1eeb753bda92e518ec2700db8d1ac",
+  "baselineHtmlSha256": "872c37fff35e4e273b78c6f55a237df655396660c269ca8e56520fbbe155b412",
+  "copies": [
+    {
+      "source": "docs/qa/overhaul-v1/iteration-4a/after-clean.png",
+      "copy": "before-clean.png",
+      "sha256": "2f5d63c7ebe3095575f31c58bacc24300963d0c0f5c99bed5abbe4ef7542c648"
+    },
+    {
+      "source": "docs/qa/overhaul-v1/iteration-4a/after-view-1.png",
+      "copy": "before-view-1.png",
+      "sha256": "ce123c82808526e5352fdf6a945a8b75d7202b4bb5128e9fab7dfdf35f833114"
+    },
+    {
+      "source": "docs/qa/overhaul-v1/iteration-4a/after-view-2.png",
+      "copy": "before-view-2.png",
+      "sha256": "fdfe96f8662a532dea01675ee72fb7c0c0c0bdd4d4691227e38249165d2d3189"
+    },
+    {
+      "source": "docs/qa/overhaul-v1/iteration-4a/after-view-3.png",
+      "copy": "before-view-3.png",
+      "sha256": "911e50164fed6d93f99f2b9319b9d443c54ef3ebbfc0cdf51f4edd2302b5db5f"
+    },
+    {
+      "source": "docs/qa/overhaul-v1/iteration-4a/after-view-5.png",
+      "copy": "before-view-5.png",
+      "sha256": "5c9750fbcf24ebca889971638f4614d69dcd19bf6e4820e564e5ab848c464191"
+    },
+    {
+      "source": "docs/qa/overhaul-v1/iteration-4a/after-view-6.png",
+      "copy": "before-view-6.png",
+      "sha256": "7b39c7802ffea93169e9cd14b61566896988d9fbecdd16890d7c1b2ec7440f59"
+    }
+  ]
+}

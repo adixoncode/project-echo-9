@@ -82,6 +82,17 @@ export function buildCorridor(seed=WORLD_SEED^0xC0771D0){
       g.quad(a,b,B,A,col,0,rough,metal);g.quad(j,i,I,J,col,0,rough,metal);
     }
   }
+  // A closed pressure casting with a stepped/bevelled radial section. The face
+  // is broken by real recessed channels, not a bright outline over a flat ring.
+  function pressureCasting(inner,outer,z,depthScale=1){
+    primitive={center:[0,2.65,z],half:[4.4,3.2,.7*depthScale],basis:null,family:CORRIDOR_SURFACES.paint};
+    const section=[[0,-.55],[.075,-.66],[.16,-.66],[.23,-.48],[.53,-.48],[.57,-.39],[.65,-.39],[.69,-.54],[.94,-.54],[1,-.43],[1,.43],[.94,.54],[.2,.54],[.12,.64],[0,.64],[0,.43],[.19,.32],[.19,-.32],[0,-.43]];
+    const at=(edge,s)=>[inner[edge][0]+(outer[edge][0]-inner[edge][0])*s[0],inner[edge][1]+(outer[edge][1]-inner[edge][1])*s[0],z+s[1]*depthScale];
+    for(let edge=0;edge<8;edge++)for(let k=0;k<section.length;k++){
+      const next=(edge+1)%8,l=(k+1)%section.length;
+      g.quad(at(edge,section[k]),at(next,section[k]),at(next,section[l]),at(edge,section[l]),paint,0,.64,.28);
+    }
+  }
   const heroInner=[[-2.25,.065],[2.25,.065],[3.30,.98],[3.30,3.52],[2.03,4.94],[-2.03,4.94],[-3.30,3.52],[-3.30,.98]];
   const heroOuter=[[-2.87,-.32],[2.87,-.32],[4.17,.67],[4.17,4.12],[2.68,5.79],[-2.68,5.79],[-4.17,4.12],[-4.17,.67]];
   const octagon=[[-2.65,.0],[2.65,.0],[3.9,.85],[3.9,4.0],[2.5,5.6],[-2.5,5.6],[-3.9,4.0],[-3.9,.85]];
@@ -89,14 +100,33 @@ export function buildCorridor(seed=WORLD_SEED^0xC0771D0){
   box(0,-.42,47.5,8.5,.5,49,.025,dark,.78,.2);
   for(const side of [-1,1]){
     for(let bay=0;bay<16;bay++){
-      const z=24.5+bay*3,heroBay=z>25&&z<41,open=side===-1&&(bay===1||bay===3||bay===9),back=side*(heroBay&&side===-1&&(bay===2||bay===3)?5.55:open?4.78:heroBay?4.38:4.12);
+      const z=24.5+bay*3,heroBay=z>23&&z<41,open=side===-1&&(bay===1||bay===3||bay===9),back=side*(heroBay&&side===-1&&bay<=3?5.55:open?4.78:heroBay?4.38:4.12);
       box(back,2.4,z,.22,3.3,2.92,.055,paint.map(v=>v*(.85+random()*.22)),.64,.28);
-      if(heroBay&&side===-1&&(bay===2||bay===3)){
+      if(side===-1&&bay<=1){
+        // The nearest right-of-image hull is opened into an actual service bay.
+        // A narrow jamb, recessed carrier rails and connected pressure vessels
+        // replace the old full-height cover at the camera's edge.
+        for(const y of [.65,4.16])box(-4.75,y,z,1.65,.22,2.90,.055,paint,.64,.28);
+        if(bay===0)box(-4.74,2.4,23.05,1.65,3.30,.22,.055,paint,.64,.28);
+        if(bay===1)for(const x of [-5.27,-3.99])box(x,2.4,28.98,.22,3.30,.22,.045,paint,.64,.28);
+        for(const y of [1.02,3.68])box(-5.24,y,z,.26,.20,2.76,.035,dark,.65,.5);
+        for(const dz of [-.73,.48]){
+          tube([[-5.08,1.05,z+dz],[-5.08,3.65,z+dz]],.24,steel,.42,.85,20);
+          for(const y of [1.35,3.37])box(-4.98,y,z+dz,.55,.15,.64,.04,paint,.64,.28);
+          tube([[-4.79,2.48,z+dz],[-4.36,2.48,z+dz],[-4.20,2.70,z+dz],[-4.20,3.25,z+dz]],.085,steel,.42,.85,12);
+        }
+        for(const dz of [-1.03,.14,1.1])profile([-4.92,.86,z+dz],[-4.62,3.95,z+dz],.14,.18,.035,paint,.64,.28);
+        obstacles.push([-5.55,.65,z-1.45,-4.01,4.27,z+1.45]);
+      }else if(heroBay&&side===-1&&(bay===2||bay===3)){
         if(bay===2){
           const start=g.data.length/12;
           // One full bay between the foreground and middle pressure thresholds.
           // The hull is cut back 2.2m behind the jamb; no panel crosses its mouth.
-          for(const dz of [-2.91,2.91])box(-4.72,2.40,32+dz,1.83,3.30,.18,.04,paint,.64,.28);
+          // The near service bay and pump pocket are one connected maintenance
+          // volume. Only the rear pressure jamb closes its axial end; the near
+          // end has two carrier posts rather than a broad end plate.
+          box(-4.72,2.40,34.91,1.83,3.30,.18,.04,paint,.64,.28);
+          for(const x of [-5.28,-3.97])box(x,2.40,29.09,.22,3.30,.18,.04,paint,.64,.28);
           for(const y of [.78,4.04])box(-4.72,y,32,1.83,.20,5.67,.04,paint,.64,.28);
           for(const zRail of [30.1,33.8]){
             box(-5.17,2.4,zRail,.32,2.86,.19,.03,dark,.65,.5);
@@ -110,10 +140,10 @@ export function buildCorridor(seed=WORLD_SEED^0xC0771D0){
           box(-4.38,2.23,32.45,.39,.45,.42,.055,steel,.51,.75);
           const wheel=[];for(let k=0;k<=32;k++){const a=k/32*Math.PI*2;wheel.push([-4.06,2.23+Math.cos(a)*.32,32.45+Math.sin(a)*.32]);}tube(wheel,.045,oxide,.55,.65,12);
           for(const dz of [-.22,.22])profile([-4.06,2.0,32.45+dz],[-4.06,2.46,32.45-dz],.04,.04,.008,oxide,.55,.65);
-          // A detached lower cover rests against its retaining stop inside the
-          // recess. Its tilt reveals a dark gap rather than duplicating a wall.
-          const c=Math.cos(.29),ss=Math.sin(.29);
-          chamfer([-4.34,1.38,30.75],[.15,1.35,1.45],.055,paint,.65,.28,0,[[c,ss,0],[-ss,c,0],[0,0,1]]);
+          // Spare cartridge cradle stays at the back of the recess. There is no
+          // detached tilted cover across the foreground's negative space.
+          box(-5.04,1.34,30.75,.44,1.32,1.16,.06,paint,.65,.28);
+          for(const y of [.83,1.85])box(-4.78,y,30.75,.14,.14,1.30,.03,steel,.51,.75);
           tube([[-5.09,3.59,30.25],[-4.9,3.24,30.8],[-4.9,3.2,31.55],[-4.9,3.58,32.05]],.048,dark,.65,.15,10);
           construction.cavities.push({side,z:32,firstVertex:start,vertexCount:g.data.length/12-start});
           obstacles.push([-5.55,.78,31.9,-4.01,3.75,33.8]);
@@ -177,6 +207,13 @@ export function buildCorridor(seed=WORLD_SEED^0xC0771D0){
       if(z<66){
         profile([side*2.5,5.62,z],[side*3.96,4.0,z],.18,2.94,.04,dark,.64,.5);
         for(let k=0;k<(heroBay?1:3);k++)profile([side*(2.62+k*.32),5.48-k*.35,z-1.35],[side*(2.62+k*.32),5.48-k*.35,z+1.35],.13,.11,.018,steel,.48,.9);
+        if(heroBay&&side===1){
+          // A shoulder-mounted ventilation trunk: side cheeks, sunken louvres
+          // and interrupted access caps give this plane a different silhouette.
+          const a=[2.66,5.34,z],b=[3.65,4.24,z];
+          for(const dz of [-1.14,1.14])profile([a[0],a[1],z+dz],[b[0],b[1],z+dz],.20,.17,.04,paint,.64,.28);
+          for(let l=0;l<6;l++){const t=(l+.5)/6;profile([a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t,z-1.02],[a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t,z+1.02],.095,.10,.018,dark,.64,.5);}
+        }
       }
     }
     // Consolidated low service ducts in hero bays: two smaller runs sit below
@@ -201,41 +238,59 @@ export function buildCorridor(seed=WORLD_SEED^0xC0771D0){
     }
   }
   // Heavy octagonal I-section pressure ribs: chamfered web, two flanges, fastener lugs.
-  const ribZ=[24.4,28.4,35.3,41.4,47.2,53.7,60.1,66.8,71.6];
+  const ribZ=[24.4,35.3,41.4,49.2,60.1,66.8,71.6];
   for(const z of ribZ){
-    if(z>=28&&z<42){
+    if(z===24.4||z===35.3||z===49.2){
       const firstVertex=g.data.length/12;
       // Flanges project into the aperture; the recessed web exposes axial depth
       // on both sides. The gasket belongs inside the rear flange, not a bright rail.
-      const inner=z<29?heroInner.map(([x,y])=>[x+(Math.abs(x)>3?Math.sign(x)*.38:Math.sign(x)*.14),y]):heroInner;
-      const sectionBetween=amount=>inner.map((p,i)=>p.map((v,axis)=>v+(heroOuter[i][axis]-v)*amount));
-      ringBand(sectionBetween(.20),sectionBetween(.84),z,.90,paint,.59,.45);
-      ringBand(inner,heroOuter,z-.53,.16,paint,.64,.28);
-      ringBand(inner,heroOuter,z+.53,.16,paint,.64,.28);
-      ringBand(sectionBetween(.02),sectionBetween(.11),z+.64,.07,dark,.72,.15);
+      const inner=z===49.2?[[-.2,.065],[2.8,.065],[3.3,.9],[3.3,4.10],[2.8,5.05],[-.2,5.05],[-.7,4.10],[-.7,.9]]:z<29?heroInner.map(([x,y])=>[x+(Math.abs(x)>3?Math.sign(x)*.38:Math.sign(x)*.14),y]):heroInner;
+      const outer=z===49.2?[[-.8,-.32],[3.45,-.32],[4.17,.67],[4.17,4.35],[3.42,5.79],[-.82,5.79],[-1.52,4.35],[-1.52,.67]]:heroOuter;
+      const depthScale=z===35.3?1.22:z===49.2?1.45:1;
+      const sectionBetween=amount=>inner.map((p,i)=>p.map((v,axis)=>v+(outer[i][axis]-v)*amount));
+      pressureCasting(inner,outer,z,depthScale);
+      ringBand(sectionBetween(.03),sectionBetween(.10),z+.71*depthScale,.07,dark,.72,.15);
       for(const side of [-1,1]){
-        for(const y of [1.32,3.21])box(side*3.79,y,z-.67,.32,.28,.11,.035,paint,.64,.28);
+        const edge=side<0?6:2,jambX=(inner[edge][0]+outer[edge][0])*.5;
+        for(const y of [1.32,3.21])box(jambX,y,z-.67*depthScale,.32,.28,.11,.035,paint,.64,.28);
         // Deep angled plinths transfer the jamb load to the service ledge.
-        profile([side*2.71,.17,z-.45],[side*3.83,1.03,z-.45],.22,.72,.045,paint,.64,.28);
+        if(z!==49.2)profile([side*2.71,.17,z-.45],[side*3.83,1.03,z-.45],.22,.72,.045,paint,.64,.28);
       }
       for(const side of [-1,1]){
-        obstacles.push([Math.min(side*inner[2][0],side*4.18),.98,z-.82,Math.max(side*inner[2][0],side*4.18),3.52,z+.68]);
+        const axial=.82*depthScale;
+        const lower=side<0?7:2,upper=side<0?6:3,top=side<0?5:4;
+        obstacles.push([Math.min(inner[lower][0],side*4.18),inner[lower][1],z-axial,Math.max(inner[lower][0],side*4.18),inner[upper][1],z+axial]);
         // Local conservative collision envelopes follow the real upper shoulder.
         // Axial bounds include the forward lugs/plinth, not only the flange.
         // Resolve lower/outboard steps first: an inward push can only enter a
         // later envelope, never an already processed one. These boxes use the
         // existing .45m camera expansion without altering the shared controller.
-        const topX=inner[4][0],sideX=inner[3][0],topY=inner[4][1],sideY=inner[3][1],steps=Math.ceil((sideX-topX)/.12);
+        const topX=side*inner[top][0],sideX=side*inner[upper][0],topY=inner[top][1],sideY=inner[upper][1],steps=Math.ceil((sideX-topX)/.12);
         for(let step=steps-1;step>=0;step--){
           const x=topX+(sideX-topX)*step/steps,nextX=topX+(sideX-topX)*(step+1)/steps,y=topY-(topY-sideY)*(nextX-topX)/(sideX-topX);
-          obstacles.push([Math.min(side*x,side*4.18),y,z-.82,Math.max(side*x,side*4.18),5.79,z+.68]);
+          obstacles.push([Math.min(side*x,side*4.18),y,z-axial,Math.max(side*x,side*4.18),5.79,z+axial]);
         }
       }
       // A full-width high envelope resolves axially; a narrow soffit box could
       // push sideways into an already resolved shoulder. Shared ceiling bounds
       // already keep the exterior high corners unreachable.
-      obstacles.push([-4.18,inner[4][1],z-.82,4.18,5.79,z+.68]);
-      construction.frames.push({z,firstVertex,vertexCount:g.data.length/12-firstVertex,inner,outer:heroOuter,flangeDepth:1.22,webDepth:.90});
+      obstacles.push([-4.18,inner[4][1],z-.82*depthScale,4.18,5.79,z+.82*depthScale]);
+      construction.frames.push({z,firstVertex,vertexCount:g.data.length/12-firstVertex,inner,outer,depthScale,flangeDepth:1.30*depthScale,webDepth:.64*depthScale});
+      if(z===49.2){
+        // Off-axis pressure aperture and its adjacent actuator/utility bulkhead.
+        // The casting itself stays narrow on both jambs. A recessed, load-bearing
+        // service module connects its left edge to the pressure hull, instead of
+        // stretching one annular face across half the corridor.
+        box(-2.94,2.60,50.22,2.70,5.30,.22,.055,paint,.64,.28);
+        for(const x of [-4.08,-2.91,-1.60])box(x,2.62,49.31,.26,5.24,1.26,.06,paint,.64,.28);
+        for(const y of [.26,4.98])box(-2.85,y,49.31,2.70,.42,1.26,.06,paint,.64,.28);
+        for(const x of [-3.50,-2.23]){
+          box(x,2.63,49.93,.83,3.76,.36,.08,dark,.65,.5);
+          tube([[x,1.03,49.64],[x,3.85,49.64],[x+.22,4.13,49.64]],.095,steel,.42,.85,16);
+          for(const y of [1.20,3.63])box(x,y,49.54,.72,.19,.34,.04,paint,.64,.28);
+        }
+        obstacles.push([-4.30,.05,48.65,-1.45,5.24,50.35]);
+      }
       continue;
     }
     for(let j=0;j<8;j++){
@@ -250,13 +305,16 @@ export function buildCorridor(seed=WORLD_SEED^0xC0771D0){
   // A service trench is genuinely open between grating bars; the underfloor structure is visible.
   box(0,-.22,47.5,4.3,.12,48,.025,dark,.78,.12);
   for(let z=23.25;z<72;z+=.19){
-    if(z<42)for(const side of [-1,1])box(side*1.64,.025,z,.78,.08,.055,.012,steel,.36,.9,0,CORRIDOR_SURFACES.grate);
+    if(z<42)for(const [x,w] of [[-1.64,.78],[1.64,.78],[0,.72]])box(x,.025,z,w,.08,.055,.012,steel,.36,.9,0,CORRIDOR_SURFACES.grate);
     else box(0,.025,z,4.14,.08,.055,.012,steel,.36,.9,0,CORRIDOR_SURFACES.grate);
   }
-  for(let z=24.4;z<42;z+=3){
-    box(0,.02,z,2.42,.09,2.91,.025,paint,.59,.45);
-    for(const x of [-1.2,1.2])box(x,.065,z,.035,.025,2.77,.006,dark,.66,.35);
+  for(let z=24.0;z<42;z+=1.5){
+    for(const side of [-1,1]){
+      box(side*.83,.02,z,.79,.09,1.39,.025,paint,.59,.45);
+      box(side*.83,.07,z-.52,.49,.025,.07,.012,dark,.66,.35);
+    }
   }
+  for(const x of [-1.24,-.42,.42,1.24])box(x,.035,32.3,.07,.10,18.5,.012,steel,.42,.9);
   for(let x=-2.05;x<=2.05;x+=.27)box(x,-.035,47.5,.045,.1,48,.01,alloy,.42,.9,0,CORRIDOR_SURFACES.grate);
   for(const x of [-2.18,2.18])box(x,.015,47.5,.17,.13,48,.018,steel,.3,.92);
   for(let z=24;z<72;z+=3.1){

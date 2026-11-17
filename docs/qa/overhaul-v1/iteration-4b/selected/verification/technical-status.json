@@ -1,0 +1,59 @@
+{
+  "selection": "Preserved reviewedR2C2, integrated namedshot/HUD/testdiagnostics only; nofourthartisticround",
+  "sourceAndCaptureSha256": "0fc1512a4a9083893a30235dbe4cd35e20f9fe7f1833ff5dd73200b69c5e6e87",
+  "rawBytes": 155723,
+  "gzipLevel9Bytes": 50660,
+  "literalBuild": "PASS; verification/literal-build.log",
+  "literalRunAllTests": {
+    "status": "PASS",
+    "tests": 32,
+    "failed": 0,
+    "log": "verification/literal-RunAllTests.log"
+  },
+  "allArtRendererShaderLightMathSceneSourcesByteIdenticalToR2": true,
+  "onlyRuntimeDifferenceFromR2": "src/main.js namedshot/state/HUD/test-only geometry identity API",
+  "actualCapture": {
+    "resolution": [
+      1920,
+      1080
+    ],
+    "quality": "High",
+    "dpr": 1,
+    "msaa": 4,
+    "seed": 15515657,
+    "time": 12
+  },
+  "rgbIdentityToReviewedR2": {
+    "production": "PASS:0differentRGBpixels",
+    "neutral": "PASS:0differentRGBpixels"
+  },
+  "namedDirector": {
+    "url": "index.html?shot=4b",
+    "position": [
+      -1.2,
+      1.72,
+      25.6
+    ],
+    "target": [
+      -13,
+      1.76,
+      62
+    ],
+    "verticalFovDegrees": 52,
+    "hudTitle": "PRESSURE TRANSIT",
+    "noIncorrectSavedPoseSelection": true
+  },
+  "sixSavedViewAndFlythrough64DegreeReset": "PASS in both actualbrowsermodes",
+  "corridorTriangles": 118064,
+  "drawnArchitectureTriangles": 149558,
+  "eyeClearanceMetres": 1.635088376001674,
+  "continuousRouteClearanceLowerBoundMetres": 0.6943038133608532,
+  "continuousWalkingClearanceLowerBoundMetres": 0.674999988079071,
+  "requiredCameraRadiusMetres": 0.45,
+  "browserErrors": [],
+  "unexpectedRequests": [],
+  "hdrAnd15FixedWorldShadowDiagnostics": "Collected on actual finaldirector view in capture.json production record; parentGPUreduction pending",
+  "hardware60fpsNativeTemporal": "BLOCKED",
+  "artDirection": "NOT ACCEPTED; selected best existing reviewed candidate, remaining findings documented by parent",
+  "browserGpuReleased": true
+}

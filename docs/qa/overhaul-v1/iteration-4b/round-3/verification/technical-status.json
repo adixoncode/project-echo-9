@@ -1,0 +1,24 @@
+{
+  "captureStatus": "PASS",
+  "buildRunAllTests": {
+    "status": "PASS",
+    "tests": 32,
+    "failed": 0
+  },
+  "sourceCorrespondsToImages": true,
+  "productionSha256": "a24b68c1331414c1b1f395e4af551e9b804fbbab5575e75ef473a290ad6a7b1b",
+  "fullGeometryMaterialStreamsIdenticalInLightAB": true,
+  "lightABGeometry": {
+    "triangles": 116840,
+    "vertexStreamSha256": "28e7ccc510dba48bf7194f35b9c4a2cebf9d1287d77c5d14c482f642b842bf67",
+    "positionNormalSha256": "cdad480488d11527c3eb0f54effbbb25e676da81d4c2c9aa8a3bc1fb03f1dca9",
+    "surfaceStreamSha256": "ffb20b9d1665f903b691ed07691c2894756ecca471d2782f2718e03898e49edd"
+  },
+  "allNamedShotAndSixViewsFlightResetChecks": "PASS",
+  "hdrDiagnostics": "capture.json production.hdrDiagnostics",
+  "p0ShadowDiagnostics": "capture.json production.shadowDiagnostics",
+  "browserErrors": [],
+  "unexpectedRequests": [],
+  "artReview": "FAIL; parent selects preservedR2C2 after independent finalreview. No fourthartisticround.",
+  "hardware60fpsNativeTemporal": "BLOCKED"
+}

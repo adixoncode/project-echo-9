@@ -135,8 +135,11 @@ test('original approved flight and all saved cameras remain clear of the new cor
   const legacy=buildScene(),corridor=buildCorridor(),obstacles=legacy.obstacles.concat(corridor.obstacles),p=new Float32Array(3),t=new Float32Array(3);
   for(let seconds=0;seconds<=60;seconds+=.025){sampleFlight(seconds,p,t);const constrained=Array.from(p);constrainPosition(constrained,obstacles);for(let axis=0;axis<3;axis++)near(constrained[axis],p[axis],.001);}
   for(const saved of VIEWS){const p=saved.position.slice();constrainPosition(p,obstacles);assert.deepEqual(p,saved.position);}
-  // Phase4A removes the old near cabinet; its replacement is a real pressure jamb.
-  const stopped=constrainPosition([-3.8,1.7,28.4],obstacles);assert.ok(stopped[0]>=-3.231||stopped[2]<27.3||stopped[2]>29.5,'pressure-frame jamb blocks manual flight');
+  // The entry threshold was restaged behind the4B director eye. Test its actual
+  // jamb, and retain free manual travel where the former28.4threshold stood.
+  const entry=corridor.construction.frames[0],innerX=entry.inner[7][0],stopped=constrainPosition([innerX-.2,1.7,entry.z],obstacles);
+  assert.ok(stopped[0]>=innerX+.449||Math.abs(stopped[2]-entry.z)>1.1,'restaged pressure-frame jamb blocks manual flight');
+  const cleared=[-3,1.7,28.4];constrainPosition(cleared,obstacles);assert.deepEqual(cleared,[-3,1.7,28.4]);
 });
 test('cuboid helper produces twelve triangles and outward normals',()=>{
   const g=new Geometry();g.box(0,0,0,2,2,2,[1,1,1]);const vertices=g.finish();assert.equal(g.triangles,12);

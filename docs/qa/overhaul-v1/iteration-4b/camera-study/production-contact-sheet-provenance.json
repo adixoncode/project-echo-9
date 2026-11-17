@@ -1,0 +1,47 @@
+[
+  {
+    "source": "docs/references/target-red-corridor.jpg",
+    "sha256": "da365a90202cb3809c7dbfd9bce71d93ede37ba6f34a4150e2030c7c4b0033ab",
+    "thumbnailSize": [
+      320,
+      180
+    ],
+    "method": "Lanczos only; no grading/retouching"
+  },
+  {
+    "source": "docs/qa/overhaul-v1/iteration-4b/camera-study/production-A.png",
+    "sha256": "2f5d63c7ebe3095575f31c58bacc24300963d0c0f5c99bed5abbe4ef7542c648",
+    "thumbnailSize": [
+      320,
+      180
+    ],
+    "method": "Lanczos only; no grading/retouching"
+  },
+  {
+    "source": "docs/qa/overhaul-v1/iteration-4b/camera-study/production-B.png",
+    "sha256": "bdc023bab828b1dd90d7c299e82f25996564f530748634caf583a501de8b0162",
+    "thumbnailSize": [
+      320,
+      180
+    ],
+    "method": "Lanczos only; no grading/retouching"
+  },
+  {
+    "source": "docs/qa/overhaul-v1/iteration-4b/camera-study/production-C.png",
+    "sha256": "044338c2d5da1c1bc19e58a6291be71c8f81cd4dba7ed67d8c75896be828eef4",
+    "thumbnailSize": [
+      320,
+      180
+    ],
+    "method": "Lanczos only; no grading/retouching"
+  },
+  {
+    "source": "docs/qa/overhaul-v1/iteration-4b/camera-study/production-D.png",
+    "sha256": "fa2975d884d03e92e083605ae768bf05eb53b571ac58f378bdd32ad86c71fb42",
+    "thumbnailSize": [
+      320,
+      180
+    ],
+    "method": "Lanczos only; no grading/retouching"
+  }
+]

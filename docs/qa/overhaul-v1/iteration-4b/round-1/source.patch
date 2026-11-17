@@ -1,0 +1,192 @@
+diff --git a/src/corridor.js b/src/corridor.js
+index a78caba..d464947 100644
+--- a/src/corridor.js
++++ b/src/corridor.js
+@@ -82,6 +82,17 @@ export function buildCorridor(seed=WORLD_SEED^0xC0771D0){
+       g.quad(a,b,B,A,col,0,rough,metal);g.quad(j,i,I,J,col,0,rough,metal);
+     }
+   }
++  // A closed pressure casting with a stepped/bevelled radial section. The face
++  // is broken by real recessed channels, not a bright outline over a flat ring.
++  function pressureCasting(inner,outer,z,depthScale=1){
++    primitive={center:[0,2.65,z],half:[4.4,3.2,.7*depthScale],basis:null,family:CORRIDOR_SURFACES.paint};
++    const section=[[0,-.55],[.075,-.66],[.16,-.66],[.23,-.48],[.53,-.48],[.57,-.39],[.65,-.39],[.69,-.54],[.94,-.54],[1,-.43],[1,.43],[.94,.54],[.2,.54],[.12,.64],[0,.64],[0,.43],[.19,.32],[.19,-.32],[0,-.43]];
++    const at=(edge,s)=>[inner[edge][0]+(outer[edge][0]-inner[edge][0])*s[0],inner[edge][1]+(outer[edge][1]-inner[edge][1])*s[0],z+s[1]*depthScale];
++    for(let edge=0;edge<8;edge++)for(let k=0;k<section.length;k++){
++      const next=(edge+1)%8,l=(k+1)%section.length;
++      g.quad(at(edge,section[k]),at(next,section[k]),at(next,section[l]),at(edge,section[l]),paint,0,.64,.28);
++    }
++  }
+   const heroInner=[[-2.25,.065],[2.25,.065],[3.30,.98],[3.30,3.52],[2.03,4.94],[-2.03,4.94],[-3.30,3.52],[-3.30,.98]];
+   const heroOuter=[[-2.87,-.32],[2.87,-.32],[4.17,.67],[4.17,4.12],[2.68,5.79],[-2.68,5.79],[-4.17,4.12],[-4.17,.67]];
+   const octagon=[[-2.65,.0],[2.65,.0],[3.9,.85],[3.9,4.0],[2.5,5.6],[-2.5,5.6],[-3.9,4.0],[-3.9,.85]];
+@@ -89,9 +100,24 @@ export function buildCorridor(seed=WORLD_SEED^0xC0771D0){
+   box(0,-.42,47.5,8.5,.5,49,.025,dark,.78,.2);
+   for(const side of [-1,1]){
+     for(let bay=0;bay<16;bay++){
+-      const z=24.5+bay*3,heroBay=z>25&&z<41,open=side===-1&&(bay===1||bay===3||bay===9),back=side*(heroBay&&side===-1&&(bay===2||bay===3)?5.55:open?4.78:heroBay?4.38:4.12);
++      const z=24.5+bay*3,heroBay=z>23&&z<41,open=side===-1&&(bay===1||bay===3||bay===9),back=side*(heroBay&&side===-1&&bay<=3?5.55:open?4.78:heroBay?4.38:4.12);
+       box(back,2.4,z,.22,3.3,2.92,.055,paint.map(v=>v*(.85+random()*.22)),.64,.28);
+-      if(heroBay&&side===-1&&(bay===2||bay===3)){
++      if(side===-1&&bay<=1){
++        // The nearest right-of-image hull is opened into an actual service bay.
++        // A narrow jamb, recessed carrier rails and connected pressure vessels
++        // replace the old full-height cover at the camera's edge.
++        for(const y of [.65,4.16])box(-4.75,y,z,1.65,.22,2.90,.055,paint,.64,.28);
++        if(bay===0)box(-4.74,2.4,23.05,1.65,3.30,.22,.055,paint,.64,.28);
++        if(bay===1)box(-4.74,2.4,28.98,1.65,3.30,.22,.055,paint,.64,.28);
++        for(const y of [1.02,3.68])box(-5.24,y,z,.26,.20,2.76,.035,dark,.65,.5);
++        for(const dz of [-.73,.48]){
++          tube([[-5.08,1.05,z+dz],[-5.08,3.65,z+dz]],.24,steel,.42,.85,20);
++          for(const y of [1.35,3.37])box(-4.98,y,z+dz,.55,.15,.64,.04,paint,.64,.28);
++          tube([[-4.79,2.48,z+dz],[-4.36,2.48,z+dz],[-4.20,2.70,z+dz],[-4.20,3.25,z+dz]],.085,steel,.42,.85,12);
++        }
++        for(const dz of [-1.03,.14,1.1])profile([-4.92,.86,z+dz],[-4.62,3.95,z+dz],.14,.18,.035,paint,.64,.28);
++        obstacles.push([-5.55,.65,z-1.45,-4.01,4.27,z+1.45]);
++      }else if(heroBay&&side===-1&&(bay===2||bay===3)){
+         if(bay===2){
+           const start=g.data.length/12;
+           // One full bay between the foreground and middle pressure thresholds.
+@@ -177,6 +203,13 @@ export function buildCorridor(seed=WORLD_SEED^0xC0771D0){
+       if(z<66){
+         profile([side*2.5,5.62,z],[side*3.96,4.0,z],.18,2.94,.04,dark,.64,.5);
+         for(let k=0;k<(heroBay?1:3);k++)profile([side*(2.62+k*.32),5.48-k*.35,z-1.35],[side*(2.62+k*.32),5.48-k*.35,z+1.35],.13,.11,.018,steel,.48,.9);
++        if(heroBay&&side===1){
++          // A shoulder-mounted ventilation trunk: side cheeks, sunken louvres
++          // and interrupted access caps give this plane a different silhouette.
++          const a=[2.66,5.34,z],b=[3.65,4.24,z];
++          for(const dz of [-1.14,1.14])profile([a[0],a[1],z+dz],[b[0],b[1],z+dz],.20,.17,.04,paint,.64,.28);
++          for(let l=0;l<6;l++){const t=(l+.5)/6;profile([a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t,z-1.02],[a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t,z+1.02],.095,.10,.018,dark,.64,.5);}
++        }
+       }
+     }
+     // Consolidated low service ducts in hero bays: two smaller runs sit below
+@@ -201,25 +234,25 @@ export function buildCorridor(seed=WORLD_SEED^0xC0771D0){
+     }
+   }
+   // Heavy octagonal I-section pressure ribs: chamfered web, two flanges, fastener lugs.
+-  const ribZ=[24.4,28.4,35.3,41.4,47.2,53.7,60.1,66.8,71.6];
++  const ribZ=[24.4,28.4,35.3,41.4,49.2,60.1,66.8,71.6];
+   for(const z of ribZ){
+-    if(z>=28&&z<42){
++    if(z===28.4||z===35.3||z===49.2){
+       const firstVertex=g.data.length/12;
+       // Flanges project into the aperture; the recessed web exposes axial depth
+       // on both sides. The gasket belongs inside the rear flange, not a bright rail.
+-      const inner=z<29?heroInner.map(([x,y])=>[x+(Math.abs(x)>3?Math.sign(x)*.38:Math.sign(x)*.14),y]):heroInner;
++      const inner=z===49.2?[[-1.85,.065],[1.85,.065],[2.70,.9],[2.70,4.10],[1.80,5.05],[-1.80,5.05],[-2.70,4.10],[-2.70,.9]]:z<29?heroInner.map(([x,y])=>[x+(Math.abs(x)>3?Math.sign(x)*.38:Math.sign(x)*.14),y]):heroInner;
++      const depthScale=z===35.3?1.22:z===49.2?1.45:1;
+       const sectionBetween=amount=>inner.map((p,i)=>p.map((v,axis)=>v+(heroOuter[i][axis]-v)*amount));
+-      ringBand(sectionBetween(.20),sectionBetween(.84),z,.90,paint,.59,.45);
+-      ringBand(inner,heroOuter,z-.53,.16,paint,.64,.28);
+-      ringBand(inner,heroOuter,z+.53,.16,paint,.64,.28);
+-      ringBand(sectionBetween(.02),sectionBetween(.11),z+.64,.07,dark,.72,.15);
++      pressureCasting(inner,heroOuter,z,depthScale);
++      ringBand(sectionBetween(.03),sectionBetween(.10),z+.71*depthScale,.07,dark,.72,.15);
+       for(const side of [-1,1]){
+-        for(const y of [1.32,3.21])box(side*3.79,y,z-.67,.32,.28,.11,.035,paint,.64,.28);
++        for(const y of [1.32,3.21])box(side*(z===49.2?3.38:3.79),y,z-.67*depthScale,.32,.28,.11,.035,paint,.64,.28);
+         // Deep angled plinths transfer the jamb load to the service ledge.
+-        profile([side*2.71,.17,z-.45],[side*3.83,1.03,z-.45],.22,.72,.045,paint,.64,.28);
++        if(z!==49.2)profile([side*2.71,.17,z-.45],[side*3.83,1.03,z-.45],.22,.72,.045,paint,.64,.28);
+       }
+       for(const side of [-1,1]){
+-        obstacles.push([Math.min(side*inner[2][0],side*4.18),.98,z-.82,Math.max(side*inner[2][0],side*4.18),3.52,z+.68]);
++        const axial=.82*depthScale;
++        obstacles.push([Math.min(side*inner[2][0],side*4.18),inner[2][1],z-axial,Math.max(side*inner[2][0],side*4.18),inner[3][1],z+axial]);
+         // Local conservative collision envelopes follow the real upper shoulder.
+         // Axial bounds include the forward lugs/plinth, not only the flange.
+         // Resolve lower/outboard steps first: an inward push can only enter a
+@@ -228,14 +261,14 @@ export function buildCorridor(seed=WORLD_SEED^0xC0771D0){
+         const topX=inner[4][0],sideX=inner[3][0],topY=inner[4][1],sideY=inner[3][1],steps=Math.ceil((sideX-topX)/.12);
+         for(let step=steps-1;step>=0;step--){
+           const x=topX+(sideX-topX)*step/steps,nextX=topX+(sideX-topX)*(step+1)/steps,y=topY-(topY-sideY)*(nextX-topX)/(sideX-topX);
+-          obstacles.push([Math.min(side*x,side*4.18),y,z-.82,Math.max(side*x,side*4.18),5.79,z+.68]);
++          obstacles.push([Math.min(side*x,side*4.18),y,z-axial,Math.max(side*x,side*4.18),5.79,z+axial]);
+         }
+       }
+       // A full-width high envelope resolves axially; a narrow soffit box could
+       // push sideways into an already resolved shoulder. Shared ceiling bounds
+       // already keep the exterior high corners unreachable.
+-      obstacles.push([-4.18,inner[4][1],z-.82,4.18,5.79,z+.68]);
+-      construction.frames.push({z,firstVertex,vertexCount:g.data.length/12-firstVertex,inner,outer:heroOuter,flangeDepth:1.22,webDepth:.90});
++      obstacles.push([-4.18,inner[4][1],z-.82*depthScale,4.18,5.79,z+.82*depthScale]);
++      construction.frames.push({z,firstVertex,vertexCount:g.data.length/12-firstVertex,inner,outer:heroOuter,depthScale,flangeDepth:1.30*depthScale,webDepth:.64*depthScale});
+       continue;
+     }
+     for(let j=0;j<8;j++){
+@@ -250,13 +283,16 @@ export function buildCorridor(seed=WORLD_SEED^0xC0771D0){
+   // A service trench is genuinely open between grating bars; the underfloor structure is visible.
+   box(0,-.22,47.5,4.3,.12,48,.025,dark,.78,.12);
+   for(let z=23.25;z<72;z+=.19){
+-    if(z<42)for(const side of [-1,1])box(side*1.64,.025,z,.78,.08,.055,.012,steel,.36,.9,0,CORRIDOR_SURFACES.grate);
++    if(z<42)for(const [x,w] of [[-1.64,.78],[1.64,.78],[0,.72]])box(x,.025,z,w,.08,.055,.012,steel,.36,.9,0,CORRIDOR_SURFACES.grate);
+     else box(0,.025,z,4.14,.08,.055,.012,steel,.36,.9,0,CORRIDOR_SURFACES.grate);
+   }
+-  for(let z=24.4;z<42;z+=3){
+-    box(0,.02,z,2.42,.09,2.91,.025,paint,.59,.45);
+-    for(const x of [-1.2,1.2])box(x,.065,z,.035,.025,2.77,.006,dark,.66,.35);
++  for(let z=24.0;z<42;z+=1.5){
++    for(const side of [-1,1]){
++      box(side*.83,.02,z,.79,.09,1.39,.025,paint,.59,.45);
++      box(side*.83,.07,z-.52,.49,.025,.07,.012,dark,.66,.35);
++    }
+   }
++  for(const x of [-1.24,-.42,.42,1.24])box(x,.035,32.3,.07,.10,18.5,.012,steel,.42,.9);
+   for(let x=-2.05;x<=2.05;x+=.27)box(x,-.035,47.5,.045,.1,48,.01,alloy,.42,.9,0,CORRIDOR_SURFACES.grate);
+   for(const x of [-2.18,2.18])box(x,.015,47.5,.17,.13,48,.018,steel,.3,.92);
+   for(let z=24;z<72;z+=3.1){
+diff --git a/tests/iteration4a-geometry.test.mjs b/tests/iteration4a-geometry.test.mjs
+index 1707556..5af4757 100644
+--- a/tests/iteration4a-geometry.test.mjs
++++ b/tests/iteration4a-geometry.test.mjs
+@@ -25,7 +25,7 @@ function assertClear(point,r,label,meshTriangles=triangles){
+   const d=triangleDistance2(point,...t.points);assert.ok(d>=r*r,`${label}: triangle${i} only${Math.sqrt(d).toFixed(5)}m from camera at${JSON.stringify(point)}`);
+  }
+ }
+-test('4A actual corridor triangles clear the whole unchanged route and every saved camera sphere',()=>{
++test('corridor actual triangles clear the whole unchanged route, saved cameras and selected4B shot',()=>{
+  const p=new Float32Array(3),target=new Float32Array(3);let previous=null,maxStep=0;
+  // Every .0125s, with a .06m guard beyond the .45m camera sphere.
+  // Bound each cubic segment's analytic velocity using its quadratic extrema;
+@@ -45,23 +45,33 @@ test('4A actual corridor triangles clear the whole unchanged route and every sav
+  assert.ok(maxStep<=.12,`route sample gap${maxStep} exceeds the two-sided .06m guard`);
+  for(const [index,view]of VIEWS.entries())assertClear(view.position,.45,`view${index+1}`);
+  assertClear(CORRIDOR_HERO.position,.45,'canonical hero');
++ assertClear([-1.2,1.72,25.6],.45,'selected4B cameraC');
+ });
+-test('4A pressure thresholds have broad connected octagonal flanges, recessed webs and real axial thickness',()=>{
+- assert.equal(corridor.construction.frames.length,3);
++test('pressure castings have eight closed bevelled sectors, recessed webs and metre-scale axial depth',()=>{
++ assert.ok(corridor.construction.frames.length>=3);
+  for(const frame of corridor.construction.frames){
+   const mesh=meshRange(frame);
+   // All eight sectors are solid; probe the centre of each annular face from
+   // both axial directions against actual triangles, including diagonal shoulders.
+   for(let edge=0;edge<8;edge++){
+    const next=(edge+1)%8,point=[0,1].map(axis=>(frame.inner[edge][axis]+frame.inner[next][axis]+frame.outer[edge][axis]+frame.outer[next][axis])/4);
+-   const front=firstMeshHit(mesh,[...point,frame.z-1],[0,0,1],2),back=firstMeshHit(mesh,[...point,frame.z+1],[0,0,-1],2);
+-   assert.ok(front&&back,`missing closed octagon sector${edge}`);assert.ok(back.world[2]-front.world[2]>1.20,`sector${edge} lacks structural depth`);
++   const front=firstMeshHit(mesh,[...point,frame.z-2],[0,0,1],4),back=firstMeshHit(mesh,[...point,frame.z+2],[0,0,-1],4);
++   assert.ok(front&&back,`missing closed octagon sector${edge}`);assert.ok(back.world[2]-front.world[2]>frame.depthScale,`sector${edge} lacks structural depth`);
+   }
+-  // Mid-jamb inner reveal: web retreats .17m from the flange's inner opening.
+-  const front=firstMeshHit(mesh,[2.9,2.4,frame.z-.53],[1,0,0],2),web=firstMeshHit(mesh,[2.9,2.4,frame.z],[1,0,0],2);
+-  assert.ok(front&&web);assert.ok(web.distance-front.distance>(frame.z<29?.09:.16),'web must be visibly recessed behind flange');
++  // Probe the actual bevel lip and sunken web. The narrow entry casting and
++  // wide pressure portal have different masses, so require a real proportional
++  // reveal rather than the obsolete4A flat flange's fixed .17m dimension.
++  const startX=frame.inner[2][0]-.4,mass=frame.outer[2][0]-frame.inner[2][0];
++  const front=firstMeshHit(mesh,[startX,2.4,frame.z-.65*frame.depthScale],[1,0,0],2),web=firstMeshHit(mesh,[startX,2.4,frame.z],[1,0,0],2);
++  assert.ok(front&&web);assert.ok(web.distance-front.distance>mass*.10,'web must retreat behind bevel lip');
+  }
+ });
++test('4B pressure portal has an actually open low passage and clears the original high flight approach',()=>{
++ const portal=corridor.construction.frames.find(f=>f.z>45&&f.z<55);assert.ok(portal,'the goal portal must precede the distant hangar');
++ for(const y of [1.72,2.4,3.5,4.2])assert.equal(firstMeshHit(vertices,[0,y,48],[0,0,1],24),null,`real passage at height${y} must continue to hangar`);
++ const side=firstMeshHit(vertices,[0,2.4,portal.z],[1,0,0],4);assert.ok(side&&side.distance<3.1,'portal needs an actual enclosing jamb');
++ const pocket=firstMeshHit(vertices,[-1.2,1.72,25.6],[-1,0,0],5);assert.ok(pocket&&pocket.distance>2.7,'near service recess must cut behind the old slab plane');
++});
+ test('4A maintenance pocket is recessed behind the jamb and structural occlusion remains physical',()=>{
+  const pocket=firstMeshHit(vertices,[-2.9,2.8,33.85],[-1,0,0],3),jamb=firstMeshHit(vertices,[-2.9,2.8,35.3],[-1,0,0],3);
+  assert.ok(pocket&&jamb);assert.ok(pocket.distance-jamb.distance>.65,'service equipment must sit behind the pressure plane');

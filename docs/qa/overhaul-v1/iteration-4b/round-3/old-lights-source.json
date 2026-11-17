@@ -1,0 +1,771 @@
+{
+  "productionSha256": "a24b68c1331414c1b1f395e4af551e9b804fbbab5575e75ef473a290ad6a7b1b",
+  "oldLightsSha256": "d020a4b411a28130a05697253017cd1a4f1cfce31d39d973f80bb3f43c3bcc21",
+  "scope": "Actual final baked vertices/surfaces/housing orientation/emission held fixed; after build and before renderer/bake, restore all old renderer light-table fields. No shader/post/exposure/effect change. Runtime hashes required to establish exact mesh identity.",
+  "changes": [
+    {
+      "id": "cold-rib-key",
+      "positionUnchanged": true,
+      "colorUnchanged": true,
+      "old": {
+        "target": [
+          -3.75,
+          2.4,
+          35.3
+        ],
+        "power": 150
+      },
+      "final": {
+        "target": [
+          -3.55,
+          2.4,
+          53.7
+        ],
+        "power": 420
+      }
+    },
+    {
+      "id": "red-depth-key",
+      "positionUnchanged": true,
+      "colorUnchanged": true,
+      "old": {
+        "target": [
+          0.45,
+          0.45,
+          45.2
+        ],
+        "power": 165
+      },
+      "final": {
+        "target": [
+          0.45,
+          0.45,
+          45.2
+        ],
+        "power": 165
+      }
+    },
+    {
+      "id": "cold-left-graze",
+      "positionUnchanged": true,
+      "colorUnchanged": true,
+      "old": {
+        "target": [
+          3.7,
+          2.15,
+          33.1
+        ],
+        "power": 72
+      },
+      "final": {
+        "target": [
+          3.7,
+          2.15,
+          33.1
+        ],
+        "power": 72
+      }
+    },
+    {
+      "id": "cold-middle-rib",
+      "positionUnchanged": true,
+      "colorUnchanged": true,
+      "old": {
+        "target": [
+          -3.7,
+          2.4,
+          41.4
+        ],
+        "power": 74
+      },
+      "final": {
+        "target": [
+          -3.55,
+          2.4,
+          53.7
+        ],
+        "power": 180
+      }
+    },
+    {
+      "id": "red-middle",
+      "positionUnchanged": true,
+      "colorUnchanged": true,
+      "old": {
+        "target": [
+          0.2,
+          0.55,
+          54.5
+        ],
+        "power": 88
+      },
+      "final": {
+        "target": [
+          0.2,
+          0.55,
+          54.5
+        ],
+        "power": 70
+      }
+    },
+    {
+      "id": "red-far",
+      "positionUnchanged": true,
+      "colorUnchanged": true,
+      "old": {
+        "target": [
+          0.2,
+          0.4,
+          63
+        ],
+        "power": 74
+      },
+      "final": {
+        "target": [
+          0.2,
+          0.4,
+          63
+        ],
+        "power": 92
+      }
+    },
+    {
+      "id": "cold-service-bay",
+      "positionUnchanged": true,
+      "colorUnchanged": true,
+      "old": {
+        "target": [
+          -1.5,
+          1.6,
+          35
+        ],
+        "power": 22
+      },
+      "final": {
+        "target": [
+          -1.5,
+          1.6,
+          35
+        ],
+        "power": 22
+      }
+    },
+    {
+      "id": "cold-exit-veil",
+      "positionUnchanged": true,
+      "colorUnchanged": true,
+      "old": {
+        "target": [
+          0,
+          2.4,
+          62.5
+        ],
+        "power": 36
+      },
+      "final": {
+        "target": [
+          -0.7,
+          3,
+          71.6
+        ],
+        "power": 65
+      }
+    }
+  ],
+  "oldLights": [
+    {
+      "id": "cold-rib-key",
+      "position": [
+        -1,
+        4.3,
+        31.8
+      ],
+      "target": [
+        -3.75,
+        2.4,
+        35.3
+      ],
+      "color": [
+        0.57,
+        0.74,
+        0.94
+      ],
+      "power": 150,
+      "fov": 104,
+      "far": 38,
+      "shadow": 0,
+      "size": [
+        0.3,
+        0.19,
+        0.1
+      ],
+      "mount": "ceiling",
+      "radius": 0.18,
+      "direction": [
+        -0.5682194167592653,
+        -0.39258796067003787,
+        0.7231883486027006
+      ],
+      "outerCos": 0.6156614753256583,
+      "innerCos": 0.8458209421247207,
+      "emission": 6.578947368421052
+    },
+    {
+      "id": "red-depth-key",
+      "position": [
+        0.45,
+        4.75,
+        44.1
+      ],
+      "target": [
+        0.45,
+        0.45,
+        45.2
+      ],
+      "color": [
+        1,
+        0.048,
+        0.021
+      ],
+      "power": 165,
+      "fov": 124,
+      "far": 38,
+      "shadow": 1,
+      "size": [
+        0.2,
+        0.28,
+        0.2
+      ],
+      "mount": "pendant",
+      "radius": 0.18,
+      "direction": [
+        0,
+        -0.9688027044775657,
+        0.24783324998263342
+      ],
+      "outerCos": 0.46947156278589086,
+      "innerCos": 0.7832596234234375,
+      "emission": 7.366071428571428
+    },
+    {
+      "id": "cold-left-graze",
+      "position": [
+        1.35,
+        4.55,
+        29.8
+      ],
+      "target": [
+        3.7,
+        2.15,
+        33.1
+      ],
+      "color": [
+        0.53,
+        0.68,
+        0.84
+      ],
+      "power": 72,
+      "fov": 96,
+      "far": 38,
+      "shadow": -1,
+      "size": [
+        0.3,
+        0.19,
+        0.1
+      ],
+      "mount": "ceiling",
+      "radius": 0.18,
+      "direction": [
+        0.49906892676595455,
+        -0.5096874145694854,
+        0.7008201950330426
+      ],
+      "outerCos": 0.6691306063588582,
+      "innerCos": 0.8681121951482392,
+      "emission": 3.1578947368421053
+    },
+    {
+      "id": "cold-middle-rib",
+      "position": [
+        -0.3,
+        4.65,
+        38.7
+      ],
+      "target": [
+        -3.7,
+        2.4,
+        41.4
+      ],
+      "color": [
+        0.45,
+        0.61,
+        0.79
+      ],
+      "power": 74,
+      "fov": 96,
+      "far": 38,
+      "shadow": -1,
+      "size": [
+        0.3,
+        0.19,
+        0.1
+      ],
+      "mount": "ceiling",
+      "radius": 0.18,
+      "direction": [
+        -0.6952907081536089,
+        -0.4601188509840059,
+        0.5521426211808061
+      ],
+      "outerCos": 0.6691306063588582,
+      "innerCos": 0.8681121951482392,
+      "emission": 3.245614035087719
+    },
+    {
+      "id": "red-middle",
+      "position": [
+        0.45,
+        4.75,
+        52.5
+      ],
+      "target": [
+        0.2,
+        0.55,
+        54.5
+      ],
+      "color": [
+        1,
+        0.055,
+        0.024
+      ],
+      "power": 88,
+      "fov": 116,
+      "far": 38,
+      "shadow": -1,
+      "size": [
+        0.2,
+        0.28,
+        0.2
+      ],
+      "mount": "pendant",
+      "radius": 0.18,
+      "direction": [
+        -0.05366425767258279,
+        -0.9015595288993908,
+        0.4293140613806623
+      ],
+      "outerCos": 0.5299192642332049,
+      "innerCos": 0.8094271487069733,
+      "emission": 3.9285714285714284
+    },
+    {
+      "id": "red-far",
+      "position": [
+        0.45,
+        4.75,
+        61.7
+      ],
+      "target": [
+        0.2,
+        0.4,
+        63
+      ],
+      "color": [
+        1,
+        0.068,
+        0.032
+      ],
+      "power": 74,
+      "fov": 116,
+      "far": 38,
+      "shadow": -1,
+      "size": [
+        0.2,
+        0.28,
+        0.2
+      ],
+      "mount": "pendant",
+      "radius": 0.18,
+      "direction": [
+        -0.05498158425339618,
+        -0.9566795660090934,
+        0.2859042381176595
+      ],
+      "outerCos": 0.5299192642332049,
+      "innerCos": 0.8094271487069733,
+      "emission": 3.3035714285714284
+    },
+    {
+      "id": "cold-service-bay",
+      "position": [
+        -4.3,
+        3.6,
+        33.5
+      ],
+      "target": [
+        -1.5,
+        1.6,
+        35
+      ],
+      "color": [
+        0.55,
+        0.71,
+        0.87
+      ],
+      "power": 22,
+      "fov": 110,
+      "far": 38,
+      "shadow": -1,
+      "size": [
+        0.72,
+        0.36,
+        0.07
+      ],
+      "mount": "wall",
+      "radius": 0.18,
+      "direction": [
+        0.7459376616259147,
+        -0.5328126154470819,
+        0.39960946158531147
+      ],
+      "outerCos": 0.573576436351046,
+      "innerCos": 0.8280603346224944,
+      "emission": 0.21219135802469138
+    },
+    {
+      "id": "cold-exit-veil",
+      "position": [
+        -0.4,
+        6.5,
+        69.4
+      ],
+      "target": [
+        0,
+        2.4,
+        62.5
+      ],
+      "color": [
+        0.34,
+        0.46,
+        0.6
+      ],
+      "power": 36,
+      "fov": 124,
+      "far": 38,
+      "shadow": -1,
+      "size": [
+        0.3,
+        0.19,
+        0.1
+      ],
+      "mount": "ceiling",
+      "radius": 0.18,
+      "direction": [
+        0.04977496587888369,
+        -0.5101934002585577,
+        -0.8586181614107444
+      ],
+      "outerCos": 0.46947156278589086,
+      "innerCos": 0.7832596234234375,
+      "emission": 1.5789473684210527
+    }
+  ],
+  "finalLights": [
+    {
+      "id": "cold-rib-key",
+      "position": [
+        -1,
+        4.3,
+        31.8
+      ],
+      "target": [
+        -3.55,
+        2.4,
+        53.7
+      ],
+      "color": [
+        0.57,
+        0.74,
+        0.94
+      ],
+      "power": 420,
+      "fov": 104,
+      "far": 38,
+      "shadow": 0,
+      "size": [
+        0.3,
+        0.19,
+        0.1
+      ],
+      "mount": "ceiling",
+      "radius": 0.18,
+      "direction": [
+        -0.11522989111360571,
+        -0.08585756592778465,
+        0.9896214177992021
+      ],
+      "outerCos": 0.6156614753256583,
+      "innerCos": 0.8458209421247207,
+      "emission": 18.421052631578945
+    },
+    {
+      "id": "red-depth-key",
+      "position": [
+        0.45,
+        4.75,
+        44.1
+      ],
+      "target": [
+        0.45,
+        0.45,
+        45.2
+      ],
+      "color": [
+        1,
+        0.048,
+        0.021
+      ],
+      "power": 165,
+      "fov": 124,
+      "far": 38,
+      "shadow": 1,
+      "size": [
+        0.2,
+        0.28,
+        0.2
+      ],
+      "mount": "pendant",
+      "radius": 0.18,
+      "direction": [
+        0,
+        -0.9688027044775657,
+        0.24783324998263342
+      ],
+      "outerCos": 0.46947156278589086,
+      "innerCos": 0.7832596234234375,
+      "emission": 7.366071428571428
+    },
+    {
+      "id": "cold-left-graze",
+      "position": [
+        1.35,
+        4.55,
+        29.8
+      ],
+      "target": [
+        3.7,
+        2.15,
+        33.1
+      ],
+      "color": [
+        0.53,
+        0.68,
+        0.84
+      ],
+      "power": 72,
+      "fov": 96,
+      "far": 38,
+      "shadow": -1,
+      "size": [
+        0.3,
+        0.19,
+        0.1
+      ],
+      "mount": "ceiling",
+      "radius": 0.18,
+      "direction": [
+        0.49906892676595455,
+        -0.5096874145694854,
+        0.7008201950330426
+      ],
+      "outerCos": 0.6691306063588582,
+      "innerCos": 0.8681121951482392,
+      "emission": 3.1578947368421053
+    },
+    {
+      "id": "cold-middle-rib",
+      "position": [
+        -0.3,
+        4.65,
+        38.7
+      ],
+      "target": [
+        -3.55,
+        2.4,
+        53.7
+      ],
+      "color": [
+        0.45,
+        0.61,
+        0.79
+      ],
+      "power": 180,
+      "fov": 96,
+      "far": 38,
+      "shadow": -1,
+      "size": [
+        0.3,
+        0.19,
+        0.1
+      ],
+      "mount": "ceiling",
+      "radius": 0.18,
+      "direction": [
+        -0.2095139706465989,
+        -0.1450481335245685,
+        0.9669875568304565
+      ],
+      "outerCos": 0.6691306063588582,
+      "innerCos": 0.8681121951482392,
+      "emission": 7.894736842105263
+    },
+    {
+      "id": "red-middle",
+      "position": [
+        0.45,
+        4.75,
+        52.5
+      ],
+      "target": [
+        0.2,
+        0.55,
+        54.5
+      ],
+      "color": [
+        1,
+        0.055,
+        0.024
+      ],
+      "power": 70,
+      "fov": 116,
+      "far": 38,
+      "shadow": -1,
+      "size": [
+        0.2,
+        0.28,
+        0.2
+      ],
+      "mount": "pendant",
+      "radius": 0.18,
+      "direction": [
+        -0.05366425767258279,
+        -0.9015595288993908,
+        0.4293140613806623
+      ],
+      "outerCos": 0.5299192642332049,
+      "innerCos": 0.8094271487069733,
+      "emission": 3.1249999999999996
+    },
+    {
+      "id": "red-far",
+      "position": [
+        0.45,
+        4.75,
+        61.7
+      ],
+      "target": [
+        0.2,
+        0.4,
+        63
+      ],
+      "color": [
+        1,
+        0.068,
+        0.032
+      ],
+      "power": 92,
+      "fov": 116,
+      "far": 38,
+      "shadow": -1,
+      "size": [
+        0.2,
+        0.28,
+        0.2
+      ],
+      "mount": "pendant",
+      "radius": 0.18,
+      "direction": [
+        -0.05498158425339618,
+        -0.9566795660090934,
+        0.2859042381176595
+      ],
+      "outerCos": 0.5299192642332049,
+      "innerCos": 0.8094271487069733,
+      "emission": 4.107142857142857
+    },
+    {
+      "id": "cold-service-bay",
+      "position": [
+        -4.3,
+        3.6,
+        33.5
+      ],
+      "target": [
+        -1.5,
+        1.6,
+        35
+      ],
+      "color": [
+        0.55,
+        0.71,
+        0.87
+      ],
+      "power": 22,
+      "fov": 110,
+      "far": 38,
+      "shadow": -1,
+      "size": [
+        0.72,
+        0.36,
+        0.07
+      ],
+      "mount": "wall",
+      "radius": 0.18,
+      "direction": [
+        0.7459376616259147,
+        -0.5328126154470819,
+        0.39960946158531147
+      ],
+      "outerCos": 0.573576436351046,
+      "innerCos": 0.8280603346224944,
+      "emission": 0.21219135802469138
+    },
+    {
+      "id": "cold-exit-veil",
+      "position": [
+        -0.4,
+        6.5,
+        69.4
+      ],
+      "target": [
+        -0.7,
+        3,
+        71.6
+      ],
+      "color": [
+        0.34,
+        0.46,
+        0.6
+      ],
+      "power": 65,
+      "fov": 124,
+      "far": 38,
+      "shadow": -1,
+      "size": [
+        0.3,
+        0.19,
+        0.1
+      ],
+      "mount": "ceiling",
+      "radius": 0.18,
+      "direction": [
+        -0.07237851609800722,
+        -0.8444160211434177,
+        0.530775784718717
+      ],
+      "outerCos": 0.46947156278589086,
+      "innerCos": 0.7832596234234375,
+      "emission": 2.850877192982456
+    }
+  ]
+}

@@ -1,0 +1,212 @@
+{
+  "records": [
+    {
+      "source": "docs/references/target-red-corridor.jpg",
+      "sha256": "da365a90202cb3809c7dbfd9bce71d93ede37ba6f34a4150e2030c7c4b0033ab",
+      "output": "thumbnails/target.png",
+      "method": "Lanczos320x180 only; no retouching"
+    },
+    {
+      "source": "docs/qa/overhaul-v1/iteration-4b/round-1/production-C.png",
+      "sha256": "6cdb765d50e42deba4f07e5d5bcc7ed11765215b1789ee907fb887a8e811d8f5",
+      "output": "thumbnails/production-C.png",
+      "method": "Lanczos320x180 only; no retouching"
+    },
+    {
+      "source": "docs/qa/overhaul-v1/iteration-4b/round-1/neutral-C.png",
+      "sha256": "68b5529daab70f73cf2b3f4cb97767e6254d4953176c5442d94ec2f2c5ac3261",
+      "output": "thumbnails/neutral-C.png",
+      "method": "Lanczos320x180 only; no retouching"
+    },
+    {
+      "source": "docs/qa/overhaul-v1/iteration-4b/camera-study/production-C.png",
+      "sha256": "044338c2d5da1c1bc19e58a6291be71c8f81cd4dba7ed67d8c75896be828eef4",
+      "output": "thumbnails/before-production-C.png",
+      "method": "Lanczos320x180 only; no retouching"
+    },
+    {
+      "source": "docs/qa/overhaul-v1/iteration-4b/camera-study/neutral-C.png",
+      "sha256": "fe7aa804ad27478acbdb18dec79a67b323a13385ff5477546188fab6d7ff6550",
+      "output": "thumbnails/before-neutral-C.png",
+      "method": "Lanczos320x180 only; no retouching"
+    },
+    {
+      "source": "docs/qa/overhaul-v1/iteration-4b/round-1/production-A.png",
+      "sha256": "1b13c840889ba4c4ea363439eede5ce22e1d945213a0cd8bdfe8eb69547f8249",
+      "output": "thumbnails/production-A.png",
+      "method": "Lanczos320x180 only; no retouching"
+    },
+    {
+      "source": "docs/qa/overhaul-v1/iteration-4b/round-1/production-B.png",
+      "sha256": "90fd8c2b98a89a6be2c2fb21bbcdef1dd7b02a84af9d02aa0c4acea80e224be8",
+      "output": "thumbnails/production-B.png",
+      "method": "Lanczos320x180 only; no retouching"
+    },
+    {
+      "source": "docs/qa/overhaul-v1/iteration-4b/round-1/neutral-A.png",
+      "sha256": "034f88b9bb8f14790a521f22ce8e189387357d04c3281032edf217d30171aff2",
+      "output": "thumbnails/neutral-A.png",
+      "method": "Lanczos320x180 only; no retouching"
+    },
+    {
+      "source": "docs/qa/overhaul-v1/iteration-4b/round-1/neutral-B.png",
+      "sha256": "99f8ee3103ca123b83cf98752b7249bad3e41e94107a8af4d27b7f383ce2e010",
+      "output": "thumbnails/neutral-B.png",
+      "method": "Lanczos320x180 only; no retouching"
+    },
+    {
+      "source": "docs/qa/overhaul-v1/iteration-4b/round-1/production-C.png",
+      "output": "details/production-C-near.png",
+      "bounds": [
+        1120,
+        120,
+        1920,
+        1080
+      ],
+      "method": "Exact unscaled source pixels"
+    },
+    {
+      "source": "docs/qa/overhaul-v1/iteration-4b/round-1/production-C.png",
+      "output": "details/production-C-middle.png",
+      "bounds": [
+        260,
+        180,
+        1220,
+        960
+      ],
+      "method": "Exact unscaled source pixels"
+    },
+    {
+      "source": "docs/qa/overhaul-v1/iteration-4b/round-1/production-C.png",
+      "output": "details/production-C-far.png",
+      "bounds": [
+        450,
+        330,
+        950,
+        760
+      ],
+      "method": "Exact unscaled source pixels"
+    },
+    {
+      "source": "docs/qa/overhaul-v1/iteration-4b/round-1/neutral-C.png",
+      "output": "details/neutral-C-near.png",
+      "bounds": [
+        1120,
+        120,
+        1920,
+        1080
+      ],
+      "method": "Exact unscaled source pixels"
+    },
+    {
+      "source": "docs/qa/overhaul-v1/iteration-4b/round-1/neutral-C.png",
+      "output": "details/neutral-C-middle.png",
+      "bounds": [
+        260,
+        180,
+        1220,
+        960
+      ],
+      "method": "Exact unscaled source pixels"
+    },
+    {
+      "source": "docs/qa/overhaul-v1/iteration-4b/round-1/neutral-C.png",
+      "output": "details/neutral-C-far.png",
+      "bounds": [
+        450,
+        330,
+        950,
+        760
+      ],
+      "method": "Exact unscaled source pixels"
+    },
+    {
+      "source": "docs/qa/overhaul-v1/iteration-4b/camera-study/production-C.png",
+      "output": "details/before-production-C-near.png",
+      "bounds": [
+        1120,
+        120,
+        1920,
+        1080
+      ],
+      "method": "Exact unscaled source pixels"
+    },
+    {
+      "source": "docs/qa/overhaul-v1/iteration-4b/camera-study/production-C.png",
+      "output": "details/before-production-C-middle.png",
+      "bounds": [
+        260,
+        180,
+        1220,
+        960
+      ],
+      "method": "Exact unscaled source pixels"
+    },
+    {
+      "source": "docs/qa/overhaul-v1/iteration-4b/camera-study/production-C.png",
+      "output": "details/before-production-C-far.png",
+      "bounds": [
+        450,
+        330,
+        950,
+        760
+      ],
+      "method": "Exact unscaled source pixels"
+    },
+    {
+      "source": "docs/qa/overhaul-v1/iteration-4b/camera-study/neutral-C.png",
+      "output": "details/before-neutral-C-near.png",
+      "bounds": [
+        1120,
+        120,
+        1920,
+        1080
+      ],
+      "method": "Exact unscaled source pixels"
+    },
+    {
+      "source": "docs/qa/overhaul-v1/iteration-4b/camera-study/neutral-C.png",
+      "output": "details/before-neutral-C-middle.png",
+      "bounds": [
+        260,
+        180,
+        1220,
+        960
+      ],
+      "method": "Exact unscaled source pixels"
+    },
+    {
+      "source": "docs/qa/overhaul-v1/iteration-4b/camera-study/neutral-C.png",
+      "output": "details/before-neutral-C-far.png",
+      "bounds": [
+        450,
+        330,
+        950,
+        760
+      ],
+      "method": "Exact unscaled source pixels"
+    }
+  ],
+  "regions": {
+    "near": [
+      1120,
+      120,
+      1920,
+      1080
+    ],
+    "middle": [
+      260,
+      180,
+      1220,
+      960
+    ],
+    "far": [
+      450,
+      330,
+      950,
+      760
+    ]
+  },
+  "comparisonLayout": "baseline/target left; current right; concatenation only, target Lanczos resampled to1920x1080",
+  "sceneImageColorAdjustments": false
+}

@@ -1,0 +1,20 @@
+# Phase 4B — artistic decision record
+
+The owner's additional conditions and the full brief are in [authorization](AUTHORIZATION-AND-PLAN.md) and [owner brief](OWNER-BRIEF.md). Technical checks never substitute for the image verdict. Adrian retains final acceptance.
+
+| Stage | Actual evidence and independent assessment | Decision |
+| --- | --- | --- |
+| Mandatory camera study | Four FullHD production cameras and four neutral counterparts on unchanged 4A art sources; 320px thumbnails. Historical A is RGB-identical to 4A. Fresh GPT-6 Astra ranks C > B > D > A; all remain below the reference. [Review](camera-study/INDEPENDENT-REVIEW.md), [images](camera-study/production-contact-sheet.png). | Select C for the first composition rebuild. Show the study and review before geometry edits. This prerequisite does not add a fourth artistic round. |
+| Round 1 | Stepped pressure castings, deeper maintenance recess, floor/ceiling hierarchy and intermediate portal. Actual C/A/B production and neutral images. Independent FAIL: three major composition/geometry findings; no critical finding. [Review](round-1/INDEPENDENT-REVIEW.md), [reference comparison](round-1/comparison-reference.png). | Spend round 2 on unresolved composition. Actual submitted-mesh rays identify the nearest casting's inner reveal as the dominant right mass, correcting the initial assumption that it was the rear hull. The distant ship/rear wall also competes with the portal. |
+| Round 2 | Move the offending near frame behind the eye, open the service recess and offset the intermediate portal; retain C for controlled geometry comparison and capture C2 for revised aim. Independent FAIL: two major geometry/composition and two major lighting findings; no critical finding. [Review](round-2/INDEPENDENT-REVIEW.md), [reference comparison](round-2/comparison-reference.png). | The opening is physically real, but remains a small visual slit. Rays reaching sky do not establish artistic success. Spend the last round on foreground/depth proportions and existing-light balance; defer material microdetail. |
+| Round 3 | Forward C3/FOV40, restaged main casting and larger actual exit; existing-light A/B on identical final mesh. Independent comparison rejects C3 with two critical findings: lost near framing and a nearly global red veil. [Review](round-3/INDEPENDENT-REVIEW.md), [A/B images](round-3/comparison-R2-C3.png). | Retain the stronger already-reviewed round2/C2. Preserve all round3 evidence. Integrate only named-shot/provenance access, with exact RGB reproduction required. Three rounds exhausted; no fourth round. |
+
+Each review uses a fresh GPT-6 Astra/high context with only the reference, actual renders, image thumbnails and relevant crops. No code, issue text, previous reviews or author rationale is supplied. Coding uses GPT-6.1 Sol/high. Review files preserve the critic's words; `DECISION.md` records the implementation team's separate response.
+
+Historical capture manifests deliberately retain the status at capture time (for example `ART_REVIEW_PENDING`). The later independent review and decision documents above supersede those provisional statuses. Original capture data and images are not rewritten. Archive hashes were rechecked in [archive integrity](verification/archive-integrity.json).
+
+No additional reflection probes, shadow maps or new rendering effects have been adopted. The round3 comparison of existing light parameters uses identical geometry, camera, seed, time and rendering settings; fixture surface emission stays fixed in this photometric diagnostic. A different camera or geometry is not a controlled lighting A/B. Round3 light tuning is rejected with that candidate and is not part of the selected runtime.
+
+The final selection is a handoff of the best existing candidate within the agreed budget, **not achievement of the cinematic target**. C2 retains major reference-relative issues. Material polish was deferred; lack of a hardware GPU is not an explanation for these still-image limitations.
+
+**ART DIRECTION: NOT ACCEPTED. Hardware GPU /60 FPS /native temporal: BLOCKED.**

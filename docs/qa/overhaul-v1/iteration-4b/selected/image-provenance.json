@@ -1,0 +1,52 @@
+{
+  "integrationStatus": "PASS",
+  "rgbIdentityToReviewedR2": [
+    {
+      "mode": "production",
+      "selected": "docs/qa/overhaul-v1/iteration-4b/selected/production-C2.png",
+      "selectedSha256": "153657a067a8d70590a02b8ceebec1049f05c4c5701fa8ce30d990d159636952",
+      "reviewedBaseline": "docs/qa/overhaul-v1/iteration-4b/round-2/production-C2.png",
+      "baselineSha256": "153657a067a8d70590a02b8ceebec1049f05c4c5701fa8ce30d990d159636952",
+      "rgbIdentical": true,
+      "differenceBoundingBox": null,
+      "differentRgbPixels": 0
+    },
+    {
+      "mode": "neutral",
+      "selected": "docs/qa/overhaul-v1/iteration-4b/selected/neutral-C2.png",
+      "selectedSha256": "2ed730f7432fac6db01eb200317e28ab5dc63768c53457cc5bc3464f145e1d2c",
+      "reviewedBaseline": "docs/qa/overhaul-v1/iteration-4b/round-2/neutral-C2.png",
+      "baselineSha256": "2ed730f7432fac6db01eb200317e28ab5dc63768c53457cc5bc3464f145e1d2c",
+      "rgbIdentical": true,
+      "differenceBoundingBox": null,
+      "differentRgbPixels": 0
+    }
+  ],
+  "thumbnails": [
+    {
+      "source": "docs/references/target-red-corridor.jpg",
+      "sha256": "da365a90202cb3809c7dbfd9bce71d93ede37ba6f34a4150e2030c7c4b0033ab",
+      "output": "thumbnails/target.png",
+      "method": "Lanczos320x180 only, no grading/retouching"
+    },
+    {
+      "source": "docs/qa/overhaul-v1/iteration-4b/selected/production-C2.png",
+      "sha256": "153657a067a8d70590a02b8ceebec1049f05c4c5701fa8ce30d990d159636952",
+      "output": "thumbnails/production-C2.png",
+      "method": "Lanczos320x180 only, no grading/retouching"
+    },
+    {
+      "source": "docs/qa/overhaul-v1/iteration-4b/selected/neutral-C2.png",
+      "sha256": "2ed730f7432fac6db01eb200317e28ab5dc63768c53457cc5bc3464f145e1d2c",
+      "output": "thumbnails/neutral-C2.png",
+      "method": "Lanczos320x180 only, no grading/retouching"
+    },
+    {
+      "source": "docs/qa/overhaul-v1/iteration-4b/selected/production-C2-hud.png",
+      "sha256": "8327c63e55fadf61cb87f18b82800d77325c1a4321e217d35c4e44bc4f8ec7bb",
+      "output": "thumbnails/production-C2-hud.png",
+      "method": "Lanczos320x180 only, no grading/retouching"
+    }
+  ],
+  "newArtisticCandidate": false
+}

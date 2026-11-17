@@ -1,0 +1,38 @@
+{
+  "captureStatus": "PASS",
+  "buildRunAllTests": {
+    "status": "PASS",
+    "tests": 32,
+    "failed": 0
+  },
+  "productionSha256": "17f15deac01c0447981c0bd05c2f6351defdf0841eea501c9c896126c42c11a2",
+  "runtimeChangedSinceRound1": [
+    "src/corridor.js"
+  ],
+  "rendererMaterialShaderLightHdrP0SourceChanges": false,
+  "p0FixtureBlockExact": true,
+  "corridorTriangles": 118064,
+  "drawnArchitectureTriangles": 149558,
+  "sourceCorrespondsToImages": true,
+  "C2": {
+    "position": [
+      -1.2,
+      1.72,
+      25.6
+    ],
+    "target": [
+      -13,
+      1.76,
+      62
+    ],
+    "verticalFovDegrees": 52
+  },
+  "originalCRetainedForControlledGeometryComparison": true,
+  "cameraEyeActualMeshClearance": 1.635088376001674,
+  "continuousRouteClearanceLowerBound": 0.6943038133608532,
+  "continuousWalkingCentrelineClearanceLowerBound": 0.674999988079071,
+  "browserErrors": [],
+  "unexpectedRequests": [],
+  "independentArtReview": "PENDING_PARENT",
+  "hardware60fpsNativeTemporal": "BLOCKED"
+}

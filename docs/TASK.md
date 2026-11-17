@@ -35,7 +35,7 @@ Select a named hardware-accelerated desktop GPU, run the default swapchain path 
 Final artifact: 68,058 raw bytes / 24,346 gzip bytes. The SHA256 and measurements are recorded in `qa/artifact-manifest.json` and `qa/browser-report.json`. The final route completed in 60.1838s; no runtime errors were observed.
 
 ## Visual-direction follow-up — Issue #2
-On 2026-11-16 Adrian rejected the achieved art direction (despite clean unit/browser checks). [Issue #2](https://github.com/adixoncode/project-echo-9/issues/2) governs a reference-first cinematic service-corridor proof of look. The comparison images are documented in [docs/references/](../references/README.md). No runtime implementation change or hardware acceptance is implied by reference upload.
+On 2026-11-16 Adrian rejected the achieved art direction (despite clean unit/browser checks). [Issue #2](https://github.com/adixoncode/project-echo-9/issues/2) governs a reference-first cinematic service-corridor proof of look. The comparison images are documented in [docs/references/](references/README.md). No runtime implementation change or hardware acceptance is implied by reference upload.
 
 
 ## Issue #2 — first candidate delivered, 2026-11-17
@@ -70,3 +70,15 @@ Adrian separately approved corridor set-design phase4A, superseding the historic
 Build/RunAllTests31/31, smoke17/17, fallback3/3, source/neutral-geometry identity and scope-reviewed pixel regressions PASS. An upper-frame manual-collision gap was found, preserved and fixed before finalQA without changing pixels;1187manual regression samples supplement continuous route clearance>0.6943m for0.45m camera. Full route functional PASS65.8483s/13software samples and confirmed presented goal. Four other-sector views are identical; view6 changes only29,644visible-corridor pixels. Artifact149,436raw /48,619gzip bytes;143,698drawn architecture triangles. See [actual FullHD neutral/production evidence and QA](qa/overhaul-v1/iteration-4a/RESULTS.md).
 
 Fresh image-only GPT-6 Astra/high: **GEOMETRY FAIL, COMPOSITION FAIL; basic depth PASS with limitations**,0critical/3major/2minor. Dead right foreground mass, uneven form hierarchy and weak distant-passage readability remain. Material/light commentary is separate. No art/application changes follow this first final review. **ART DIRECTION: NOT ACCEPTED. Physical GPU /60FPS /native temporal: BLOCKED.** Issue #1 and Issue #4 stay open. Approved closeout: main commit/push, verified remote identities and Issue4update. **STOP before4B; wait for Adrian.**
+
+## Issue #4 — phase4B, three-round handoff for Adrian, 2026-11-17
+
+Adrian explicitly authorized4B and superseded the historical4A stop. Four unchanged-scene camera alternatives and their neutral/320px images were independently compared first. Three subsequent artistic rounds were reviewed and archived. **The cinematic target remains unmet.** Fresh image-only Astra rejects round3/C3 and prefers the stronger existing round2/C2; its major composition/material shortcomings remain. The third-round same-mesh lighting A/B also failed to justify adoption. No fourth round was started; material microdetail was deferred while major composition problems remained.
+
+Selected C2 integrates closed stepped castings, a deeper service recess, revised floor/ceiling hierarchy, near-frame restaging and an offset intermediate portal. `?shot=4b` opens the selected52° shot without replacing the original six64° views or route. Final production/neutral PNGs exactly reproduce the reviewedC2 pixels. Only corridor geometry and main camera/provenance code change; all production lights/material/HDR/post and legacy content remain byte-identical to4A. No additional renderer complexity adopted.
+
+Literal build/RunAllTests32/32, smoke17/17, fallback3/3, actual mesh/route/P0/HDR checks and sector regressions PASS. Views1/2/3/5 are identical; view6 changes23,937pixels only within the visible corridor entrance. Functional full route66.6215s/12software samples and a presentedt60goal; no hardware performance claim. Artifact155,723raw/50,660gzip bytes, SHA256`0fc1512a4a9083893a30235dbe4cd35e20f9fe7f1833ff5dd73200b69c5e6e87`.
+
+See [full QA and actual renders](qa/overhaul-v1/iteration-4b/RESULTS.md), [artistic ledger](qa/overhaul-v1/iteration-4b/ARTISTIC-LEDGER.md), [technical report](qa/overhaul-v1/iteration-4b/TECHNICAL-REPORT.md) and [reproduction](qa/overhaul-v1/iteration-4b/REPRODUCE.md). All candidates and failed/rejected experiments remain available. A brief environment transport interruption recovered without resetting or losing work.
+
+**Independent reference review:FAIL. ART DIRECTION:NOT ACCEPTED. Hardware GPU/60FPS/native temporal:BLOCKED.** Issue#1 and#4 remain open. Authorized closeout:documentation/Issue4 update, main commit/push and SHA verification. **STOP for Adrian; no fourth round or later phase without separate approval.**

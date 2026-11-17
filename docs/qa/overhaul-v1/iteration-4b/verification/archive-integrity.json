@@ -1,0 +1,35 @@
+{
+  "meaning": "Immutable capture manifests verified after transient shell transport disconnect. Capture-time statuses remain historical; separate reviews/decisions are authoritative for art.",
+  "checks": [
+    {
+      "stage": "camera-study",
+      "checked": 64,
+      "failures": [],
+      "status": "PASS"
+    },
+    {
+      "stage": "round-1",
+      "checked": 76,
+      "failures": [],
+      "status": "PASS"
+    },
+    {
+      "stage": "round-2",
+      "checked": 68,
+      "failures": [],
+      "status": "PASS"
+    },
+    {
+      "stage": "round-3",
+      "checked": 73,
+      "failures": [],
+      "status": "PASS"
+    },
+    {
+      "stage": "selected",
+      "checked": 53,
+      "failures": [],
+      "status": "PASS"
+    }
+  ]
+}

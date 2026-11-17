@@ -1,0 +1,211 @@
+--- round2/src/corridor-lights.js
++++ round3/src/corridor-lights.js
+@@ -5,14 +5,14 @@
+   return {id,position,target,color,power,fov,far:38,shadow,size,mount,radius:.18,direction:normalize(target.map((v,i)=>v-position[i])),outerCos:Math.cos(fov*Math.PI/360),innerCos:Math.cos(fov*.31*Math.PI/180),emission:power/(400*size[0]*size[1])};
+ }
+ export const CORRIDOR_LIGHT_TABLE=[
+-  light('cold-rib-key',[-1,4.3,31.8],[-3.75,2.4,35.3],[.57,.74,.94],150,104,0),
++  light('cold-rib-key',[-1,4.3,31.8],[-3.55,2.4,53.7],[.57,.74,.94],420,104,0),
+   light('red-depth-key',[.45,4.75,44.1],[.45,.45,45.2],[1,.048,.021],165,124,1,[.20,.28,.20],'pendant'),
+   light('cold-left-graze',[1.35,4.55,29.8],[3.7,2.15,33.1],[.53,.68,.84],72,96),
+-  light('cold-middle-rib',[-.3,4.65,38.7],[-3.7,2.4,41.4],[.45,.61,.79],74,96),
+-  light('red-middle',[.45,4.75,52.5],[.2,.55,54.5],[1,.055,.024],88,116,-1,[.20,.28,.20],'pendant'),
+-  light('red-far',[.45,4.75,61.7],[.2,.4,63],[1,.068,.032],74,116,-1,[.20,.28,.20],'pendant'),
++  light('cold-middle-rib',[-.3,4.65,38.7],[-3.55,2.4,53.7],[.45,.61,.79],180,96),
++  light('red-middle',[.45,4.75,52.5],[.2,.55,54.5],[1,.055,.024],70,116,-1,[.20,.28,.20],'pendant'),
++  light('red-far',[.45,4.75,61.7],[.2,.4,63],[1,.068,.032],92,116,-1,[.20,.28,.20],'pendant'),
+   light('cold-service-bay',[-4.3,3.6,33.5],[-1.5,1.6,35],[.55,.71,.87],22,110,-1,[.72,.36,.07],'wall'),
+-  light('cold-exit-veil',[-.4,6.5,69.4],[0,2.4,62.5],[.34,.46,.60],36,124)
++  light('cold-exit-veil',[-.4,6.5,69.4],[-.7,3.0,71.6],[.34,.46,.60],65,124)
+ ];
+ export const CORRIDOR_LIGHTS=CORRIDOR_LIGHT_TABLE.filter(light=>light.shadow>=0);
+ export function packCorridorLights(lights=CORRIDOR_LIGHT_TABLE){
+--- round2/src/corridor.js
++++ round3/src/corridor.js
+@@ -238,15 +238,15 @@
+     }
+   }
+   // Heavy octagonal I-section pressure ribs: chamfered web, two flanges, fastener lugs.
+-  const ribZ=[24.4,35.3,41.4,49.2,60.1,66.8,71.6];
++  const ribZ=[24.4,35.3,41.4,53.7,60.1,66.8,71.6];
+   for(const z of ribZ){
+-    if(z===24.4||z===35.3||z===49.2){
++    if(z===24.4||z===35.3||z===53.7||z===71.6){
+       const firstVertex=g.data.length/12;
+       // Flanges project into the aperture; the recessed web exposes axial depth
+       // on both sides. The gasket belongs inside the rear flange, not a bright rail.
+-      const inner=z===49.2?[[-.2,.065],[2.8,.065],[3.3,.9],[3.3,4.10],[2.8,5.05],[-.2,5.05],[-.7,4.10],[-.7,.9]]:z<29?heroInner.map(([x,y])=>[x+(Math.abs(x)>3?Math.sign(x)*.38:Math.sign(x)*.14),y]):heroInner;
+-      const outer=z===49.2?[[-.8,-.32],[3.45,-.32],[4.17,.67],[4.17,4.35],[3.42,5.79],[-.82,5.79],[-1.52,4.35],[-1.52,.67]]:heroOuter;
+-      const depthScale=z===35.3?1.22:z===49.2?1.45:1;
++      const inner=z===71.6?[[-2.5,.065],[1.1,.065],[2.3,1.0],[2.3,5.72],[1.1,5.9],[-2.5,5.9],[-3.7,5.72],[-3.7,1.0]]:z===53.7?[[-2.45,.065],[2.45,.065],[3.55,.98],[3.55,3.65],[2.30,5.05],[-2.30,5.05],[-3.55,3.65],[-3.55,.98]]:z<29?heroInner.map(([x,y])=>[x+(Math.abs(x)>3?Math.sign(x)*.38:Math.sign(x)*.14),y]):heroInner;
++      const outer=z===71.6?[[-3.1,-.32],[1.7,-.32],[3.0,.67],[3.0,5.95],[1.8,6.7],[-3.0,6.7],[-4.17,5.95],[-4.17,.67]]:heroOuter;
++      const depthScale=z===35.3?1.22:z===53.7?1.10:z===71.6?.72:1;
+       const sectionBetween=amount=>inner.map((p,i)=>p.map((v,axis)=>v+(outer[i][axis]-v)*amount));
+       pressureCasting(inner,outer,z,depthScale);
+       ringBand(sectionBetween(.03),sectionBetween(.10),z+.71*depthScale,.07,dark,.72,.15);
+@@ -254,7 +254,7 @@
+         const edge=side<0?6:2,jambX=(inner[edge][0]+outer[edge][0])*.5;
+         for(const y of [1.32,3.21])box(jambX,y,z-.67*depthScale,.32,.28,.11,.035,paint,.64,.28);
+         // Deep angled plinths transfer the jamb load to the service ledge.
+-        if(z!==49.2)profile([side*2.71,.17,z-.45],[side*3.83,1.03,z-.45],.22,.72,.045,paint,.64,.28);
++        if(z<40)profile([side*2.71,.17,z-.45],[side*3.83,1.03,z-.45],.22,.72,.045,paint,.64,.28);
+       }
+       for(const side of [-1,1]){
+         const axial=.82*depthScale;
+@@ -268,28 +268,23 @@
+         const topX=side*inner[top][0],sideX=side*inner[upper][0],topY=inner[top][1],sideY=inner[upper][1],steps=Math.ceil((sideX-topX)/.12);
+         for(let step=steps-1;step>=0;step--){
+           const x=topX+(sideX-topX)*step/steps,nextX=topX+(sideX-topX)*(step+1)/steps,y=topY-(topY-sideY)*(nextX-topX)/(sideX-topX);
+-          obstacles.push([Math.min(side*x,side*4.18),y,z-axial,Math.max(side*x,side*4.18),5.79,z+axial]);
++          obstacles.push([Math.min(side*x,side*4.18),y,z-axial,Math.max(side*x,side*4.18),Math.max(...outer.map(p=>p[1])),z+axial]);
+         }
+       }
+       // A full-width high envelope resolves axially; a narrow soffit box could
+       // push sideways into an already resolved shoulder. Shared ceiling bounds
+       // already keep the exterior high corners unreachable.
+-      obstacles.push([-4.18,inner[4][1],z-.82*depthScale,4.18,5.79,z+.82*depthScale]);
++      obstacles.push([-4.18,inner[4][1],z-.82*depthScale,4.18,z===71.6?8.15:Math.max(...outer.map(p=>p[1])),z+.82*depthScale]);
+       construction.frames.push({z,firstVertex,vertexCount:g.data.length/12-firstVertex,inner,outer,depthScale,flangeDepth:1.30*depthScale,webDepth:.64*depthScale});
+-      if(z===49.2){
+-        // Off-axis pressure aperture and its adjacent actuator/utility bulkhead.
+-        // The casting itself stays narrow on both jambs. A recessed, load-bearing
+-        // service module connects its left edge to the pressure hull, instead of
+-        // stretching one annular face across half the corridor.
+-        box(-2.94,2.60,50.22,2.70,5.30,.22,.055,paint,.64,.28);
+-        for(const x of [-4.08,-2.91,-1.60])box(x,2.62,49.31,.26,5.24,1.26,.06,paint,.64,.28);
+-        for(const y of [.26,4.98])box(-2.85,y,49.31,2.70,.42,1.26,.06,paint,.64,.28);
+-        for(const x of [-3.50,-2.23]){
+-          box(x,2.63,49.93,.83,3.76,.36,.08,dark,.65,.5);
+-          tube([[x,1.03,49.64],[x,3.85,49.64],[x+.22,4.13,49.64]],.095,steel,.42,.85,16);
+-          for(const y of [1.20,3.63])box(x,y,49.54,.72,.19,.34,.04,paint,.64,.28);
+-        }
+-        obstacles.push([-4.30,.05,48.65,-1.45,5.24,50.35]);
++      if(z===71.6){
++        // The actual hangar entrance, rather than an aperture inside another
++        // twenty metres of corridor. A narrow actuator bay connects the right
++        // jamb to the hull; the open route bends naturally through the left side.
++        box(3.55,2.9,71.90,1.10,5.80,.48,.065,paint,.64,.28);
++        box(3.55,2.9,71.57,.72,4.8,.18,.045,dark,.65,.5);
++        tube([[3.55,.85,71.44],[3.55,5.0,71.44]],.095,steel,.42,.85,16);
++        for(const x of [-2.7,1.5])box(x,7.35,71.6,.30,1.30,.42,.045,dark,.65,.5);
++        obstacles.push([3.0,0,71.35,4.17,5.95,72.14]);
+       }
+       continue;
+     }
+--- round2/src/main.js
++++ round3/src/main.js
+@@ -10,11 +10,12 @@
+ let quality=Object.keys(PRESETS).find(x=>x.toLowerCase()===(params.get('quality')||'high').toLowerCase())||'High';
+ const canvas=$('world'),errorBox=$('error'),menu=$('menu'),keys=new Set();
+ const DEFAULT_VERTICAL_FOV=64;
++const DIRECTOR_SHOT_4B={position:[1.4,1.72,44.5],target:[-13.2,1.76,80],verticalFovDegrees:40};
+ const camera={position:new Float32Array(VIEWS[0].position),yaw:0,pitch:0,verticalFovDegrees:DEFAULT_VERTICAL_FOV};
+ const projection=new Float32Array(16),view=new Float32Array(16),vp=new Float32Array(16),uniform=new Float32Array(40);
+ const flightPosition=new Float32Array(3),flightTarget=new Float32Array(3),previousPosition=new Float32Array(3);
+ const frameSamples=new Float64Array(18000),gpuSamples=new Float64Array(2048);
+-let frameCount=0,gpuCount=0,lastFrame=0,sceneTime=0,fixedTime=testMode?12:null,flight=null,activeView=1,menuOpen=!testMode&&!params.has('clean');
++let frameCount=0,gpuCount=0,lastFrame=0,sceneTime=0,fixedTime=testMode?12:null,flight=null,activeView=1,activeShot=null,menuOpen=!testMode&&!params.has('clean');
+ document.body.classList.toggle('clean',params.has('clean'));
+ const gpuInstance=navigator.gpu;
+ let corridorScene,corridorRenderer,navigationObstacles;
+@@ -28,7 +29,13 @@
+ function setMenu(open){menuOpen=open;menu.hidden=!open;document.body.classList.toggle('menu-open',open);if(open&&document.pointerLockElement)document.exitPointerLock();}
+ function setCameraShot({position,target,verticalFovDegrees=DEFAULT_VERTICAL_FOV}){
+   if(!Array.isArray(position)||!Array.isArray(target)||position.length!==3||target.length!==3||![...position,...target,verticalFovDegrees].every(Number.isFinite)||verticalFovDegrees<20||verticalFovDegrees>100)throw Error('Invalid camera shot');
+-  camera.position.set(position);const angles=lookAngles(position,target);camera.yaw=angles[0];camera.pitch=angles[1];camera.verticalFovDegrees=verticalFovDegrees;
++  activeShot=null;camera.position.set(position);const angles=lookAngles(position,target);camera.yaw=angles[0];camera.pitch=angles[1];camera.verticalFovDegrees=verticalFovDegrees;
++  return getState();
++}
++function setDirectorShot(){
++  setView(4);setCameraShot(DIRECTOR_SHOT_4B);activeShot='4b';activeView=7;
++  $('view-title').textContent='PRESSURE TRANSIT';$('view-note').textContent='Follow the red pulse into the docking bay.';
++  document.querySelectorAll('[data-view]').forEach(b=>{b.classList.remove('selected');b.setAttribute('aria-pressed','false');});
+   return getState();
+ }
+ function setView(n){
+@@ -46,7 +53,13 @@
+   quality=key;document.querySelectorAll('[data-quality]').forEach(b=>{b.classList.toggle('selected',b.dataset.quality===quality);b.setAttribute('aria-pressed',String(b.dataset.quality===quality));});
+   if(ready){createPipelines();corridorRenderer?.setSamples(PRESETS[quality].samples);resize();}return quality;
+ }
+-function getState(){return {ready:ready&&startupSubmissionVerified&&(!readbackMode||presentedFrames>0),position:Array.from(camera.position),yaw:camera.yaw,pitch:camera.pitch,verticalFovDegrees:camera.verticalFovDegrees,sector:currentSector(),quality,renderSize:[renderWidth,renderHeight],hero:CORRIDOR_HERO,clean:params.has('clean'),view:activeView,presentedView,presentedFrames,presentationMode:readbackMode?'readback':'swapchain',menuOpen,audio:audio.enabled,pointerLocked:document.pointerLockElement===canvas,time:sceneTime,flight:flight?{elapsed:Math.min(60,(performance.now()-flight.start)/1000),duration:60}:null};}
++function getState(){return {ready:ready&&startupSubmissionVerified&&(!readbackMode||presentedFrames>0),position:Array.from(camera.position),yaw:camera.yaw,pitch:camera.pitch,verticalFovDegrees:camera.verticalFovDegrees,shot:activeShot,sector:currentSector(),quality,renderSize:[renderWidth,renderHeight],hero:CORRIDOR_HERO,clean:params.has('clean'),view:activeView,presentedView,presentedFrames,presentationMode:readbackMode?'readback':'swapchain',menuOpen,audio:audio.enabled,pointerLocked:document.pointerLockElement===canvas,time:sceneTime,flight:flight?{elapsed:Math.min(60,(performance.now()-flight.start)/1000),duration:60}:null};}
++async function getGeometryDiagnostics(){
++  const digest=async bytes=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),v=>v.toString(16).padStart(2,'0')).join('');
++  const positionsNormals=new Float32Array(corridorScene.vertices.length/2);
++  for(let i=0,j=0;i<corridorScene.vertices.length;i+=12)for(let k=0;k<6;k++)positionsNormals[j++]=corridorScene.vertices[i+k];
++  return {triangles:corridorScene.triangles,vertexStreamSha256:await digest(corridorScene.vertices),positionNormalSha256:await digest(positionsNormals),surfaceStreamSha256:await digest(corridorScene.surfaces)};
++}
+ function summarize(samples,count){
+   if(!count)return {count:0,meanMs:null,p99Ms:null,maxMs:null};
+   const sorted=Array.from(samples.subarray(0,count)).sort((a,b)=>a-b);let sum=0;for(const n of sorted)sum+=n;
+@@ -58,6 +71,7 @@
+ }
+ function startFlythrough(){
+   camera.verticalFovDegrees=DEFAULT_VERTICAL_FOV;
++  activeShot=null;
+   if(document.pointerLockElement)document.exitPointerLock();setMenu(false);frameCount=0;gpuCount=0;flightReport=null;fixedTime=null;sceneTime=0;flight={start:performance.now(),startQuality:quality,startWidth:renderWidth,startHeight:renderHeight,configurationChanged:false};lastFrame=0;activeView=0;routeCaption=true;
+   sampleFlight(0,flightPosition,flightTarget);camera.position.set(flightPosition);const angles=lookAngles(flightPosition,flightTarget);camera.yaw=angles[0];camera.pitch=angles[1];
+   document.querySelectorAll('[data-view]').forEach(button=>{button.classList.remove('selected');button.setAttribute('aria-pressed','false');});
+@@ -148,7 +162,7 @@
+     corridorScene=buildCorridor();navigationObstacles=scene.obstacles.concat(corridorScene.obstacles);
+     corridorRenderer=new CorridorRenderer(device,format,uniformBuffer,corridorScene,{shadows:params.get('shadows')!=='0',probe:params.get('probe')!=='0',fog:params.get('fog')!=='0',bloom:params.get('bloom')!=='0',onlyLight:testMode?Number(params.get('onlyLight')??-1):-1,detailAA:params.get('detailAA')!=='0',grade:params.get('grade')==='legacy'?'legacy':'agx'});
+     await corridorRenderer.initialize(PRESETS[quality].samples);
+-    resize();await corridorRenderer.atmosphereCheck;setView(params.get('view')||1);setQuality(quality);setMenu(menuOpen);
++    resize();await corridorRenderer.atmosphereCheck;setView(params.get('view')||1);if(params.get('shot')==='4b')setDirectorShot();setQuality(quality);setMenu(menuOpen);
+     ready=true;$('loading').hidden=true;document.body.classList.add('ready');
+     if(params.has('flythrough'))startFlythrough();requestAnimationFrame(render);
+   }catch(error){fail(error.message);}
+@@ -262,5 +276,5 @@
+ window.addEventListener('keyup',event=>keys.delete(event.code));window.addEventListener('blur',()=>keys.clear());
+ document.addEventListener('mousemove',event=>{if(document.pointerLockElement===canvas&&!menuOpen){camera.yaw+=event.movementX*.0018;camera.pitch=clamp(camera.pitch+event.movementY*.0018,-1.45,1.45);}});
+ document.addEventListener('pointerlockchange',()=>{document.body.classList.toggle('pointer-locked',document.pointerLockElement===canvas);});
+-window.echo9={gpuInstance,get adapter(){return adapterReference;},get device(){return device;},get ready(){return ready&&startupSubmissionVerified&&(!readbackMode||presentedFrames>0);},getHdrDiagnostics:()=>corridorRenderer.post.diagnostics(),setCorridorDiagnostics:options=>corridorRenderer.setDiagnostics(options),getShadowDiagnostics:(samples,index)=>corridorRenderer.shadowDiagnostics(samples,index),setView,setCameraShot,setQuality,setTime,startFlythrough,stopFlythrough,getReport,getState,setMenu,get stats(){return getReport();},camera,views:VIEWS,hero:CORRIDOR_HERO};
++window.echo9={gpuInstance,get adapter(){return adapterReference;},get device(){return device;},get ready(){return ready&&startupSubmissionVerified&&(!readbackMode||presentedFrames>0);},getHdrDiagnostics:()=>corridorRenderer.post.diagnostics(),setCorridorDiagnostics:options=>corridorRenderer.setDiagnostics(options),getShadowDiagnostics:(samples,index)=>corridorRenderer.shadowDiagnostics(samples,index),getGeometryDiagnostics:testMode?getGeometryDiagnostics:undefined,setView,setCameraShot,setDirectorShot,setQuality,setTime,startFlythrough,stopFlythrough,getReport,getState,setMenu,get stats(){return getReport();},camera,views:VIEWS,hero:CORRIDOR_HERO,director:DIRECTOR_SHOT_4B};
+ initialize();
+--- round2/tests/iteration4a-geometry.test.mjs
++++ round3/tests/iteration4a-geometry.test.mjs
+@@ -46,6 +46,7 @@
+  for(const [index,view]of VIEWS.entries())assertClear(view.position,.45,`view${index+1}`);
+  assertClear(CORRIDOR_HERO.position,.45,'canonical hero');
+  assertClear([-1.2,1.72,25.6],.45,'selected4B cameraC');
++ assertClear([1.4,1.72,44.5],.45,'final4B director eye');
+ });
+ test('pressure castings have eight closed bevelled sectors, recessed webs and metre-scale axial depth',()=>{
+  assert.ok(corridor.construction.frames.length>=3);
+@@ -66,11 +67,11 @@
+   assert.ok(front&&web);assert.ok(web.distance-front.distance>mass*.10,'web must retreat behind bevel lip');
+  }
+ });
+-test('4B pressure portal has an actually open low passage and clears the original high flight approach',()=>{
+- const portal=corridor.construction.frames.find(f=>f.z>45&&f.z<55);assert.ok(portal,'the goal portal must precede the distant hangar');
++test('4B actual exit portal has an open low passage and clears the original high flight approach',()=>{
++ const portal=corridor.construction.frames.find(f=>f.z>70);assert.ok(portal,'the goal portal must be at the actual corridor exit');
+  for(const y of [1.72,2.4,3.5,4.2])assert.equal(firstMeshHit(vertices,[0,y,48],[0,0,1],24),null,`real passage at height${y} must continue to hangar`);
+- const right=firstMeshHit(vertices,[0,2.4,portal.z],[1,0,0],4),left=firstMeshHit(vertices,[0,2.4,portal.z],[-1,0,0],2);
+- assert.ok(right&&right.distance<3.7&&left&&left.distance<1.1,'offset portal needs two actual enclosing jambs');
++ const right=firstMeshHit(vertices,[0,2.4,portal.z],[1,0,0],4),left=firstMeshHit(vertices,[0,2.4,portal.z],[-1,0,0],5);
++ assert.ok(right&&right.distance<2.8&&left&&left.distance<4.1&&left.distance-right.distance>.9,'offset exit needs two actual enclosing jambs and a broad aperture');
+  const pocket=firstMeshHit(vertices,[-1.2,1.72,25.6],[-1,0,0],5);assert.ok(pocket&&pocket.distance>2.7,'near service recess must cut behind the old slab plane');
+ });
+ test('4A maintenance pocket is recessed behind the jamb and structural occlusion remains physical',()=>{
+@@ -106,7 +107,8 @@
+    const x=topX+(sideX-topX)*fraction,y=topY-(topY-sideY)*fraction+offset;
+    const stopped=constrainPosition([side*x,y,frame.z+dz],corridor.obstacles);assertClear(stopped,.44999,`frame${frame.z} shoulder${side},f${fraction},offset${offset},dz${dz}`,frameTriangles);
+   }
+-  for(const fraction of [.1,.5,.9])for(const y of [4.5,4.75,4.9])for(const dz of [-1.2,-.6,0,.6,1.2]){
++  for(const fraction of [.1,.5,.9])for(const offset of [-.44,-.19,-.04])for(const dz of [-1.2,-.6,0,.6,1.2]){
++   const y=frame.inner[4][1]+offset;
+    const x=frame.inner[5][0]+fraction*(frame.inner[4][0]-frame.inner[5][0]);
+    const stopped=constrainPosition([x,y,frame.z+dz],corridor.obstacles);assertClear(stopped,.44999,`frame${frame.z} soffit`,frameTriangles);
+   }
+--- round2/tests/render.test.mjs
++++ round3/tests/render.test.mjs
+@@ -39,7 +39,7 @@
+   assert.deepEqual(CORRIDOR_LIGHTS.map(l=>l.shadow),[0,1]);assert.ok(CORRIDOR_LIGHT_TABLE.filter(l=>l.id.startsWith('red-')).every(l=>l.mount==='pendant'));
+ });
+ test('primary cones illuminate the intended rib front and foreground reflection receiver',()=>{
+-  for(const [index,point,normal] of [[0,[-3.9,2.4,35.3],[0,0,-1]],[1,[0,0,39],[0,1,0]]]){
++  for(const [index,point,normal] of [[0,[-3.9,2.4,53.7],[0,0,-1]],[1,[0,0,39],[0,1,0]],[7,[-.7,3,71.6],[0,0,-1]]]){
+     const light=CORRIDOR_LIGHT_TABLE[index],delta=point.map((p,i)=>p-light.position[i]),length=Math.hypot(...delta),travel=delta.map(v=>v/length);
+     const cone=travel.reduce((s,v,i)=>s+v*light.direction[i],0);assert.ok(cone>light.outerCos,`${light.id} misses its receiver`);
+     assert.ok(travel.reduce((s,v,i)=>s-v*normal[i],0)>0,`${light.id} is behind its receiver normal`);

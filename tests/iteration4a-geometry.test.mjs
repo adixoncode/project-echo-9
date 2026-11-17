@@ -25,7 +25,7 @@ function assertClear(point,r,label,meshTriangles=triangles){
   const d=triangleDistance2(point,...t.points);assert.ok(d>=r*r,`${label}: triangle${i} only${Math.sqrt(d).toFixed(5)}m from camera at${JSON.stringify(point)}`);
  }
 }
-test('4A actual corridor triangles clear the whole unchanged route and every saved camera sphere',()=>{
+test('corridor actual triangles clear the whole unchanged route, saved cameras and selected4B shot',()=>{
  const p=new Float32Array(3),target=new Float32Array(3);let previous=null,maxStep=0;
  // Every .0125s, with a .06m guard beyond the .45m camera sphere.
  // Bound each cubic segment's analytic velocity using its quadratic extrema;
@@ -45,22 +45,33 @@ test('4A actual corridor triangles clear the whole unchanged route and every sav
  assert.ok(maxStep<=.12,`route sample gap${maxStep} exceeds the two-sided .06m guard`);
  for(const [index,view]of VIEWS.entries())assertClear(view.position,.45,`view${index+1}`);
  assertClear(CORRIDOR_HERO.position,.45,'canonical hero');
+ assertClear([-1.2,1.72,25.6],.45,'selected4B cameraC');
 });
-test('4A pressure thresholds have broad connected octagonal flanges, recessed webs and real axial thickness',()=>{
- assert.equal(corridor.construction.frames.length,3);
+test('pressure castings have eight closed bevelled sectors, recessed webs and metre-scale axial depth',()=>{
+ assert.ok(corridor.construction.frames.length>=3);
  for(const frame of corridor.construction.frames){
   const mesh=meshRange(frame);
   // All eight sectors are solid; probe the centre of each annular face from
   // both axial directions against actual triangles, including diagonal shoulders.
   for(let edge=0;edge<8;edge++){
    const next=(edge+1)%8,point=[0,1].map(axis=>(frame.inner[edge][axis]+frame.inner[next][axis]+frame.outer[edge][axis]+frame.outer[next][axis])/4);
-   const front=firstMeshHit(mesh,[...point,frame.z-1],[0,0,1],2),back=firstMeshHit(mesh,[...point,frame.z+1],[0,0,-1],2);
-   assert.ok(front&&back,`missing closed octagon sector${edge}`);assert.ok(back.world[2]-front.world[2]>1.20,`sector${edge} lacks structural depth`);
+   const front=firstMeshHit(mesh,[...point,frame.z-2],[0,0,1],4),back=firstMeshHit(mesh,[...point,frame.z+2],[0,0,-1],4);
+   assert.ok(front&&back,`missing closed octagon sector${edge}`);assert.ok(back.world[2]-front.world[2]>frame.depthScale,`sector${edge} lacks structural depth`);
   }
-  // Mid-jamb inner reveal: web retreats .17m from the flange's inner opening.
-  const front=firstMeshHit(mesh,[2.9,2.4,frame.z-.53],[1,0,0],2),web=firstMeshHit(mesh,[2.9,2.4,frame.z],[1,0,0],2);
-  assert.ok(front&&web);assert.ok(web.distance-front.distance>(frame.z<29?.09:.16),'web must be visibly recessed behind flange');
+  // Probe the actual bevel lip and sunken web. The narrow entry casting and
+  // wide pressure portal have different masses, so require a real proportional
+  // reveal rather than the obsolete4A flat flange's fixed .17m dimension.
+  const startX=frame.inner[2][0]-.4,mass=frame.outer[2][0]-frame.inner[2][0];
+  const front=firstMeshHit(mesh,[startX,2.4,frame.z-.65*frame.depthScale],[1,0,0],2),web=firstMeshHit(mesh,[startX,2.4,frame.z],[1,0,0],2);
+  assert.ok(front&&web);assert.ok(web.distance-front.distance>mass*.10,'web must retreat behind bevel lip');
  }
+});
+test('4B pressure portal has an actually open low passage and clears the original high flight approach',()=>{
+ const portal=corridor.construction.frames.find(f=>f.z>45&&f.z<55);assert.ok(portal,'the goal portal must precede the distant hangar');
+ for(const y of [1.72,2.4,3.5,4.2])assert.equal(firstMeshHit(vertices,[0,y,48],[0,0,1],24),null,`real passage at height${y} must continue to hangar`);
+ const right=firstMeshHit(vertices,[0,2.4,portal.z],[1,0,0],4),left=firstMeshHit(vertices,[0,2.4,portal.z],[-1,0,0],2);
+ assert.ok(right&&right.distance<3.7&&left&&left.distance<1.1,'offset portal needs two actual enclosing jambs');
+ const pocket=firstMeshHit(vertices,[-1.2,1.72,25.6],[-1,0,0],5);assert.ok(pocket&&pocket.distance>2.7,'near service recess must cut behind the old slab plane');
 });
 test('4A maintenance pocket is recessed behind the jamb and structural occlusion remains physical',()=>{
  const pocket=firstMeshHit(vertices,[-2.9,2.8,33.85],[-1,0,0],3),jamb=firstMeshHit(vertices,[-2.9,2.8,35.3],[-1,0,0],3);
@@ -70,8 +81,8 @@ test('4A maintenance pocket is recessed behind the jamb and structural occlusion
  assert.equal(firstMeshHit(vertices,[0,2,26],[0,0,1],46),null,'centre passage must remain genuinely open through far transition');
  // Manual contact is tested against both signed jambs and preserves tangential y.
  for(const frame of corridor.construction.frames)for(const side of [-1,1]){
-  const innerX=frame.inner[2][0],p=constrainPosition([side*(innerX+.2),2.4,frame.z],corridor.obstacles);
-  assert.equal(p[1],2.4);assert.ok(Math.abs(p[0])<=innerX-.449,'solid jamb must stop the camera at its .45m expanded inner face');
+  const innerX=frame.inner[side<0?7:2][0],p=constrainPosition([innerX+side*.2,2.4,frame.z],corridor.obstacles);
+  assert.equal(p[1],2.4);assert.ok(side*p[0]<=side*innerX-.449,'each actual signed jamb must stop the camera at its .45m expanded inner face');
  }
 });
 
@@ -85,16 +96,18 @@ test('4A upper shoulder and soffit collisions keep manual camera spheres outside
   assert.notDeepEqual(stopped,original,'manual motion must stop at the shoulder');assertClear(stopped,.44999,'discovered shoulder regression');
  }
  for(const frame of corridor.construction.frames){
-  const sideX=frame.inner[3][0],topX=frame.inner[4][0],sideY=frame.inner[3][1],topY=frame.inner[4][1],mesh=meshRange(frame),frameTriangles=[];
+  const mesh=meshRange(frame),frameTriangles=[];
   // These manual samples target each changed pressure frame. Retained small
   // overhead fittings keep their baseline collision simplification; the full
   // route, saved poses and exact discovered point use the entire corridor mesh.
   for(let i=0;i<mesh.length;i+=36){const points=[0,12,24].map(offset=>Array.from(mesh.subarray(i+offset,i+offset+3)));frameTriangles.push({points,min:[0,1,2].map(axis=>Math.min(...points.map(p=>p[axis]))),max:[0,1,2].map(axis=>Math.max(...points.map(p=>p[axis])))});}
   for(const side of [-1,1])for(const fraction of [0,.25,.5,.75,1])for(const offset of [-.65,-.30,0,.2,.4])for(const dz of [-1.2,-.95,-.6,0,.6,.95,1.2]){
+   const upper=side<0?6:3,top=side<0?5:4,sideX=side*frame.inner[upper][0],topX=side*frame.inner[top][0],sideY=frame.inner[upper][1],topY=frame.inner[top][1];
    const x=topX+(sideX-topX)*fraction,y=topY-(topY-sideY)*fraction+offset;
    const stopped=constrainPosition([side*x,y,frame.z+dz],corridor.obstacles);assertClear(stopped,.44999,`frame${frame.z} shoulder${side},f${fraction},offset${offset},dz${dz}`,frameTriangles);
   }
-  for(const x of [-1.5,0,1.5])for(const y of [4.5,4.75,4.9])for(const dz of [-1.2,-.6,0,.6,1.2]){
+  for(const fraction of [.1,.5,.9])for(const y of [4.5,4.75,4.9])for(const dz of [-1.2,-.6,0,.6,1.2]){
+   const x=frame.inner[5][0]+fraction*(frame.inner[4][0]-frame.inner[5][0]);
    const stopped=constrainPosition([x,y,frame.z+dz],corridor.obstacles);assertClear(stopped,.44999,`frame${frame.z} soffit`,frameTriangles);
   }
  }

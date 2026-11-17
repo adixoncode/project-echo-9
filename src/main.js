@@ -9,11 +9,13 @@ const params=new URLSearchParams(location.search),testMode=params.has('test'),de
 const PRESETS={High:{scale:1,samples:4,dust:850,effects:1},Medium:{scale:1,samples:1,dust:500,effects:1},Low:{scale:.7,samples:1,dust:180,effects:0}};
 let quality=Object.keys(PRESETS).find(x=>x.toLowerCase()===(params.get('quality')||'high').toLowerCase())||'High';
 const canvas=$('world'),errorBox=$('error'),menu=$('menu'),keys=new Set();
-const camera={position:new Float32Array(VIEWS[0].position),yaw:0,pitch:0};
+const DEFAULT_VERTICAL_FOV=64;
+const DIRECTOR_SHOT_4B={position:[-1.2,1.72,25.6],target:[-13,1.76,62],verticalFovDegrees:52};
+const camera={position:new Float32Array(VIEWS[0].position),yaw:0,pitch:0,verticalFovDegrees:DEFAULT_VERTICAL_FOV};
 const projection=new Float32Array(16),view=new Float32Array(16),vp=new Float32Array(16),uniform=new Float32Array(40);
 const flightPosition=new Float32Array(3),flightTarget=new Float32Array(3),previousPosition=new Float32Array(3);
 const frameSamples=new Float64Array(18000),gpuSamples=new Float64Array(2048);
-let frameCount=0,gpuCount=0,lastFrame=0,sceneTime=0,fixedTime=testMode?12:null,flight=null,activeView=1,menuOpen=!testMode&&!params.has('clean');
+let frameCount=0,gpuCount=0,lastFrame=0,sceneTime=0,fixedTime=testMode?12:null,flight=null,activeView=1,activeShot=null,menuOpen=!testMode&&!params.has('clean');
 document.body.classList.toggle('clean',params.has('clean'));
 const gpuInstance=navigator.gpu;
 let corridorScene,corridorRenderer,navigationObstacles;
@@ -25,9 +27,20 @@ let readbackContext,readbackTexture,readbackBuffer,readbackImage,readbackStride=
 const startedAt=performance.now();
 
 function setMenu(open){menuOpen=open;menu.hidden=!open;document.body.classList.toggle('menu-open',open);if(open&&document.pointerLockElement)document.exitPointerLock();}
+function setCameraShot({position,target,verticalFovDegrees=DEFAULT_VERTICAL_FOV}){
+  if(!Array.isArray(position)||!Array.isArray(target)||position.length!==3||target.length!==3||![...position,...target,verticalFovDegrees].every(Number.isFinite)||verticalFovDegrees<20||verticalFovDegrees>100)throw Error('Invalid camera shot');
+  activeShot=null;camera.position.set(position);const angles=lookAngles(position,target);camera.yaw=angles[0];camera.pitch=angles[1];camera.verticalFovDegrees=verticalFovDegrees;
+  return getState();
+}
+function setDirectorShot(){
+  setView(4);setCameraShot(DIRECTOR_SHOT_4B);activeShot='4b';activeView=7;
+  $('view-title').textContent='PRESSURE TRANSIT';$('view-note').textContent='Follow the red pulse into the docking bay.';
+  document.querySelectorAll('[data-view]').forEach(b=>{b.classList.remove('selected');b.setAttribute('aria-pressed','false');});
+  return getState();
+}
 function setView(n){
   const index=clamp(Math.floor(Number(n)||1),1,6)-1,record=VIEWS[index];
-  flight=null;routeCaption=false;activeView=index+1;camera.position.set(record.position);const angles=lookAngles(record.position,record.target);camera.yaw=angles[0];camera.pitch=angles[1];
+  flight=null;routeCaption=false;activeView=index+1;setCameraShot(record);
   $('view-title').textContent=record.name;$('view-note').textContent=record.description;$('sector').textContent=record.sector;
   document.querySelectorAll('[data-view]').forEach(b=>{b.classList.toggle('selected',Number(b.dataset.view)===index+1);b.setAttribute('aria-pressed',String(Number(b.dataset.view)===index+1));});
   return getState();
@@ -40,7 +53,13 @@ function setQuality(name){
   quality=key;document.querySelectorAll('[data-quality]').forEach(b=>{b.classList.toggle('selected',b.dataset.quality===quality);b.setAttribute('aria-pressed',String(b.dataset.quality===quality));});
   if(ready){createPipelines();corridorRenderer?.setSamples(PRESETS[quality].samples);resize();}return quality;
 }
-function getState(){return {ready:ready&&startupSubmissionVerified&&(!readbackMode||presentedFrames>0),position:Array.from(camera.position),yaw:camera.yaw,pitch:camera.pitch,sector:currentSector(),quality,renderSize:[renderWidth,renderHeight],hero:CORRIDOR_HERO,clean:params.has('clean'),view:activeView,presentedView,presentedFrames,presentationMode:readbackMode?'readback':'swapchain',menuOpen,audio:audio.enabled,pointerLocked:document.pointerLockElement===canvas,time:sceneTime,flight:flight?{elapsed:Math.min(60,(performance.now()-flight.start)/1000),duration:60}:null};}
+function getState(){return {ready:ready&&startupSubmissionVerified&&(!readbackMode||presentedFrames>0),position:Array.from(camera.position),yaw:camera.yaw,pitch:camera.pitch,verticalFovDegrees:camera.verticalFovDegrees,shot:activeShot,sector:currentSector(),quality,renderSize:[renderWidth,renderHeight],hero:CORRIDOR_HERO,clean:params.has('clean'),view:activeView,presentedView,presentedFrames,presentationMode:readbackMode?'readback':'swapchain',menuOpen,audio:audio.enabled,pointerLocked:document.pointerLockElement===canvas,time:sceneTime,flight:flight?{elapsed:Math.min(60,(performance.now()-flight.start)/1000),duration:60}:null};}
+async function getGeometryDiagnostics(){
+  const digest=async bytes=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),v=>v.toString(16).padStart(2,'0')).join('');
+  const positionsNormals=new Float32Array(corridorScene.vertices.length/2);
+  for(let i=0,j=0;i<corridorScene.vertices.length;i+=12)for(let k=0;k<6;k++)positionsNormals[j++]=corridorScene.vertices[i+k];
+  return {triangles:corridorScene.triangles,vertexStreamSha256:await digest(corridorScene.vertices),positionNormalSha256:await digest(positionsNormals),surfaceStreamSha256:await digest(corridorScene.surfaces)};
+}
 function summarize(samples,count){
   if(!count)return {count:0,meanMs:null,p99Ms:null,maxMs:null};
   const sorted=Array.from(samples.subarray(0,count)).sort((a,b)=>a-b);let sum=0;for(const n of sorted)sum+=n;
@@ -51,6 +70,8 @@ function getReport(){
   return {project:'PROJECT ECHO-9',seed:WORLD_SEED,status:'BLOCKED',reason:readbackMode?'CPU readback presentation is diagnostic only; hardware swapchain measurement is required.':deviceInfo.isFallbackAdapter?'Software adapter; a reference hardware GPU is required for the 60 FPS gate.':'Reference GPU has not been agreed; measurements are diagnostic until hardware is selected.',measurementStatus:flightReport?flightReport.status:frameCount?'IN_PROGRESS':'NOT_RUN',adapter:deviceInfo,browser:navigator.userAgent,resolution:[renderWidth,renderHeight],cssResolution:[innerWidth,innerHeight],devicePixelRatio:devicePixelRatio,quality,presentationMode:readbackMode?'readback':'swapchain',readbackOverhead:readbackMode?'GPU copy, async map, BGRA→RGBA conversion and 2D upload included in frame times':null,renderScale:PRESETS[quality].scale,msaa:PRESETS[quality].samples,triangles:scene?scene.triangles-scene.corridorDrawRange.vertexCount/3+(corridorScene?.triangles||0):0,vertices:scene?scene.vertices.length/12-scene.corridorDrawRange.vertexCount+(corridorScene?.vertices.length/12||0):0,legacyVertices:scene?.vertices.length/12||0,corridor:corridorRenderer?.report()||null,estimatedGpuBytes:scene?scene.vertices.byteLength+scene.dust.byteLength+160+(corridorRenderer?.report().estimatedGpuBytes||0)+renderWidth*renderHeight*4*(PRESETS[quality].samples+(PRESETS[quality].samples>1?PRESETS[quality].samples:0)+1)+(readbackMode?readbackStride*renderHeight:0):0,diagnosticCpuPixelBytes:readbackMode?renderWidth*renderHeight*4:0,frame:cpu,gpu:{...gpu,samplingEveryNthFrame:30,status:timingError?'BLOCKED':timestampSet?(gpuCount?'PASS':'PENDING'):'BLOCKED',reason:timestampSet?timingError:'timestamp-query not supported by the current adapter'},flythrough:flightReport||{durationSeconds:60,status:flight?'RUNNING':'NOT_RUN'},runtimeErrors:crashed?['Rendering stopped; see on-screen error']:[],elapsedSeconds:(performance.now()-startedAt)/1000};
 }
 function startFlythrough(){
+  camera.verticalFovDegrees=DEFAULT_VERTICAL_FOV;
+  activeShot=null;
   if(document.pointerLockElement)document.exitPointerLock();setMenu(false);frameCount=0;gpuCount=0;flightReport=null;fixedTime=null;sceneTime=0;flight={start:performance.now(),startQuality:quality,startWidth:renderWidth,startHeight:renderHeight,configurationChanged:false};lastFrame=0;activeView=0;routeCaption=true;
   sampleFlight(0,flightPosition,flightTarget);camera.position.set(flightPosition);const angles=lookAngles(flightPosition,flightTarget);camera.yaw=angles[0];camera.pitch=angles[1];
   document.querySelectorAll('[data-view]').forEach(button=>{button.classList.remove('selected');button.setAttribute('aria-pressed','false');});
@@ -141,7 +162,7 @@ async function initialize(){
     corridorScene=buildCorridor();navigationObstacles=scene.obstacles.concat(corridorScene.obstacles);
     corridorRenderer=new CorridorRenderer(device,format,uniformBuffer,corridorScene,{shadows:params.get('shadows')!=='0',probe:params.get('probe')!=='0',fog:params.get('fog')!=='0',bloom:params.get('bloom')!=='0',onlyLight:testMode?Number(params.get('onlyLight')??-1):-1,detailAA:params.get('detailAA')!=='0',grade:params.get('grade')==='legacy'?'legacy':'agx'});
     await corridorRenderer.initialize(PRESETS[quality].samples);
-    resize();await corridorRenderer.atmosphereCheck;setView(params.get('view')||1);setQuality(quality);setMenu(menuOpen);
+    resize();await corridorRenderer.atmosphereCheck;setView(params.get('view')||1);if(params.get('shot')==='4b')setDirectorShot();setQuality(quality);setMenu(menuOpen);
     ready=true;$('loading').hidden=true;document.body.classList.add('ready');
     if(params.has('flythrough'))startFlythrough();requestAnimationFrame(render);
   }catch(error){fail(error.message);}
@@ -161,12 +182,13 @@ function updateCamera(delta,now){
 }
 function updateUniforms(){
   const yaw=camera.yaw,pitch=camera.pitch,cy=Math.cos(yaw),sy=Math.sin(yaw),cp=Math.cos(pitch),sp=Math.sin(pitch);
-  viewMatrix(view,camera.position,yaw,pitch);perspective(projection,Math.PI*64/180,renderWidth/renderHeight,.12,700);multiply(vp,projection,view);uniform.set(vp,0);
+  const verticalFovRadians=Math.PI*camera.verticalFovDegrees/180,rayTangent=Math.tan(verticalFovRadians/2);
+  viewMatrix(view,camera.position,yaw,pitch);perspective(projection,verticalFovRadians,renderWidth/renderHeight,.12,700);multiply(vp,projection,view);uniform.set(vp,0);
   uniform[16]=camera.position[0];uniform[17]=camera.position[1];uniform[18]=camera.position[2];uniform[19]=sceneTime;
   uniform[20]=cy;uniform[21]=0;uniform[22]=sy;uniform[23]=0;
   uniform[24]=sy*sp;uniform[25]=cp;uniform[26]=-cy*sp;uniform[27]=0;
   uniform[28]=sy*cp;uniform[29]=-sp;uniform[30]=-cy*cp;uniform[31]=0;
-  uniform[32]=renderWidth;uniform[33]=renderHeight;uniform[34]=renderWidth/renderHeight*Math.tan(Math.PI*32/180);uniform[35]=Math.tan(Math.PI*32/180);
+  uniform[32]=renderWidth;uniform[33]=renderHeight;uniform[34]=renderWidth/renderHeight*rayTangent;uniform[35]=rayTangent;
   uniform[36]=PRESETS[quality].effects;uniform[37]=sceneTime;uniform[38]=quality==='High'?2:quality==='Medium'?1:0;uniform[39]=debug==='normals'?1:debug==='solid'?2:0;
   device.queue.writeBuffer(uniformBuffer,0,uniform);
 }
@@ -254,5 +276,5 @@ window.addEventListener('keydown',event=>{
 window.addEventListener('keyup',event=>keys.delete(event.code));window.addEventListener('blur',()=>keys.clear());
 document.addEventListener('mousemove',event=>{if(document.pointerLockElement===canvas&&!menuOpen){camera.yaw+=event.movementX*.0018;camera.pitch=clamp(camera.pitch+event.movementY*.0018,-1.45,1.45);}});
 document.addEventListener('pointerlockchange',()=>{document.body.classList.toggle('pointer-locked',document.pointerLockElement===canvas);});
-window.echo9={gpuInstance,get adapter(){return adapterReference;},get device(){return device;},get ready(){return ready&&startupSubmissionVerified&&(!readbackMode||presentedFrames>0);},getHdrDiagnostics:()=>corridorRenderer.post.diagnostics(),setCorridorDiagnostics:options=>corridorRenderer.setDiagnostics(options),getShadowDiagnostics:(samples,index)=>corridorRenderer.shadowDiagnostics(samples,index),setView,setQuality,setTime,startFlythrough,stopFlythrough,getReport,getState,setMenu,get stats(){return getReport();},camera,views:VIEWS,hero:CORRIDOR_HERO};
+window.echo9={gpuInstance,get adapter(){return adapterReference;},get device(){return device;},get ready(){return ready&&startupSubmissionVerified&&(!readbackMode||presentedFrames>0);},getHdrDiagnostics:()=>corridorRenderer.post.diagnostics(),setCorridorDiagnostics:options=>corridorRenderer.setDiagnostics(options),getShadowDiagnostics:(samples,index)=>corridorRenderer.shadowDiagnostics(samples,index),getGeometryDiagnostics:testMode?getGeometryDiagnostics:undefined,setView,setCameraShot,setDirectorShot,setQuality,setTime,startFlythrough,stopFlythrough,getReport,getState,setMenu,get stats(){return getReport();},camera,views:VIEWS,hero:CORRIDOR_HERO,director:DIRECTOR_SHOT_4B};
 initialize();

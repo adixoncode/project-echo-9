@@ -1,0 +1,70 @@
+--- reviewedR2/src/main.js
++++ selected/src/main.js
+@@ -10,11 +10,12 @@
+ let quality=Object.keys(PRESETS).find(x=>x.toLowerCase()===(params.get('quality')||'high').toLowerCase())||'High';
+ const canvas=$('world'),errorBox=$('error'),menu=$('menu'),keys=new Set();
+ const DEFAULT_VERTICAL_FOV=64;
++const DIRECTOR_SHOT_4B={position:[-1.2,1.72,25.6],target:[-13,1.76,62],verticalFovDegrees:52};
+ const camera={position:new Float32Array(VIEWS[0].position),yaw:0,pitch:0,verticalFovDegrees:DEFAULT_VERTICAL_FOV};
+ const projection=new Float32Array(16),view=new Float32Array(16),vp=new Float32Array(16),uniform=new Float32Array(40);
+ const flightPosition=new Float32Array(3),flightTarget=new Float32Array(3),previousPosition=new Float32Array(3);
+ const frameSamples=new Float64Array(18000),gpuSamples=new Float64Array(2048);
+-let frameCount=0,gpuCount=0,lastFrame=0,sceneTime=0,fixedTime=testMode?12:null,flight=null,activeView=1,menuOpen=!testMode&&!params.has('clean');
++let frameCount=0,gpuCount=0,lastFrame=0,sceneTime=0,fixedTime=testMode?12:null,flight=null,activeView=1,activeShot=null,menuOpen=!testMode&&!params.has('clean');
+ document.body.classList.toggle('clean',params.has('clean'));
+ const gpuInstance=navigator.gpu;
+ let corridorScene,corridorRenderer,navigationObstacles;
+@@ -28,7 +29,13 @@
+ function setMenu(open){menuOpen=open;menu.hidden=!open;document.body.classList.toggle('menu-open',open);if(open&&document.pointerLockElement)document.exitPointerLock();}
+ function setCameraShot({position,target,verticalFovDegrees=DEFAULT_VERTICAL_FOV}){
+   if(!Array.isArray(position)||!Array.isArray(target)||position.length!==3||target.length!==3||![...position,...target,verticalFovDegrees].every(Number.isFinite)||verticalFovDegrees<20||verticalFovDegrees>100)throw Error('Invalid camera shot');
+-  camera.position.set(position);const angles=lookAngles(position,target);camera.yaw=angles[0];camera.pitch=angles[1];camera.verticalFovDegrees=verticalFovDegrees;
++  activeShot=null;camera.position.set(position);const angles=lookAngles(position,target);camera.yaw=angles[0];camera.pitch=angles[1];camera.verticalFovDegrees=verticalFovDegrees;
++  return getState();
++}
++function setDirectorShot(){
++  setView(4);setCameraShot(DIRECTOR_SHOT_4B);activeShot='4b';activeView=7;
++  $('view-title').textContent='PRESSURE TRANSIT';$('view-note').textContent='Follow the red pulse into the docking bay.';
++  document.querySelectorAll('[data-view]').forEach(b=>{b.classList.remove('selected');b.setAttribute('aria-pressed','false');});
+   return getState();
+ }
+ function setView(n){
+@@ -46,7 +53,13 @@
+   quality=key;document.querySelectorAll('[data-quality]').forEach(b=>{b.classList.toggle('selected',b.dataset.quality===quality);b.setAttribute('aria-pressed',String(b.dataset.quality===quality));});
+   if(ready){createPipelines();corridorRenderer?.setSamples(PRESETS[quality].samples);resize();}return quality;
+ }
+-function getState(){return {ready:ready&&startupSubmissionVerified&&(!readbackMode||presentedFrames>0),position:Array.from(camera.position),yaw:camera.yaw,pitch:camera.pitch,verticalFovDegrees:camera.verticalFovDegrees,sector:currentSector(),quality,renderSize:[renderWidth,renderHeight],hero:CORRIDOR_HERO,clean:params.has('clean'),view:activeView,presentedView,presentedFrames,presentationMode:readbackMode?'readback':'swapchain',menuOpen,audio:audio.enabled,pointerLocked:document.pointerLockElement===canvas,time:sceneTime,flight:flight?{elapsed:Math.min(60,(performance.now()-flight.start)/1000),duration:60}:null};}
++function getState(){return {ready:ready&&startupSubmissionVerified&&(!readbackMode||presentedFrames>0),position:Array.from(camera.position),yaw:camera.yaw,pitch:camera.pitch,verticalFovDegrees:camera.verticalFovDegrees,shot:activeShot,sector:currentSector(),quality,renderSize:[renderWidth,renderHeight],hero:CORRIDOR_HERO,clean:params.has('clean'),view:activeView,presentedView,presentedFrames,presentationMode:readbackMode?'readback':'swapchain',menuOpen,audio:audio.enabled,pointerLocked:document.pointerLockElement===canvas,time:sceneTime,flight:flight?{elapsed:Math.min(60,(performance.now()-flight.start)/1000),duration:60}:null};}
++async function getGeometryDiagnostics(){
++  const digest=async bytes=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),v=>v.toString(16).padStart(2,'0')).join('');
++  const positionsNormals=new Float32Array(corridorScene.vertices.length/2);
++  for(let i=0,j=0;i<corridorScene.vertices.length;i+=12)for(let k=0;k<6;k++)positionsNormals[j++]=corridorScene.vertices[i+k];
++  return {triangles:corridorScene.triangles,vertexStreamSha256:await digest(corridorScene.vertices),positionNormalSha256:await digest(positionsNormals),surfaceStreamSha256:await digest(corridorScene.surfaces)};
++}
+ function summarize(samples,count){
+   if(!count)return {count:0,meanMs:null,p99Ms:null,maxMs:null};
+   const sorted=Array.from(samples.subarray(0,count)).sort((a,b)=>a-b);let sum=0;for(const n of sorted)sum+=n;
+@@ -58,6 +71,7 @@
+ }
+ function startFlythrough(){
+   camera.verticalFovDegrees=DEFAULT_VERTICAL_FOV;
++  activeShot=null;
+   if(document.pointerLockElement)document.exitPointerLock();setMenu(false);frameCount=0;gpuCount=0;flightReport=null;fixedTime=null;sceneTime=0;flight={start:performance.now(),startQuality:quality,startWidth:renderWidth,startHeight:renderHeight,configurationChanged:false};lastFrame=0;activeView=0;routeCaption=true;
+   sampleFlight(0,flightPosition,flightTarget);camera.position.set(flightPosition);const angles=lookAngles(flightPosition,flightTarget);camera.yaw=angles[0];camera.pitch=angles[1];
+   document.querySelectorAll('[data-view]').forEach(button=>{button.classList.remove('selected');button.setAttribute('aria-pressed','false');});
+@@ -148,7 +162,7 @@
+     corridorScene=buildCorridor();navigationObstacles=scene.obstacles.concat(corridorScene.obstacles);
+     corridorRenderer=new CorridorRenderer(device,format,uniformBuffer,corridorScene,{shadows:params.get('shadows')!=='0',probe:params.get('probe')!=='0',fog:params.get('fog')!=='0',bloom:params.get('bloom')!=='0',onlyLight:testMode?Number(params.get('onlyLight')??-1):-1,detailAA:params.get('detailAA')!=='0',grade:params.get('grade')==='legacy'?'legacy':'agx'});
+     await corridorRenderer.initialize(PRESETS[quality].samples);
+-    resize();await corridorRenderer.atmosphereCheck;setView(params.get('view')||1);setQuality(quality);setMenu(menuOpen);
++    resize();await corridorRenderer.atmosphereCheck;setView(params.get('view')||1);if(params.get('shot')==='4b')setDirectorShot();setQuality(quality);setMenu(menuOpen);
+     ready=true;$('loading').hidden=true;document.body.classList.add('ready');
+     if(params.has('flythrough'))startFlythrough();requestAnimationFrame(render);
+   }catch(error){fail(error.message);}
+@@ -262,5 +276,5 @@
+ window.addEventListener('keyup',event=>keys.delete(event.code));window.addEventListener('blur',()=>keys.clear());
+ document.addEventListener('mousemove',event=>{if(document.pointerLockElement===canvas&&!menuOpen){camera.yaw+=event.movementX*.0018;camera.pitch=clamp(camera.pitch+event.movementY*.0018,-1.45,1.45);}});
+ document.addEventListener('pointerlockchange',()=>{document.body.classList.toggle('pointer-locked',document.pointerLockElement===canvas);});
+-window.echo9={gpuInstance,get adapter(){return adapterReference;},get device(){return device;},get ready(){return ready&&startupSubmissionVerified&&(!readbackMode||presentedFrames>0);},getHdrDiagnostics:()=>corridorRenderer.post.diagnostics(),setCorridorDiagnostics:options=>corridorRenderer.setDiagnostics(options),getShadowDiagnostics:(samples,index)=>corridorRenderer.shadowDiagnostics(samples,index),setView,setCameraShot,setQuality,setTime,startFlythrough,stopFlythrough,getReport,getState,setMenu,get stats(){return getReport();},camera,views:VIEWS,hero:CORRIDOR_HERO};
++window.echo9={gpuInstance,get adapter(){return adapterReference;},get device(){return device;},get ready(){return ready&&startupSubmissionVerified&&(!readbackMode||presentedFrames>0);},getHdrDiagnostics:()=>corridorRenderer.post.diagnostics(),setCorridorDiagnostics:options=>corridorRenderer.setDiagnostics(options),getShadowDiagnostics:(samples,index)=>corridorRenderer.shadowDiagnostics(samples,index),getGeometryDiagnostics:testMode?getGeometryDiagnostics:undefined,setView,setCameraShot,setDirectorShot,setQuality,setTime,startFlythrough,stopFlythrough,getReport,getState,setMenu,get stats(){return getReport();},camera,views:VIEWS,hero:CORRIDOR_HERO,director:DIRECTOR_SHOT_4B};
+ initialize();

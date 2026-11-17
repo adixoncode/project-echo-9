@@ -1,0 +1,25 @@
+{
+  "gate": "camera study before any artistic scene edits",
+  "status": "CAPTURE_PASS_SELECTION_WAITING",
+  "existingRunAllTests": {
+    "status": "PASS",
+    "tests": 31,
+    "failed": 0
+  },
+  "historicalProductionA": {
+    "status": "PASS",
+    "rgbIdenticalTo4A": true
+  },
+  "sceneChanges": false,
+  "artisticSelection": "WAITING_FOR_PARENT_IMAGE_ONLY_REVIEW",
+  "hardwareGpu60fpsNativeTemporal": "BLOCKED",
+  "actualFullHdProductionImages": 4,
+  "actualFullHdNeutralImages": 4,
+  "historicalNeutralA": {
+    "status": "PASS",
+    "rgbIdenticalTo4A": true
+  },
+  "browserErrors": [],
+  "unexpectedRequests": [],
+  "savedViewAndRouteFovResetDegrees": 64
+}

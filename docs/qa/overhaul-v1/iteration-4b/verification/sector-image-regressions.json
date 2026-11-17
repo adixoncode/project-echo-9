@@ -1,0 +1,72 @@
+{
+  "method": "Exact RGB pixel comparison at fixed camera, seed, time12, High1920\u00d71080; no normalization or retouching",
+  "checks": [
+    {
+      "view": 1,
+      "status": "PASS",
+      "reason": "Pixel-identical outside corridor view",
+      "changedPixels": 0,
+      "changedFraction": 0.0,
+      "meanAbsoluteRgbDifference": 0.0,
+      "maxChannelDifference": 0,
+      "changedBoundingBox": null,
+      "beforeSha256": "ce123c82808526e5352fdf6a945a8b75d7202b4bb5128e9fab7dfdf35f833114",
+      "afterSha256": "ce123c82808526e5352fdf6a945a8b75d7202b4bb5128e9fab7dfdf35f833114"
+    },
+    {
+      "view": 2,
+      "status": "PASS",
+      "reason": "Pixel-identical outside corridor view",
+      "changedPixels": 0,
+      "changedFraction": 0.0,
+      "meanAbsoluteRgbDifference": 0.0,
+      "maxChannelDifference": 0,
+      "changedBoundingBox": null,
+      "beforeSha256": "fdfe96f8662a532dea01675ee72fb7c0c0c0bdd4d4691227e38249165d2d3189",
+      "afterSha256": "fdfe96f8662a532dea01675ee72fb7c0c0c0bdd4d4691227e38249165d2d3189"
+    },
+    {
+      "view": 3,
+      "status": "PASS",
+      "reason": "Pixel-identical outside corridor view",
+      "changedPixels": 0,
+      "changedFraction": 0.0,
+      "meanAbsoluteRgbDifference": 0.0,
+      "maxChannelDifference": 0,
+      "changedBoundingBox": null,
+      "beforeSha256": "911e50164fed6d93f99f2b9319b9d443c54ef3ebbfc0cdf51f4edd2302b5db5f",
+      "afterSha256": "911e50164fed6d93f99f2b9319b9d443c54ef3ebbfc0cdf51f4edd2302b5db5f"
+    },
+    {
+      "view": 5,
+      "status": "PASS",
+      "reason": "Pixel-identical outside corridor view",
+      "changedPixels": 0,
+      "changedFraction": 0.0,
+      "meanAbsoluteRgbDifference": 0.0,
+      "maxChannelDifference": 0,
+      "changedBoundingBox": null,
+      "beforeSha256": "5c9750fbcf24ebca889971638f4614d69dcd19bf6e4820e564e5ab848c464191",
+      "afterSha256": "5c9750fbcf24ebca889971638f4614d69dcd19bf6e4820e564e5ab848c464191"
+    },
+    {
+      "view": 6,
+      "status": "PASS",
+      "reason": "Differences need manual classification against visible corridor geometry",
+      "changedPixels": 23937,
+      "changedFraction": 0.01154369212962963,
+      "meanAbsoluteRgbDifference": 0.025657793209876545,
+      "maxChannelDifference": 144,
+      "changedBoundingBox": [
+        1521,
+        410,
+        1794,
+        641
+      ],
+      "beforeSha256": "7b39c7802ffea93169e9cd14b61566896988d9fbecdd16890d7c1b2ec7440f59",
+      "afterSha256": "cbe8c4d7976d63c088d9f16daaccfbe391734fced09b5db190d80d2d54ce7ac2",
+      "automatedStatus": "BLOCKED",
+      "scopeReview": "All23937changedpixels lie inside the actual visible corridor doorway/MSAA boundary, bbox[1521,410,1794,641]. Direct fullHD and matched-crop inspection confirms no changed ship, hangar structure, floor, sky or planet pixels. Corridor geometry is the approved scope; legacy runtime sources/RNG are unchanged."
+    }
+  ]
+}

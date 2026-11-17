@@ -1,0 +1,46 @@
+{
+  "scope": "Camera4B study: double-sided distance to unchanged actual4A triangle mesh",
+  "requiredCameraRadius": 0.45,
+  "shots": [
+    {
+      "id": "A",
+      "distance": 1.2687198293979127,
+      "triangle": 27323,
+      "point": [
+        -2.35,
+        1.72,
+        27.5
+      ]
+    },
+    {
+      "id": "B",
+      "distance": 1.6550000023841858,
+      "triangle": 91827,
+      "point": [
+        0,
+        1.72,
+        26
+      ]
+    },
+    {
+      "id": "C",
+      "distance": 1.6424999994039535,
+      "triangle": 91738,
+      "point": [
+        -1.2,
+        1.72,
+        25.6
+      ]
+    },
+    {
+      "id": "D",
+      "distance": 1.673152269112221,
+      "triangle": 92179,
+      "point": [
+        1,
+        1.74,
+        32.1
+      ]
+    }
+  ]
+}

@@ -1,0 +1,134 @@
+{
+  "records": [
+    {
+      "source": "docs/references/target-red-corridor.jpg",
+      "sha256": "da365a90202cb3809c7dbfd9bce71d93ede37ba6f34a4150e2030c7c4b0033ab",
+      "output": "thumbnails/target.png",
+      "method": "Lanczos320x180 only; no retouching"
+    },
+    {
+      "source": "docs/qa/overhaul-v1/iteration-4b/round-2/production-C2.png",
+      "sha256": "153657a067a8d70590a02b8ceebec1049f05c4c5701fa8ce30d990d159636952",
+      "output": "thumbnails/production-C2.png",
+      "method": "Lanczos320x180 only; no retouching"
+    },
+    {
+      "source": "docs/qa/overhaul-v1/iteration-4b/round-2/neutral-C2.png",
+      "sha256": "2ed730f7432fac6db01eb200317e28ab5dc63768c53457cc5bc3464f145e1d2c",
+      "output": "thumbnails/neutral-C2.png",
+      "method": "Lanczos320x180 only; no retouching"
+    },
+    {
+      "source": "docs/qa/overhaul-v1/iteration-4b/round-2/production-C.png",
+      "sha256": "f7efc98e0a080c27d2384e6aed45a0a18f208e87d11003e9e9e0a591a290620b",
+      "output": "thumbnails/production-C.png",
+      "method": "Lanczos320x180 only; no retouching"
+    },
+    {
+      "source": "docs/qa/overhaul-v1/iteration-4b/round-1/production-C.png",
+      "sha256": "6cdb765d50e42deba4f07e5d5bcc7ed11765215b1789ee907fb887a8e811d8f5",
+      "output": "thumbnails/before-production-C.png",
+      "method": "Lanczos320x180 only; no retouching"
+    },
+    {
+      "source": "docs/qa/overhaul-v1/iteration-4b/round-1/neutral-C.png",
+      "sha256": "68b5529daab70f73cf2b3f4cb97767e6254d4953176c5442d94ec2f2c5ac3261",
+      "output": "thumbnails/before-neutral-C.png",
+      "method": "Lanczos320x180 only; no retouching"
+    },
+    {
+      "source": "docs/qa/overhaul-v1/iteration-4b/round-2/neutral-C.png",
+      "sha256": "e06c9ff8662ee1ee564427f1d4fab3b03b3a291e507c5c4dc18ba60d434261df",
+      "output": "thumbnails/neutral-C.png",
+      "method": "Lanczos320x180 only; no retouching"
+    },
+    {
+      "source": "docs/qa/overhaul-v1/iteration-4b/round-2/production-C2.png",
+      "output": "details/production-C2-near.png",
+      "bounds": [
+        1000,
+        120,
+        1920,
+        1080
+      ],
+      "method": "Exact unscaled source pixels"
+    },
+    {
+      "source": "docs/qa/overhaul-v1/iteration-4b/round-2/production-C2.png",
+      "output": "details/production-C2-middle.png",
+      "bounds": [
+        120,
+        150,
+        1060,
+        960
+      ],
+      "method": "Exact unscaled source pixels"
+    },
+    {
+      "source": "docs/qa/overhaul-v1/iteration-4b/round-2/production-C2.png",
+      "output": "details/production-C2-far.png",
+      "bounds": [
+        230,
+        320,
+        760,
+        760
+      ],
+      "method": "Exact unscaled source pixels"
+    },
+    {
+      "source": "docs/qa/overhaul-v1/iteration-4b/round-2/neutral-C2.png",
+      "output": "details/neutral-C2-near.png",
+      "bounds": [
+        1000,
+        120,
+        1920,
+        1080
+      ],
+      "method": "Exact unscaled source pixels"
+    },
+    {
+      "source": "docs/qa/overhaul-v1/iteration-4b/round-2/neutral-C2.png",
+      "output": "details/neutral-C2-middle.png",
+      "bounds": [
+        120,
+        150,
+        1060,
+        960
+      ],
+      "method": "Exact unscaled source pixels"
+    },
+    {
+      "source": "docs/qa/overhaul-v1/iteration-4b/round-2/neutral-C2.png",
+      "output": "details/neutral-C2-far.png",
+      "bounds": [
+        230,
+        320,
+        760,
+        760
+      ],
+      "method": "Exact unscaled source pixels"
+    }
+  ],
+  "regions": {
+    "near": [
+      1000,
+      120,
+      1920,
+      1080
+    ],
+    "middle": [
+      120,
+      150,
+      1060,
+      960
+    ],
+    "far": [
+      230,
+      320,
+      760,
+      760
+    ]
+  },
+  "comparisonLayout": "baseline/target/originalC left; current/evolvedC2 right; concatenation only, target Lanczos resampled to1920x1080",
+  "sceneImageColorAdjustments": false
+}

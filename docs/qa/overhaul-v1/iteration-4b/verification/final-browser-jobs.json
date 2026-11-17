@@ -1,0 +1,67 @@
+{
+  "artifactSha256": "0fc1512a4a9083893a30235dbe4cd35e20f9fe7f1833ff5dd73200b69c5e6e87",
+  "jobs": [
+    {
+      "name": "smoke",
+      "command": [
+        "npm",
+        "run",
+        "qa:smoke"
+      ],
+      "environment": {
+        "QA_OUT": "/workspace/project-echo-9/docs/qa/overhaul-v1/iteration-4b/verification/smoke-report.json"
+      },
+      "startedAt": "2026-11-17T13:53:39Z",
+      "status": "PASS",
+      "exitCode": 0,
+      "finishedAt": "2026-11-17T13:54:14Z"
+    },
+    {
+      "name": "sector-capture",
+      "command": [
+        "node",
+        "scripts/overhaul-qa.mjs"
+      ],
+      "environment": {
+        "QA_DIR": "/workspace/project-echo-9/docs/qa/overhaul-v1/iteration-4b/verification"
+      },
+      "startedAt": "2026-11-17T13:54:14Z",
+      "status": "PASS",
+      "exitCode": 0,
+      "finishedAt": "2026-11-17T13:57:35Z"
+    },
+    {
+      "name": "full-route",
+      "command": [
+        "node",
+        "scripts/browser-qa.mjs",
+        "--software",
+        "--readback",
+        "--benchmark",
+        "--route-only"
+      ],
+      "environment": {
+        "QA_DIR": "/workspace/project-echo-9/docs/qa/overhaul-v1/iteration-4b/verification"
+      },
+      "startedAt": "2026-11-17T13:57:35Z",
+      "status": "PASS",
+      "exitCode": 0,
+      "finishedAt": "2026-11-17T13:59:07Z"
+    },
+    {
+      "name": "selected-feature-diagnostics",
+      "command": [
+        "node",
+        "scripts/overhaul-ablations.mjs"
+      ],
+      "environment": {
+        "QA_DIR": "/workspace/project-echo-9/docs/qa/overhaul-v1/iteration-4b/selected/diagnostics",
+        "QA_VARIANTS": "[[\"no-atmosphere\", \"shot=4b&fog=0\"], [\"no-bloom\", \"shot=4b&bloom=0\"]]"
+      },
+      "startedAt": "2026-11-17T13:59:07Z",
+      "status": "PASS",
+      "exitCode": 0,
+      "finishedAt": "2026-11-17T14:02:06Z"
+    }
+  ]
+}

@@ -1,0 +1,190 @@
+{
+  "baselineCommit": "d51f4f55a3c1eeb753bda92e518ec2700db8d1ac",
+  "scope": "Only main.js camera/FOV API runtime change; exact4A geometry/material/light/P0/route sources archived unchanged. Original six poses and64deg default restored by setView and startFlythrough.",
+  "productionHtmlSha256": "0cd6ee258c80c7981d825a0310b866414d614decc3a3426beba628a10e8e2da7",
+  "sources": [
+    {
+      "path": "package-lock.json",
+      "sha256": "f11c2cc1003cd442409b2dbe2be90ad99bfcb666d2b84374beb83d1e8e8d06ec",
+      "baselineSha256": "f11c2cc1003cd442409b2dbe2be90ad99bfcb666d2b84374beb83d1e8e8d06ec",
+      "baselineIdentical": true
+    },
+    {
+      "path": "package.json",
+      "sha256": "50aca690612e3f19c07c80f133315891193f872fb09f6b2ae2b59a1bbe88252f",
+      "baselineSha256": "50aca690612e3f19c07c80f133315891193f872fb09f6b2ae2b59a1bbe88252f",
+      "baselineIdentical": true
+    },
+    {
+      "path": "scripts/build.mjs",
+      "sha256": "f4f64f19308e831944b7563a6be9b8bf039596b6dba91ee354ed9411e316e259",
+      "baselineSha256": "f4f64f19308e831944b7563a6be9b8bf039596b6dba91ee354ed9411e316e259",
+      "baselineIdentical": true
+    },
+    {
+      "path": "scripts/iteration4a-neutral.mjs",
+      "sha256": "e8b2fcbc3f0deb6d56ab981d7e2af987022c471835b7d8ca11d9a8d26d080311",
+      "baselineSha256": "e8b2fcbc3f0deb6d56ab981d7e2af987022c471835b7d8ca11d9a8d26d080311",
+      "baselineIdentical": true
+    },
+    {
+      "path": "scripts/iteration4b-camera-clearance.mjs",
+      "sha256": "4826c70bacd0ad7482ed6fc83da8791f6548bb74f70618fc34d08f71adca3ea6",
+      "baselineSha256": null,
+      "baselineIdentical": null
+    },
+    {
+      "path": "scripts/iteration4b-camera-study.mjs",
+      "sha256": "4ad7f9edec04617e8f8355d744fe50b20f43fe47fcfe954ca411b58ed0492b2e",
+      "baselineSha256": null,
+      "baselineIdentical": null
+    },
+    {
+      "path": "src/corridor-lights.js",
+      "sha256": "26563511b8f80c60976be1f6b07e56c63d0f74238fab96352f9e11ceb5c73cb3",
+      "baselineSha256": "26563511b8f80c60976be1f6b07e56c63d0f74238fab96352f9e11ceb5c73cb3",
+      "baselineIdentical": true
+    },
+    {
+      "path": "src/corridor-post-shaders.js",
+      "sha256": "e339279786bea68cf207bc1bdaa8c2a5785e3d242c4cf4a2a205baa628d2b22e",
+      "baselineSha256": "e339279786bea68cf207bc1bdaa8c2a5785e3d242c4cf4a2a205baa628d2b22e",
+      "baselineIdentical": true
+    },
+    {
+      "path": "src/corridor-post.js",
+      "sha256": "4468f792958dd195c697e65b9fd87dd4918cc151668308aa4918647a78ba4689",
+      "baselineSha256": "4468f792958dd195c697e65b9fd87dd4918cc151668308aa4918647a78ba4689",
+      "baselineIdentical": true
+    },
+    {
+      "path": "src/corridor-renderer.js",
+      "sha256": "75c810d15dcbcdf034b68229ebc2f79e7d8b9a8911c284068ab0a5909530923f",
+      "baselineSha256": "75c810d15dcbcdf034b68229ebc2f79e7d8b9a8911c284068ab0a5909530923f",
+      "baselineIdentical": true
+    },
+    {
+      "path": "src/corridor-shaders.js",
+      "sha256": "182e6b82108f8627d0ee74f7fad3ff8665c7c8514bb9da1830d761745f339ef7",
+      "baselineSha256": "182e6b82108f8627d0ee74f7fad3ff8665c7c8514bb9da1830d761745f339ef7",
+      "baselineIdentical": true
+    },
+    {
+      "path": "src/corridor.js",
+      "sha256": "fc21db78b010dcf0f59d30c877a0a8e435e68a98b9cdb2603756001f744c91b1",
+      "baselineSha256": "fc21db78b010dcf0f59d30c877a0a8e435e68a98b9cdb2603756001f744c91b1",
+      "baselineIdentical": true
+    },
+    {
+      "path": "src/geometry.js",
+      "sha256": "42cede1c9b5486b43c6d30e793ba3adecf0192cc55eca2082f2ac2395ac8b11a",
+      "baselineSha256": "42cede1c9b5486b43c6d30e793ba3adecf0192cc55eca2082f2ac2395ac8b11a",
+      "baselineIdentical": true
+    },
+    {
+      "path": "src/hdr.js",
+      "sha256": "9e1e06147a44e7a781946a175e539cea63f6ca18695851ff0d4f4eacfb44c252",
+      "baselineSha256": "9e1e06147a44e7a781946a175e539cea63f6ca18695851ff0d4f4eacfb44c252",
+      "baselineIdentical": true
+    },
+    {
+      "path": "src/main.js",
+      "sha256": "a253e0aed67132e781f17c9342bf50a55f6e6502c23b39f5833c48fab5b0bde6",
+      "baselineSha256": "7c74c675499b698a8574c5963dd799f98f695303c80a538c074d9938e97456b7",
+      "baselineIdentical": false
+    },
+    {
+      "path": "src/math.js",
+      "sha256": "2e15df3a232e801747bb836bd2e4e53151750ec3bfa5f95be2bfcad6cea84be7",
+      "baselineSha256": "2e15df3a232e801747bb836bd2e4e53151750ec3bfa5f95be2bfcad6cea84be7",
+      "baselineIdentical": true
+    },
+    {
+      "path": "src/scene.js",
+      "sha256": "2f086ca8b3ba15d1be321977f46f012d56306c7d28b6eae7ba3cbcccd1a722e8",
+      "baselineSha256": "2f086ca8b3ba15d1be321977f46f012d56306c7d28b6eae7ba3cbcccd1a722e8",
+      "baselineIdentical": true
+    },
+    {
+      "path": "src/shaders.js",
+      "sha256": "0a899f2ca194d365c9dd580fb2dd2ca51cb1942e13b4d3b3fc0e42860cba95f0",
+      "baselineSha256": "0a899f2ca194d365c9dd580fb2dd2ca51cb1942e13b4d3b3fc0e42860cba95f0",
+      "baselineIdentical": true
+    },
+    {
+      "path": "src/style.css",
+      "sha256": "378b18e48cbedb84b8156c2a842a246213520dc899f8f85d818ff2a8b698f0cf",
+      "baselineSha256": "378b18e48cbedb84b8156c2a842a246213520dc899f8f85d818ff2a8b698f0cf",
+      "baselineIdentical": true
+    },
+    {
+      "path": "src/template.html",
+      "sha256": "191994df702ea041204abeab9f47ce41e85a60c8e2bc0b8d7bd5685c9926a27b",
+      "baselineSha256": "191994df702ea041204abeab9f47ce41e85a60c8e2bc0b8d7bd5685c9926a27b",
+      "baselineIdentical": true
+    },
+    {
+      "path": "tests/core.test.mjs",
+      "sha256": "25abf200da4eabf203e1df74ceb3cf819be76cb3c78093fc64649dc969d30abf",
+      "baselineSha256": "25abf200da4eabf203e1df74ceb3cf819be76cb3c78093fc64649dc969d30abf",
+      "baselineIdentical": true
+    },
+    {
+      "path": "tests/iteration2-scope.test.mjs",
+      "sha256": "fdbf5424093b7a34a3ea61f40c7a516391f77e68ba5c39c4bec33d960334247f",
+      "baselineSha256": "fdbf5424093b7a34a3ea61f40c7a516391f77e68ba5c39c4bec33d960334247f",
+      "baselineIdentical": true
+    },
+    {
+      "path": "tests/iteration4a-geometry.test.mjs",
+      "sha256": "7d968831ced72f9d686850a5cd29426c9456c75d5a3427d5f4fee19135020121",
+      "baselineSha256": "7d968831ced72f9d686850a5cd29426c9456c75d5a3427d5f4fee19135020121",
+      "baselineIdentical": true
+    },
+    {
+      "path": "tests/materials.test.mjs",
+      "sha256": "8be31988e78807551761691df7883869520bebd39510b73a82881c7841e219c1",
+      "baselineSha256": "8be31988e78807551761691df7883869520bebd39510b73a82881c7841e219c1",
+      "baselineIdentical": true
+    },
+    {
+      "path": "tests/red-edge.test.mjs",
+      "sha256": "76d41c37d89e3190748168345c0c68987126d8ce03b5a22295b1e6c36cd27b04",
+      "baselineSha256": "76d41c37d89e3190748168345c0c68987126d8ce03b5a22295b1e6c36cd27b04",
+      "baselineIdentical": true
+    },
+    {
+      "path": "tests/render.test.mjs",
+      "sha256": "e3c3eacea105998486b3367ac2165a3d6e0028fb95e6b135f62203ff8ee4cfb5",
+      "baselineSha256": "e3c3eacea105998486b3367ac2165a3d6e0028fb95e6b135f62203ff8ee4cfb5",
+      "baselineIdentical": true
+    },
+    {
+      "path": "tests/sector-regression.test.mjs",
+      "sha256": "d25260f87bae1e7a1cf1a5a58ba98f392528e2ef58ccf397edbd48cac49793ae",
+      "baselineSha256": "d25260f87bae1e7a1cf1a5a58ba98f392528e2ef58ccf397edbd48cac49793ae",
+      "baselineIdentical": true
+    },
+    {
+      "path": "tests/shadow-plane.test.mjs",
+      "sha256": "03231972f291518eedf03d16f932ff85daf824b07cef72de26052b7962abbe5c",
+      "baselineSha256": "03231972f291518eedf03d16f932ff85daf824b07cef72de26052b7962abbe5c",
+      "baselineIdentical": true
+    },
+    {
+      "path": "scripts/iteration4b-camera-images.py",
+      "sha256": "55abab468c2a74e553fa84bf2235a5698e74928e40d362513c9f34e4293e9e10",
+      "baselineSha256": null,
+      "baselineIdentical": null
+    },
+    {
+      "path": "scripts/iteration4b-camera-production-images.py",
+      "sha256": "45fa8fdcba40bd9f3fe8ec0fa977e9165b6a2f57792f6a37279ef2036cb19546",
+      "baselineSha256": null,
+      "baselineIdentical": null
+    }
+  ],
+  "captureRunnerExecutedSha256": "4ad7f9edec04617e8f8355d744fe50b20f43fe47fcfe954ca411b58ed0492b2e",
+  "captureRunnerDiagnosticRevisionSha256": "2fa9368d809ca7210b074c05332a9ac63ab49cbcc5230830d20322f276595b36",
+  "captureToolRevisionNote": "Executed capture runner is preserved in source/. During its run, the working-tree runner gained failure DOM/screenshot persistence only; production/neutral artifact and camera logic unchanged."
+}

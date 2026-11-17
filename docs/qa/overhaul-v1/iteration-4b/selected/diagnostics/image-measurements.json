@@ -1,0 +1,27 @@
+{
+  "artifactSha256": "0fc1512a4a9083893a30235dbe4cd35e20f9fe7f1833ff5dd73200b69c5e6e87",
+  "method": "Exact unnormalized RGB comparison at fixed selected camera,time12,seed15515657,1920x1080. Changes demonstrate feature contribution, not artistic improvement.",
+  "records": [
+    {
+      "path": "docs/qa/overhaul-v1/iteration-4b/selected/diagnostics/no-atmosphere.png",
+      "sha256": "fb2050dd12ae44db6a21e3aef6a5be1399d0cef425eb35ccf71e34070a57caf8",
+      "differentPixelsFromSelected": 1102871,
+      "meanAbsoluteRgbDifference": 2.6510204475308643,
+      "maxChannelDifference": 153
+    },
+    {
+      "path": "docs/qa/overhaul-v1/iteration-4b/selected/diagnostics/no-bloom.png",
+      "sha256": "fcce0fb7defd73afc79b257cb9a39cb997c1a09a768fd784819987105465c4eb",
+      "differentPixelsFromSelected": 2560,
+      "meanAbsoluteRgbDifference": 0.001413966049382716,
+      "maxChannelDifference": 23
+    },
+    {
+      "path": "docs/qa/overhaul-v1/iteration-4b/selected/production-C2.png",
+      "sha256": "153657a067a8d70590a02b8ceebec1049f05c4c5701fa8ce30d990d159636952",
+      "differentPixelsFromSelected": 0,
+      "meanAbsoluteRgbDifference": 0.0,
+      "maxChannelDifference": 0
+    }
+  ]
+}

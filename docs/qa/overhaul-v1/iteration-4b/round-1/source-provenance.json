@@ -1,0 +1,187 @@
+{
+  "productionHtmlSha256": "fd4d8eb915eee00fe48600d4c78cc9d092a32884a8954893608e0c18ec89a36d",
+  "p0FixtureBlockSha256": "b9e224747f0030b35375b54edb38e030ce15def9de4b7bb2aeca9f6965c7bb17",
+  "p0FixtureBlockIdentical": true,
+  "sources": [
+    {
+      "path": "package-lock.json",
+      "sha256": "f11c2cc1003cd442409b2dbe2be90ad99bfcb666d2b84374beb83d1e8e8d06ec",
+      "cameraStudySha256": "f11c2cc1003cd442409b2dbe2be90ad99bfcb666d2b84374beb83d1e8e8d06ec",
+      "cameraStudyIdentical": true
+    },
+    {
+      "path": "package.json",
+      "sha256": "50aca690612e3f19c07c80f133315891193f872fb09f6b2ae2b59a1bbe88252f",
+      "cameraStudySha256": "50aca690612e3f19c07c80f133315891193f872fb09f6b2ae2b59a1bbe88252f",
+      "cameraStudyIdentical": true
+    },
+    {
+      "path": "scripts/build.mjs",
+      "sha256": "f4f64f19308e831944b7563a6be9b8bf039596b6dba91ee354ed9411e316e259",
+      "cameraStudySha256": "f4f64f19308e831944b7563a6be9b8bf039596b6dba91ee354ed9411e316e259",
+      "cameraStudyIdentical": true
+    },
+    {
+      "path": "scripts/iteration4a-neutral.mjs",
+      "sha256": "e8b2fcbc3f0deb6d56ab981d7e2af987022c471835b7d8ca11d9a8d26d080311",
+      "cameraStudySha256": "e8b2fcbc3f0deb6d56ab981d7e2af987022c471835b7d8ca11d9a8d26d080311",
+      "cameraStudyIdentical": true
+    },
+    {
+      "path": "scripts/iteration4b-round1-capture.mjs",
+      "sha256": "01cf6f03274bf3e160988e2a4cf56ed67722bf9752f19898c0f3eb9f7dd86ebe",
+      "cameraStudySha256": null,
+      "cameraStudyIdentical": null
+    },
+    {
+      "path": "scripts/iteration4b-round1-clearance.mjs",
+      "sha256": "d57d35728cd13921bdaacfe73ae1a494f7d08d8f442324598f68f81a87d0f913",
+      "cameraStudySha256": null,
+      "cameraStudyIdentical": null
+    },
+    {
+      "path": "src/corridor-lights.js",
+      "sha256": "26563511b8f80c60976be1f6b07e56c63d0f74238fab96352f9e11ceb5c73cb3",
+      "cameraStudySha256": "26563511b8f80c60976be1f6b07e56c63d0f74238fab96352f9e11ceb5c73cb3",
+      "cameraStudyIdentical": true
+    },
+    {
+      "path": "src/corridor-post-shaders.js",
+      "sha256": "e339279786bea68cf207bc1bdaa8c2a5785e3d242c4cf4a2a205baa628d2b22e",
+      "cameraStudySha256": "e339279786bea68cf207bc1bdaa8c2a5785e3d242c4cf4a2a205baa628d2b22e",
+      "cameraStudyIdentical": true
+    },
+    {
+      "path": "src/corridor-post.js",
+      "sha256": "4468f792958dd195c697e65b9fd87dd4918cc151668308aa4918647a78ba4689",
+      "cameraStudySha256": "4468f792958dd195c697e65b9fd87dd4918cc151668308aa4918647a78ba4689",
+      "cameraStudyIdentical": true
+    },
+    {
+      "path": "src/corridor-renderer.js",
+      "sha256": "75c810d15dcbcdf034b68229ebc2f79e7d8b9a8911c284068ab0a5909530923f",
+      "cameraStudySha256": "75c810d15dcbcdf034b68229ebc2f79e7d8b9a8911c284068ab0a5909530923f",
+      "cameraStudyIdentical": true
+    },
+    {
+      "path": "src/corridor-shaders.js",
+      "sha256": "182e6b82108f8627d0ee74f7fad3ff8665c7c8514bb9da1830d761745f339ef7",
+      "cameraStudySha256": "182e6b82108f8627d0ee74f7fad3ff8665c7c8514bb9da1830d761745f339ef7",
+      "cameraStudyIdentical": true
+    },
+    {
+      "path": "src/corridor.js",
+      "sha256": "5e95c94116944f5124d07cc1f71206eb105ddb48623b72f0130cafaec83ba2b8",
+      "cameraStudySha256": "fc21db78b010dcf0f59d30c877a0a8e435e68a98b9cdb2603756001f744c91b1",
+      "cameraStudyIdentical": false
+    },
+    {
+      "path": "src/geometry.js",
+      "sha256": "42cede1c9b5486b43c6d30e793ba3adecf0192cc55eca2082f2ac2395ac8b11a",
+      "cameraStudySha256": "42cede1c9b5486b43c6d30e793ba3adecf0192cc55eca2082f2ac2395ac8b11a",
+      "cameraStudyIdentical": true
+    },
+    {
+      "path": "src/hdr.js",
+      "sha256": "9e1e06147a44e7a781946a175e539cea63f6ca18695851ff0d4f4eacfb44c252",
+      "cameraStudySha256": "9e1e06147a44e7a781946a175e539cea63f6ca18695851ff0d4f4eacfb44c252",
+      "cameraStudyIdentical": true
+    },
+    {
+      "path": "src/main.js",
+      "sha256": "a253e0aed67132e781f17c9342bf50a55f6e6502c23b39f5833c48fab5b0bde6",
+      "cameraStudySha256": "a253e0aed67132e781f17c9342bf50a55f6e6502c23b39f5833c48fab5b0bde6",
+      "cameraStudyIdentical": true
+    },
+    {
+      "path": "src/math.js",
+      "sha256": "2e15df3a232e801747bb836bd2e4e53151750ec3bfa5f95be2bfcad6cea84be7",
+      "cameraStudySha256": "2e15df3a232e801747bb836bd2e4e53151750ec3bfa5f95be2bfcad6cea84be7",
+      "cameraStudyIdentical": true
+    },
+    {
+      "path": "src/scene.js",
+      "sha256": "2f086ca8b3ba15d1be321977f46f012d56306c7d28b6eae7ba3cbcccd1a722e8",
+      "cameraStudySha256": "2f086ca8b3ba15d1be321977f46f012d56306c7d28b6eae7ba3cbcccd1a722e8",
+      "cameraStudyIdentical": true
+    },
+    {
+      "path": "src/shaders.js",
+      "sha256": "0a899f2ca194d365c9dd580fb2dd2ca51cb1942e13b4d3b3fc0e42860cba95f0",
+      "cameraStudySha256": "0a899f2ca194d365c9dd580fb2dd2ca51cb1942e13b4d3b3fc0e42860cba95f0",
+      "cameraStudyIdentical": true
+    },
+    {
+      "path": "src/style.css",
+      "sha256": "378b18e48cbedb84b8156c2a842a246213520dc899f8f85d818ff2a8b698f0cf",
+      "cameraStudySha256": "378b18e48cbedb84b8156c2a842a246213520dc899f8f85d818ff2a8b698f0cf",
+      "cameraStudyIdentical": true
+    },
+    {
+      "path": "src/template.html",
+      "sha256": "191994df702ea041204abeab9f47ce41e85a60c8e2bc0b8d7bd5685c9926a27b",
+      "cameraStudySha256": "191994df702ea041204abeab9f47ce41e85a60c8e2bc0b8d7bd5685c9926a27b",
+      "cameraStudyIdentical": true
+    },
+    {
+      "path": "tests/core.test.mjs",
+      "sha256": "25abf200da4eabf203e1df74ceb3cf819be76cb3c78093fc64649dc969d30abf",
+      "cameraStudySha256": "25abf200da4eabf203e1df74ceb3cf819be76cb3c78093fc64649dc969d30abf",
+      "cameraStudyIdentical": true
+    },
+    {
+      "path": "tests/iteration2-scope.test.mjs",
+      "sha256": "fdbf5424093b7a34a3ea61f40c7a516391f77e68ba5c39c4bec33d960334247f",
+      "cameraStudySha256": "fdbf5424093b7a34a3ea61f40c7a516391f77e68ba5c39c4bec33d960334247f",
+      "cameraStudyIdentical": true
+    },
+    {
+      "path": "tests/iteration4a-geometry.test.mjs",
+      "sha256": "8fda90396dd489e2748543fde33ea7cc3ae86d85082369bf22b0e9872f0d6939",
+      "cameraStudySha256": "7d968831ced72f9d686850a5cd29426c9456c75d5a3427d5f4fee19135020121",
+      "cameraStudyIdentical": false
+    },
+    {
+      "path": "tests/materials.test.mjs",
+      "sha256": "8be31988e78807551761691df7883869520bebd39510b73a82881c7841e219c1",
+      "cameraStudySha256": "8be31988e78807551761691df7883869520bebd39510b73a82881c7841e219c1",
+      "cameraStudyIdentical": true
+    },
+    {
+      "path": "tests/red-edge.test.mjs",
+      "sha256": "76d41c37d89e3190748168345c0c68987126d8ce03b5a22295b1e6c36cd27b04",
+      "cameraStudySha256": "76d41c37d89e3190748168345c0c68987126d8ce03b5a22295b1e6c36cd27b04",
+      "cameraStudyIdentical": true
+    },
+    {
+      "path": "tests/render.test.mjs",
+      "sha256": "e3c3eacea105998486b3367ac2165a3d6e0028fb95e6b135f62203ff8ee4cfb5",
+      "cameraStudySha256": "e3c3eacea105998486b3367ac2165a3d6e0028fb95e6b135f62203ff8ee4cfb5",
+      "cameraStudyIdentical": true
+    },
+    {
+      "path": "tests/sector-regression.test.mjs",
+      "sha256": "d25260f87bae1e7a1cf1a5a58ba98f392528e2ef58ccf397edbd48cac49793ae",
+      "cameraStudySha256": "d25260f87bae1e7a1cf1a5a58ba98f392528e2ef58ccf397edbd48cac49793ae",
+      "cameraStudyIdentical": true
+    },
+    {
+      "path": "tests/shadow-plane.test.mjs",
+      "sha256": "03231972f291518eedf03d16f932ff85daf824b07cef72de26052b7962abbe5c",
+      "cameraStudySha256": "03231972f291518eedf03d16f932ff85daf824b07cef72de26052b7962abbe5c",
+      "cameraStudyIdentical": true
+    },
+    {
+      "path": "scripts/iteration4b-round1-images.py",
+      "sha256": "6a93c9d7772aec0bd059d3d3ab74c99e1a8665ffbe2c0fbc71d5e56565064bc3",
+      "cameraStudySha256": null,
+      "cameraStudyIdentical": null
+    },
+    {
+      "path": "scripts/iteration4b-round1-ray-diagnosis.mjs",
+      "sha256": "ea2bb65a5e07dd1fd1e0aa85afb128b91497a3542c402359e1873c8f5bfff0fa",
+      "cameraStudySha256": null,
+      "cameraStudyIdentical": null
+    }
+  ]
+}

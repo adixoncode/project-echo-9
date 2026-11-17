@@ -1,0 +1,7 @@
+# Provisional independent camera comparison
+
+Reviewer:GPT-6 Astra/high, fresh context. Inputs only:original target-red-corridor.jpg, actual production-A/B/C/D.png and production-contact-sheet.png. No source, reports, task history or author rationale. Neutral frames were not yet available. This is provisional, not the final selection or owner art acceptance.
+
+## Verbatim reviewer message
+
+Wstępna ocena wyłącznie obejrzanych obrazów produkcyjnych i planszy 320 px: C daje najlepszy punkt wyjścia do asymetrycznego kadru; B i D znacznie czytelniej niż A pokazują architekturę, ale są prawie osiowymi widokami tunelu; A przegrywa przez ogromną, prawie pustą czerń po prawej (ok. x=65–100%) i przypadkowo przyciętą najbliższą ramę. Tymczasowa kolejność do dalszego sprawdzenia: C > D/B > A, bez rozstrzygnięcia D kontra B przed neutralnymi renderami. We wszystkich czterech daleki cel wygląda jak schodkowa zapora/podium (ok. środkowe 45–55% wysokości), a nie sylwetka dalszego przejścia. To ważniejszy problem geometrii niż różnice światła. C nadal oddaje prawą ćwiartkę kadru ciemnej, słabo uzasadnionej masie; jego przewaga nad A wynika z czytelnej pełniejszej ramy i widocznych kolejnych planów. Przy 320 px target zachowuje nierównomierny rytm, gęsty sufit oraz jasną sylwetkę odległego portalu; warianty pokazują głównie gruby pierścień, czerwony klin i płaskie pasy podłogi. Rezerwuję końcową ocenę geometrii i ranking do neutralnych obrazów.

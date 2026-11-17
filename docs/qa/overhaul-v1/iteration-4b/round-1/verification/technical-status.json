@@ -1,0 +1,26 @@
+{
+  "captureStatus": "PASS",
+  "buildRunAllTests": {
+    "status": "PASS",
+    "tests": 32,
+    "failed": 0
+  },
+  "productionSha256": "fd4d8eb915eee00fe48600d4c78cc9d092a32884a8954893608e0c18ec89a36d",
+  "runtimeChangedSinceCameraStudy": [
+    "src/corridor.js"
+  ],
+  "p0FixtureBlockExact": true,
+  "corridorTriangles": 118552,
+  "drawnArchitectureTriangles": 150046,
+  "sourceCorrespondsToImages": true,
+  "selectedCActualMeshClearance": 1.635088376001674,
+  "continuousRouteClearanceLowerBound": 0.6943038133608532,
+  "continuousWalkingCentrelineClearanceLowerBound": 1.4300000143051148,
+  "browserErrors": [],
+  "unexpectedRequests": [],
+  "independentArtReview": "PENDING_PARENT",
+  "hardware60fpsNativeTemporal": "BLOCKED",
+  "remainingImagePriority": "Right mass and far ship/barrier read remain; actual ray diagnosis archived. No artistic pass claimed.",
+  "rendererMaterialShaderLightHdrP0SourceChanges": false,
+  "newGeometrySurfaceAssignments": "Existing palette, authored surface families and existing casting/steel BRDF values reused; no production shader edit."
+}

@@ -1,0 +1,82 @@
+{
+  "baselineCommit": "d51f4f55a3c1eeb753bda92e518ec2700db8d1ac",
+  "artifactSha256": "0fc1512a4a9083893a30235dbe4cd35e20f9fe7f1833ff5dd73200b69c5e6e87",
+  "rawBytes": 155723,
+  "changedRuntimeSources": [
+    {
+      "path": "src/corridor.js",
+      "sha256": "cea519e0b5df3f59186e8be9558c7beb6b601aedf45233bb22c8657e84841a13",
+      "baselineSha256": "fc21db78b010dcf0f59d30c877a0a8e435e68a98b9cdb2603756001f744c91b1"
+    },
+    {
+      "path": "src/main.js",
+      "sha256": "faca1065cba78912fe017dbdfd3996ccaf477b3dba2689465d3654dfb32bc477",
+      "baselineSha256": "7c74c675499b698a8574c5963dd799f98f695303c80a538c074d9938e97456b7"
+    }
+  ],
+  "unchangedRuntimeSources": [
+    {
+      "path": "src/corridor-lights.js",
+      "sha256": "26563511b8f80c60976be1f6b07e56c63d0f74238fab96352f9e11ceb5c73cb3",
+      "baselineSha256": "26563511b8f80c60976be1f6b07e56c63d0f74238fab96352f9e11ceb5c73cb3"
+    },
+    {
+      "path": "src/corridor-post-shaders.js",
+      "sha256": "e339279786bea68cf207bc1bdaa8c2a5785e3d242c4cf4a2a205baa628d2b22e",
+      "baselineSha256": "e339279786bea68cf207bc1bdaa8c2a5785e3d242c4cf4a2a205baa628d2b22e"
+    },
+    {
+      "path": "src/corridor-post.js",
+      "sha256": "4468f792958dd195c697e65b9fd87dd4918cc151668308aa4918647a78ba4689",
+      "baselineSha256": "4468f792958dd195c697e65b9fd87dd4918cc151668308aa4918647a78ba4689"
+    },
+    {
+      "path": "src/corridor-renderer.js",
+      "sha256": "75c810d15dcbcdf034b68229ebc2f79e7d8b9a8911c284068ab0a5909530923f",
+      "baselineSha256": "75c810d15dcbcdf034b68229ebc2f79e7d8b9a8911c284068ab0a5909530923f"
+    },
+    {
+      "path": "src/corridor-shaders.js",
+      "sha256": "182e6b82108f8627d0ee74f7fad3ff8665c7c8514bb9da1830d761745f339ef7",
+      "baselineSha256": "182e6b82108f8627d0ee74f7fad3ff8665c7c8514bb9da1830d761745f339ef7"
+    },
+    {
+      "path": "src/geometry.js",
+      "sha256": "42cede1c9b5486b43c6d30e793ba3adecf0192cc55eca2082f2ac2395ac8b11a",
+      "baselineSha256": "42cede1c9b5486b43c6d30e793ba3adecf0192cc55eca2082f2ac2395ac8b11a"
+    },
+    {
+      "path": "src/hdr.js",
+      "sha256": "9e1e06147a44e7a781946a175e539cea63f6ca18695851ff0d4f4eacfb44c252",
+      "baselineSha256": "9e1e06147a44e7a781946a175e539cea63f6ca18695851ff0d4f4eacfb44c252"
+    },
+    {
+      "path": "src/math.js",
+      "sha256": "2e15df3a232e801747bb836bd2e4e53151750ec3bfa5f95be2bfcad6cea84be7",
+      "baselineSha256": "2e15df3a232e801747bb836bd2e4e53151750ec3bfa5f95be2bfcad6cea84be7"
+    },
+    {
+      "path": "src/scene.js",
+      "sha256": "2f086ca8b3ba15d1be321977f46f012d56306c7d28b6eae7ba3cbcccd1a722e8",
+      "baselineSha256": "2f086ca8b3ba15d1be321977f46f012d56306c7d28b6eae7ba3cbcccd1a722e8"
+    },
+    {
+      "path": "src/shaders.js",
+      "sha256": "0a899f2ca194d365c9dd580fb2dd2ca51cb1942e13b4d3b3fc0e42860cba95f0",
+      "baselineSha256": "0a899f2ca194d365c9dd580fb2dd2ca51cb1942e13b4d3b3fc0e42860cba95f0"
+    },
+    {
+      "path": "src/style.css",
+      "sha256": "378b18e48cbedb84b8156c2a842a246213520dc899f8f85d818ff2a8b698f0cf",
+      "baselineSha256": "378b18e48cbedb84b8156c2a842a246213520dc899f8f85d818ff2a8b698f0cf"
+    },
+    {
+      "path": "src/template.html",
+      "sha256": "191994df702ea041204abeab9f47ce41e85a60c8e2bc0b8d7bd5685c9926a27b",
+      "baselineSha256": "191994df702ea041204abeab9f47ce41e85a60c8e2bc0b8d7bd5685c9926a27b"
+    }
+  ],
+  "meaning": "Selected C2 integration source identity; sector pixels checked separately.",
+  "gzipBytes": 50660,
+  "gzipMethod": "Node zlib gzipSync level9, matching build"
+}

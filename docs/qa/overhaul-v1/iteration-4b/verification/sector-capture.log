@@ -1,0 +1,64 @@
+after: captured sector regression view 1
+after: captured sector regression view 2
+after: captured sector regression view 3
+after: captured sector regression view 5
+after: captured sector regression view 6
+{
+  "tag": "after",
+  "artifactSha256": "0fc1512a4a9083893a30235dbe4cd35e20f9fe7f1833ff5dd73200b69c5e6e87",
+  "hero": {
+    "position": [
+      -2.35,
+      1.72,
+      27.5
+    ],
+    "target": [
+      -13.5,
+      1.78,
+      61
+    ],
+    "verticalFovDegrees": 64,
+    "state": {
+      "ready": true,
+      "position": [
+        -2.3499999046325684,
+        1.7200000286102295,
+        27.5
+      ],
+      "yaw": -2.8202899271972486,
+      "pitch": -0.0016993860988498693,
+      "verticalFovDegrees": 64,
+      "shot": null,
+      "sector": "SERVICE SPINE",
+      "quality": "High",
+      "renderSize": [
+        1920,
+        1080
+      ],
+      "hero": {
+        "position": [
+          -2.35,
+          1.72,
+          27.5
+        ],
+        "target": [
+          -13.5,
+          1.78,
+          61
+        ],
+        "verticalFov": 64
+      },
+      "clean": false,
+      "view": 4,
+      "presentedView": 4,
+      "presentedFrames": 13,
+      "presentationMode": "readback",
+      "menuOpen": false,
+      "audio": false,
+      "pointerLocked": false,
+      "time": 12,
+      "flight": null
+    }
+  },
+  "errors": []
+}

@@ -831,6 +831,17 @@ function buildCorridor(seed=WORLD_SEED^0xC0771D0){
       g.quad(a,b,B,A,col,0,rough,metal);g.quad(j,i,I,J,col,0,rough,metal);
     }
   }
+  // A closed pressure casting with a stepped/bevelled radial section. The face
+  // is broken by real recessed channels, not a bright outline over a flat ring.
+  function pressureCasting(inner,outer,z,depthScale=1){
+    primitive={center:[0,2.65,z],half:[4.4,3.2,.7*depthScale],basis:null,family:CORRIDOR_SURFACES.paint};
+    const section=[[0,-.55],[.075,-.66],[.16,-.66],[.23,-.48],[.53,-.48],[.57,-.39],[.65,-.39],[.69,-.54],[.94,-.54],[1,-.43],[1,.43],[.94,.54],[.2,.54],[.12,.64],[0,.64],[0,.43],[.19,.32],[.19,-.32],[0,-.43]];
+    const at=(edge,s)=>[inner[edge][0]+(outer[edge][0]-inner[edge][0])*s[0],inner[edge][1]+(outer[edge][1]-inner[edge][1])*s[0],z+s[1]*depthScale];
+    for(let edge=0;edge<8;edge++)for(let k=0;k<section.length;k++){
+      const next=(edge+1)%8,l=(k+1)%section.length;
+      g.quad(at(edge,section[k]),at(next,section[k]),at(next,section[l]),at(edge,section[l]),paint,0,.64,.28);
+    }
+  }
   const heroInner=[[-2.25,.065],[2.25,.065],[3.30,.98],[3.30,3.52],[2.03,4.94],[-2.03,4.94],[-3.30,3.52],[-3.30,.98]];
   const heroOuter=[[-2.87,-.32],[2.87,-.32],[4.17,.67],[4.17,4.12],[2.68,5.79],[-2.68,5.79],[-4.17,4.12],[-4.17,.67]];
   const octagon=[[-2.65,.0],[2.65,.0],[3.9,.85],[3.9,4.0],[2.5,5.6],[-2.5,5.6],[-3.9,4.0],[-3.9,.85]];
@@ -838,14 +849,33 @@ function buildCorridor(seed=WORLD_SEED^0xC0771D0){
   box(0,-.42,47.5,8.5,.5,49,.025,dark,.78,.2);
   for(const side of [-1,1]){
     for(let bay=0;bay<16;bay++){
-      const z=24.5+bay*3,heroBay=z>25&&z<41,open=side===-1&&(bay===1||bay===3||bay===9),back=side*(heroBay&&side===-1&&(bay===2||bay===3)?5.55:open?4.78:heroBay?4.38:4.12);
+      const z=24.5+bay*3,heroBay=z>23&&z<41,open=side===-1&&(bay===1||bay===3||bay===9),back=side*(heroBay&&side===-1&&bay<=3?5.55:open?4.78:heroBay?4.38:4.12);
       box(back,2.4,z,.22,3.3,2.92,.055,paint.map(v=>v*(.85+random()*.22)),.64,.28);
-      if(heroBay&&side===-1&&(bay===2||bay===3)){
+      if(side===-1&&bay<=1){
+        // The nearest right-of-image hull is opened into an actual service bay.
+        // A narrow jamb, recessed carrier rails and connected pressure vessels
+        // replace the old full-height cover at the camera's edge.
+        for(const y of [.65,4.16])box(-4.75,y,z,1.65,.22,2.90,.055,paint,.64,.28);
+        if(bay===0)box(-4.74,2.4,23.05,1.65,3.30,.22,.055,paint,.64,.28);
+        if(bay===1)for(const x of [-5.27,-3.99])box(x,2.4,28.98,.22,3.30,.22,.045,paint,.64,.28);
+        for(const y of [1.02,3.68])box(-5.24,y,z,.26,.20,2.76,.035,dark,.65,.5);
+        for(const dz of [-.73,.48]){
+          tube([[-5.08,1.05,z+dz],[-5.08,3.65,z+dz]],.24,steel,.42,.85,20);
+          for(const y of [1.35,3.37])box(-4.98,y,z+dz,.55,.15,.64,.04,paint,.64,.28);
+          tube([[-4.79,2.48,z+dz],[-4.36,2.48,z+dz],[-4.20,2.70,z+dz],[-4.20,3.25,z+dz]],.085,steel,.42,.85,12);
+        }
+        for(const dz of [-1.03,.14,1.1])profile([-4.92,.86,z+dz],[-4.62,3.95,z+dz],.14,.18,.035,paint,.64,.28);
+        obstacles.push([-5.55,.65,z-1.45,-4.01,4.27,z+1.45]);
+      }else if(heroBay&&side===-1&&(bay===2||bay===3)){
         if(bay===2){
           const start=g.data.length/12;
           // One full bay between the foreground and middle pressure thresholds.
           // The hull is cut back 2.2m behind the jamb; no panel crosses its mouth.
-          for(const dz of [-2.91,2.91])box(-4.72,2.40,32+dz,1.83,3.30,.18,.04,paint,.64,.28);
+          // The near service bay and pump pocket are one connected maintenance
+          // volume. Only the rear pressure jamb closes its axial end; the near
+          // end has two carrier posts rather than a broad end plate.
+          box(-4.72,2.40,34.91,1.83,3.30,.18,.04,paint,.64,.28);
+          for(const x of [-5.28,-3.97])box(x,2.40,29.09,.22,3.30,.18,.04,paint,.64,.28);
           for(const y of [.78,4.04])box(-4.72,y,32,1.83,.20,5.67,.04,paint,.64,.28);
           for(const zRail of [30.1,33.8]){
             box(-5.17,2.4,zRail,.32,2.86,.19,.03,dark,.65,.5);
@@ -859,10 +889,10 @@ function buildCorridor(seed=WORLD_SEED^0xC0771D0){
           box(-4.38,2.23,32.45,.39,.45,.42,.055,steel,.51,.75);
           const wheel=[];for(let k=0;k<=32;k++){const a=k/32*Math.PI*2;wheel.push([-4.06,2.23+Math.cos(a)*.32,32.45+Math.sin(a)*.32]);}tube(wheel,.045,oxide,.55,.65,12);
           for(const dz of [-.22,.22])profile([-4.06,2.0,32.45+dz],[-4.06,2.46,32.45-dz],.04,.04,.008,oxide,.55,.65);
-          // A detached lower cover rests against its retaining stop inside the
-          // recess. Its tilt reveals a dark gap rather than duplicating a wall.
-          const c=Math.cos(.29),ss=Math.sin(.29);
-          chamfer([-4.34,1.38,30.75],[.15,1.35,1.45],.055,paint,.65,.28,0,[[c,ss,0],[-ss,c,0],[0,0,1]]);
+          // Spare cartridge cradle stays at the back of the recess. There is no
+          // detached tilted cover across the foreground's negative space.
+          box(-5.04,1.34,30.75,.44,1.32,1.16,.06,paint,.65,.28);
+          for(const y of [.83,1.85])box(-4.78,y,30.75,.14,.14,1.30,.03,steel,.51,.75);
           tube([[-5.09,3.59,30.25],[-4.9,3.24,30.8],[-4.9,3.2,31.55],[-4.9,3.58,32.05]],.048,dark,.65,.15,10);
           construction.cavities.push({side,z:32,firstVertex:start,vertexCount:g.data.length/12-start});
           obstacles.push([-5.55,.78,31.9,-4.01,3.75,33.8]);
@@ -926,6 +956,13 @@ function buildCorridor(seed=WORLD_SEED^0xC0771D0){
       if(z<66){
         profile([side*2.5,5.62,z],[side*3.96,4.0,z],.18,2.94,.04,dark,.64,.5);
         for(let k=0;k<(heroBay?1:3);k++)profile([side*(2.62+k*.32),5.48-k*.35,z-1.35],[side*(2.62+k*.32),5.48-k*.35,z+1.35],.13,.11,.018,steel,.48,.9);
+        if(heroBay&&side===1){
+          // A shoulder-mounted ventilation trunk: side cheeks, sunken louvres
+          // and interrupted access caps give this plane a different silhouette.
+          const a=[2.66,5.34,z],b=[3.65,4.24,z];
+          for(const dz of [-1.14,1.14])profile([a[0],a[1],z+dz],[b[0],b[1],z+dz],.20,.17,.04,paint,.64,.28);
+          for(let l=0;l<6;l++){const t=(l+.5)/6;profile([a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t,z-1.02],[a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t,z+1.02],.095,.10,.018,dark,.64,.5);}
+        }
       }
     }
     // Consolidated low service ducts in hero bays: two smaller runs sit below
@@ -950,41 +987,59 @@ function buildCorridor(seed=WORLD_SEED^0xC0771D0){
     }
   }
   // Heavy octagonal I-section pressure ribs: chamfered web, two flanges, fastener lugs.
-  const ribZ=[24.4,28.4,35.3,41.4,47.2,53.7,60.1,66.8,71.6];
+  const ribZ=[24.4,35.3,41.4,49.2,60.1,66.8,71.6];
   for(const z of ribZ){
-    if(z>=28&&z<42){
+    if(z===24.4||z===35.3||z===49.2){
       const firstVertex=g.data.length/12;
       // Flanges project into the aperture; the recessed web exposes axial depth
       // on both sides. The gasket belongs inside the rear flange, not a bright rail.
-      const inner=z<29?heroInner.map(([x,y])=>[x+(Math.abs(x)>3?Math.sign(x)*.38:Math.sign(x)*.14),y]):heroInner;
-      const sectionBetween=amount=>inner.map((p,i)=>p.map((v,axis)=>v+(heroOuter[i][axis]-v)*amount));
-      ringBand(sectionBetween(.20),sectionBetween(.84),z,.90,paint,.59,.45);
-      ringBand(inner,heroOuter,z-.53,.16,paint,.64,.28);
-      ringBand(inner,heroOuter,z+.53,.16,paint,.64,.28);
-      ringBand(sectionBetween(.02),sectionBetween(.11),z+.64,.07,dark,.72,.15);
+      const inner=z===49.2?[[-.2,.065],[2.8,.065],[3.3,.9],[3.3,4.10],[2.8,5.05],[-.2,5.05],[-.7,4.10],[-.7,.9]]:z<29?heroInner.map(([x,y])=>[x+(Math.abs(x)>3?Math.sign(x)*.38:Math.sign(x)*.14),y]):heroInner;
+      const outer=z===49.2?[[-.8,-.32],[3.45,-.32],[4.17,.67],[4.17,4.35],[3.42,5.79],[-.82,5.79],[-1.52,4.35],[-1.52,.67]]:heroOuter;
+      const depthScale=z===35.3?1.22:z===49.2?1.45:1;
+      const sectionBetween=amount=>inner.map((p,i)=>p.map((v,axis)=>v+(outer[i][axis]-v)*amount));
+      pressureCasting(inner,outer,z,depthScale);
+      ringBand(sectionBetween(.03),sectionBetween(.10),z+.71*depthScale,.07,dark,.72,.15);
       for(const side of [-1,1]){
-        for(const y of [1.32,3.21])box(side*3.79,y,z-.67,.32,.28,.11,.035,paint,.64,.28);
+        const edge=side<0?6:2,jambX=(inner[edge][0]+outer[edge][0])*.5;
+        for(const y of [1.32,3.21])box(jambX,y,z-.67*depthScale,.32,.28,.11,.035,paint,.64,.28);
         // Deep angled plinths transfer the jamb load to the service ledge.
-        profile([side*2.71,.17,z-.45],[side*3.83,1.03,z-.45],.22,.72,.045,paint,.64,.28);
+        if(z!==49.2)profile([side*2.71,.17,z-.45],[side*3.83,1.03,z-.45],.22,.72,.045,paint,.64,.28);
       }
       for(const side of [-1,1]){
-        obstacles.push([Math.min(side*inner[2][0],side*4.18),.98,z-.82,Math.max(side*inner[2][0],side*4.18),3.52,z+.68]);
+        const axial=.82*depthScale;
+        const lower=side<0?7:2,upper=side<0?6:3,top=side<0?5:4;
+        obstacles.push([Math.min(inner[lower][0],side*4.18),inner[lower][1],z-axial,Math.max(inner[lower][0],side*4.18),inner[upper][1],z+axial]);
         // Local conservative collision envelopes follow the real upper shoulder.
         // Axial bounds include the forward lugs/plinth, not only the flange.
         // Resolve lower/outboard steps first: an inward push can only enter a
         // later envelope, never an already processed one. These boxes use the
         // existing .45m camera expansion without altering the shared controller.
-        const topX=inner[4][0],sideX=inner[3][0],topY=inner[4][1],sideY=inner[3][1],steps=Math.ceil((sideX-topX)/.12);
+        const topX=side*inner[top][0],sideX=side*inner[upper][0],topY=inner[top][1],sideY=inner[upper][1],steps=Math.ceil((sideX-topX)/.12);
         for(let step=steps-1;step>=0;step--){
           const x=topX+(sideX-topX)*step/steps,nextX=topX+(sideX-topX)*(step+1)/steps,y=topY-(topY-sideY)*(nextX-topX)/(sideX-topX);
-          obstacles.push([Math.min(side*x,side*4.18),y,z-.82,Math.max(side*x,side*4.18),5.79,z+.68]);
+          obstacles.push([Math.min(side*x,side*4.18),y,z-axial,Math.max(side*x,side*4.18),5.79,z+axial]);
         }
       }
       // A full-width high envelope resolves axially; a narrow soffit box could
       // push sideways into an already resolved shoulder. Shared ceiling bounds
       // already keep the exterior high corners unreachable.
-      obstacles.push([-4.18,inner[4][1],z-.82,4.18,5.79,z+.68]);
-      construction.frames.push({z,firstVertex,vertexCount:g.data.length/12-firstVertex,inner,outer:heroOuter,flangeDepth:1.22,webDepth:.90});
+      obstacles.push([-4.18,inner[4][1],z-.82*depthScale,4.18,5.79,z+.82*depthScale]);
+      construction.frames.push({z,firstVertex,vertexCount:g.data.length/12-firstVertex,inner,outer,depthScale,flangeDepth:1.30*depthScale,webDepth:.64*depthScale});
+      if(z===49.2){
+        // Off-axis pressure aperture and its adjacent actuator/utility bulkhead.
+        // The casting itself stays narrow on both jambs. A recessed, load-bearing
+        // service module connects its left edge to the pressure hull, instead of
+        // stretching one annular face across half the corridor.
+        box(-2.94,2.60,50.22,2.70,5.30,.22,.055,paint,.64,.28);
+        for(const x of [-4.08,-2.91,-1.60])box(x,2.62,49.31,.26,5.24,1.26,.06,paint,.64,.28);
+        for(const y of [.26,4.98])box(-2.85,y,49.31,2.70,.42,1.26,.06,paint,.64,.28);
+        for(const x of [-3.50,-2.23]){
+          box(x,2.63,49.93,.83,3.76,.36,.08,dark,.65,.5);
+          tube([[x,1.03,49.64],[x,3.85,49.64],[x+.22,4.13,49.64]],.095,steel,.42,.85,16);
+          for(const y of [1.20,3.63])box(x,y,49.54,.72,.19,.34,.04,paint,.64,.28);
+        }
+        obstacles.push([-4.30,.05,48.65,-1.45,5.24,50.35]);
+      }
       continue;
     }
     for(let j=0;j<8;j++){
@@ -999,13 +1054,16 @@ function buildCorridor(seed=WORLD_SEED^0xC0771D0){
   // A service trench is genuinely open between grating bars; the underfloor structure is visible.
   box(0,-.22,47.5,4.3,.12,48,.025,dark,.78,.12);
   for(let z=23.25;z<72;z+=.19){
-    if(z<42)for(const side of [-1,1])box(side*1.64,.025,z,.78,.08,.055,.012,steel,.36,.9,0,CORRIDOR_SURFACES.grate);
+    if(z<42)for(const [x,w] of [[-1.64,.78],[1.64,.78],[0,.72]])box(x,.025,z,w,.08,.055,.012,steel,.36,.9,0,CORRIDOR_SURFACES.grate);
     else box(0,.025,z,4.14,.08,.055,.012,steel,.36,.9,0,CORRIDOR_SURFACES.grate);
   }
-  for(let z=24.4;z<42;z+=3){
-    box(0,.02,z,2.42,.09,2.91,.025,paint,.59,.45);
-    for(const x of [-1.2,1.2])box(x,.065,z,.035,.025,2.77,.006,dark,.66,.35);
+  for(let z=24.0;z<42;z+=1.5){
+    for(const side of [-1,1]){
+      box(side*.83,.02,z,.79,.09,1.39,.025,paint,.59,.45);
+      box(side*.83,.07,z-.52,.49,.025,.07,.012,dark,.66,.35);
+    }
   }
+  for(const x of [-1.24,-.42,.42,1.24])box(x,.035,32.3,.07,.10,18.5,.012,steel,.42,.9);
   for(let x=-2.05;x<=2.05;x+=.27)box(x,-.035,47.5,.045,.1,48,.01,alloy,.42,.9,0,CORRIDOR_SURFACES.grate);
   for(const x of [-2.18,2.18])box(x,.015,47.5,.17,.13,48,.018,steel,.3,.92);
   for(let z=24;z<72;z+=3.1){
@@ -1597,11 +1655,13 @@ const params=new URLSearchParams(location.search),testMode=params.has('test'),de
 const PRESETS={High:{scale:1,samples:4,dust:850,effects:1},Medium:{scale:1,samples:1,dust:500,effects:1},Low:{scale:.7,samples:1,dust:180,effects:0}};
 let quality=Object.keys(PRESETS).find(x=>x.toLowerCase()===(params.get('quality')||'high').toLowerCase())||'High';
 const canvas=$('world'),errorBox=$('error'),menu=$('menu'),keys=new Set();
-const camera={position:new Float32Array(VIEWS[0].position),yaw:0,pitch:0};
+const DEFAULT_VERTICAL_FOV=64;
+const DIRECTOR_SHOT_4B={position:[-1.2,1.72,25.6],target:[-13,1.76,62],verticalFovDegrees:52};
+const camera={position:new Float32Array(VIEWS[0].position),yaw:0,pitch:0,verticalFovDegrees:DEFAULT_VERTICAL_FOV};
 const projection=new Float32Array(16),view=new Float32Array(16),vp=new Float32Array(16),uniform=new Float32Array(40);
 const flightPosition=new Float32Array(3),flightTarget=new Float32Array(3),previousPosition=new Float32Array(3);
 const frameSamples=new Float64Array(18000),gpuSamples=new Float64Array(2048);
-let frameCount=0,gpuCount=0,lastFrame=0,sceneTime=0,fixedTime=testMode?12:null,flight=null,activeView=1,menuOpen=!testMode&&!params.has('clean');
+let frameCount=0,gpuCount=0,lastFrame=0,sceneTime=0,fixedTime=testMode?12:null,flight=null,activeView=1,activeShot=null,menuOpen=!testMode&&!params.has('clean');
 document.body.classList.toggle('clean',params.has('clean'));
 const gpuInstance=navigator.gpu;
 let corridorScene,corridorRenderer,navigationObstacles;
@@ -1613,9 +1673,20 @@ let readbackContext,readbackTexture,readbackBuffer,readbackImage,readbackStride=
 const startedAt=performance.now();
 
 function setMenu(open){menuOpen=open;menu.hidden=!open;document.body.classList.toggle('menu-open',open);if(open&&document.pointerLockElement)document.exitPointerLock();}
+function setCameraShot({position,target,verticalFovDegrees=DEFAULT_VERTICAL_FOV}){
+  if(!Array.isArray(position)||!Array.isArray(target)||position.length!==3||target.length!==3||![...position,...target,verticalFovDegrees].every(Number.isFinite)||verticalFovDegrees<20||verticalFovDegrees>100)throw Error('Invalid camera shot');
+  activeShot=null;camera.position.set(position);const angles=lookAngles(position,target);camera.yaw=angles[0];camera.pitch=angles[1];camera.verticalFovDegrees=verticalFovDegrees;
+  return getState();
+}
+function setDirectorShot(){
+  setView(4);setCameraShot(DIRECTOR_SHOT_4B);activeShot='4b';activeView=7;
+  $('view-title').textContent='PRESSURE TRANSIT';$('view-note').textContent='Follow the red pulse into the docking bay.';
+  document.querySelectorAll('[data-view]').forEach(b=>{b.classList.remove('selected');b.setAttribute('aria-pressed','false');});
+  return getState();
+}
 function setView(n){
   const index=clamp(Math.floor(Number(n)||1),1,6)-1,record=VIEWS[index];
-  flight=null;routeCaption=false;activeView=index+1;camera.position.set(record.position);const angles=lookAngles(record.position,record.target);camera.yaw=angles[0];camera.pitch=angles[1];
+  flight=null;routeCaption=false;activeView=index+1;setCameraShot(record);
   $('view-title').textContent=record.name;$('view-note').textContent=record.description;$('sector').textContent=record.sector;
   document.querySelectorAll('[data-view]').forEach(b=>{b.classList.toggle('selected',Number(b.dataset.view)===index+1);b.setAttribute('aria-pressed',String(Number(b.dataset.view)===index+1));});
   return getState();
@@ -1628,7 +1699,13 @@ function setQuality(name){
   quality=key;document.querySelectorAll('[data-quality]').forEach(b=>{b.classList.toggle('selected',b.dataset.quality===quality);b.setAttribute('aria-pressed',String(b.dataset.quality===quality));});
   if(ready){createPipelines();corridorRenderer?.setSamples(PRESETS[quality].samples);resize();}return quality;
 }
-function getState(){return {ready:ready&&startupSubmissionVerified&&(!readbackMode||presentedFrames>0),position:Array.from(camera.position),yaw:camera.yaw,pitch:camera.pitch,sector:currentSector(),quality,renderSize:[renderWidth,renderHeight],hero:CORRIDOR_HERO,clean:params.has('clean'),view:activeView,presentedView,presentedFrames,presentationMode:readbackMode?'readback':'swapchain',menuOpen,audio:audio.enabled,pointerLocked:document.pointerLockElement===canvas,time:sceneTime,flight:flight?{elapsed:Math.min(60,(performance.now()-flight.start)/1000),duration:60}:null};}
+function getState(){return {ready:ready&&startupSubmissionVerified&&(!readbackMode||presentedFrames>0),position:Array.from(camera.position),yaw:camera.yaw,pitch:camera.pitch,verticalFovDegrees:camera.verticalFovDegrees,shot:activeShot,sector:currentSector(),quality,renderSize:[renderWidth,renderHeight],hero:CORRIDOR_HERO,clean:params.has('clean'),view:activeView,presentedView,presentedFrames,presentationMode:readbackMode?'readback':'swapchain',menuOpen,audio:audio.enabled,pointerLocked:document.pointerLockElement===canvas,time:sceneTime,flight:flight?{elapsed:Math.min(60,(performance.now()-flight.start)/1000),duration:60}:null};}
+async function getGeometryDiagnostics(){
+  const digest=async bytes=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),v=>v.toString(16).padStart(2,'0')).join('');
+  const positionsNormals=new Float32Array(corridorScene.vertices.length/2);
+  for(let i=0,j=0;i<corridorScene.vertices.length;i+=12)for(let k=0;k<6;k++)positionsNormals[j++]=corridorScene.vertices[i+k];
+  return {triangles:corridorScene.triangles,vertexStreamSha256:await digest(corridorScene.vertices),positionNormalSha256:await digest(positionsNormals),surfaceStreamSha256:await digest(corridorScene.surfaces)};
+}
 function summarize(samples,count){
   if(!count)return {count:0,meanMs:null,p99Ms:null,maxMs:null};
   const sorted=Array.from(samples.subarray(0,count)).sort((a,b)=>a-b);let sum=0;for(const n of sorted)sum+=n;
@@ -1639,6 +1716,8 @@ function getReport(){
   return {project:'PROJECT ECHO-9',seed:WORLD_SEED,status:'BLOCKED',reason:readbackMode?'CPU readback presentation is diagnostic only; hardware swapchain measurement is required.':deviceInfo.isFallbackAdapter?'Software adapter; a reference hardware GPU is required for the 60 FPS gate.':'Reference GPU has not been agreed; measurements are diagnostic until hardware is selected.',measurementStatus:flightReport?flightReport.status:frameCount?'IN_PROGRESS':'NOT_RUN',adapter:deviceInfo,browser:navigator.userAgent,resolution:[renderWidth,renderHeight],cssResolution:[innerWidth,innerHeight],devicePixelRatio:devicePixelRatio,quality,presentationMode:readbackMode?'readback':'swapchain',readbackOverhead:readbackMode?'GPU copy, async map, BGRA→RGBA conversion and 2D upload included in frame times':null,renderScale:PRESETS[quality].scale,msaa:PRESETS[quality].samples,triangles:scene?scene.triangles-scene.corridorDrawRange.vertexCount/3+(corridorScene?.triangles||0):0,vertices:scene?scene.vertices.length/12-scene.corridorDrawRange.vertexCount+(corridorScene?.vertices.length/12||0):0,legacyVertices:scene?.vertices.length/12||0,corridor:corridorRenderer?.report()||null,estimatedGpuBytes:scene?scene.vertices.byteLength+scene.dust.byteLength+160+(corridorRenderer?.report().estimatedGpuBytes||0)+renderWidth*renderHeight*4*(PRESETS[quality].samples+(PRESETS[quality].samples>1?PRESETS[quality].samples:0)+1)+(readbackMode?readbackStride*renderHeight:0):0,diagnosticCpuPixelBytes:readbackMode?renderWidth*renderHeight*4:0,frame:cpu,gpu:{...gpu,samplingEveryNthFrame:30,status:timingError?'BLOCKED':timestampSet?(gpuCount?'PASS':'PENDING'):'BLOCKED',reason:timestampSet?timingError:'timestamp-query not supported by the current adapter'},flythrough:flightReport||{durationSeconds:60,status:flight?'RUNNING':'NOT_RUN'},runtimeErrors:crashed?['Rendering stopped; see on-screen error']:[],elapsedSeconds:(performance.now()-startedAt)/1000};
 }
 function startFlythrough(){
+  camera.verticalFovDegrees=DEFAULT_VERTICAL_FOV;
+  activeShot=null;
   if(document.pointerLockElement)document.exitPointerLock();setMenu(false);frameCount=0;gpuCount=0;flightReport=null;fixedTime=null;sceneTime=0;flight={start:performance.now(),startQuality:quality,startWidth:renderWidth,startHeight:renderHeight,configurationChanged:false};lastFrame=0;activeView=0;routeCaption=true;
   sampleFlight(0,flightPosition,flightTarget);camera.position.set(flightPosition);const angles=lookAngles(flightPosition,flightTarget);camera.yaw=angles[0];camera.pitch=angles[1];
   document.querySelectorAll('[data-view]').forEach(button=>{button.classList.remove('selected');button.setAttribute('aria-pressed','false');});
@@ -1729,7 +1808,7 @@ async function initialize(){
     corridorScene=buildCorridor();navigationObstacles=scene.obstacles.concat(corridorScene.obstacles);
     corridorRenderer=new CorridorRenderer(device,format,uniformBuffer,corridorScene,{shadows:params.get('shadows')!=='0',probe:params.get('probe')!=='0',fog:params.get('fog')!=='0',bloom:params.get('bloom')!=='0',onlyLight:testMode?Number(params.get('onlyLight')??-1):-1,detailAA:params.get('detailAA')!=='0',grade:params.get('grade')==='legacy'?'legacy':'agx'});
     await corridorRenderer.initialize(PRESETS[quality].samples);
-    resize();await corridorRenderer.atmosphereCheck;setView(params.get('view')||1);setQuality(quality);setMenu(menuOpen);
+    resize();await corridorRenderer.atmosphereCheck;setView(params.get('view')||1);if(params.get('shot')==='4b')setDirectorShot();setQuality(quality);setMenu(menuOpen);
     ready=true;$('loading').hidden=true;document.body.classList.add('ready');
     if(params.has('flythrough'))startFlythrough();requestAnimationFrame(render);
   }catch(error){fail(error.message);}
@@ -1749,12 +1828,13 @@ function updateCamera(delta,now){
 }
 function updateUniforms(){
   const yaw=camera.yaw,pitch=camera.pitch,cy=Math.cos(yaw),sy=Math.sin(yaw),cp=Math.cos(pitch),sp=Math.sin(pitch);
-  viewMatrix(view,camera.position,yaw,pitch);perspective(projection,Math.PI*64/180,renderWidth/renderHeight,.12,700);multiply(vp,projection,view);uniform.set(vp,0);
+  const verticalFovRadians=Math.PI*camera.verticalFovDegrees/180,rayTangent=Math.tan(verticalFovRadians/2);
+  viewMatrix(view,camera.position,yaw,pitch);perspective(projection,verticalFovRadians,renderWidth/renderHeight,.12,700);multiply(vp,projection,view);uniform.set(vp,0);
   uniform[16]=camera.position[0];uniform[17]=camera.position[1];uniform[18]=camera.position[2];uniform[19]=sceneTime;
   uniform[20]=cy;uniform[21]=0;uniform[22]=sy;uniform[23]=0;
   uniform[24]=sy*sp;uniform[25]=cp;uniform[26]=-cy*sp;uniform[27]=0;
   uniform[28]=sy*cp;uniform[29]=-sp;uniform[30]=-cy*cp;uniform[31]=0;
-  uniform[32]=renderWidth;uniform[33]=renderHeight;uniform[34]=renderWidth/renderHeight*Math.tan(Math.PI*32/180);uniform[35]=Math.tan(Math.PI*32/180);
+  uniform[32]=renderWidth;uniform[33]=renderHeight;uniform[34]=renderWidth/renderHeight*rayTangent;uniform[35]=rayTangent;
   uniform[36]=PRESETS[quality].effects;uniform[37]=sceneTime;uniform[38]=quality==='High'?2:quality==='Medium'?1:0;uniform[39]=debug==='normals'?1:debug==='solid'?2:0;
   device.queue.writeBuffer(uniformBuffer,0,uniform);
 }
@@ -1842,7 +1922,7 @@ window.addEventListener('keydown',event=>{
 window.addEventListener('keyup',event=>keys.delete(event.code));window.addEventListener('blur',()=>keys.clear());
 document.addEventListener('mousemove',event=>{if(document.pointerLockElement===canvas&&!menuOpen){camera.yaw+=event.movementX*.0018;camera.pitch=clamp(camera.pitch+event.movementY*.0018,-1.45,1.45);}});
 document.addEventListener('pointerlockchange',()=>{document.body.classList.toggle('pointer-locked',document.pointerLockElement===canvas);});
-window.echo9={gpuInstance,get adapter(){return adapterReference;},get device(){return device;},get ready(){return ready&&startupSubmissionVerified&&(!readbackMode||presentedFrames>0);},getHdrDiagnostics:()=>corridorRenderer.post.diagnostics(),setCorridorDiagnostics:options=>corridorRenderer.setDiagnostics(options),getShadowDiagnostics:(samples,index)=>corridorRenderer.shadowDiagnostics(samples,index),setView,setQuality,setTime,startFlythrough,stopFlythrough,getReport,getState,setMenu,get stats(){return getReport();},camera,views:VIEWS,hero:CORRIDOR_HERO};
+window.echo9={gpuInstance,get adapter(){return adapterReference;},get device(){return device;},get ready(){return ready&&startupSubmissionVerified&&(!readbackMode||presentedFrames>0);},getHdrDiagnostics:()=>corridorRenderer.post.diagnostics(),setCorridorDiagnostics:options=>corridorRenderer.setDiagnostics(options),getShadowDiagnostics:(samples,index)=>corridorRenderer.shadowDiagnostics(samples,index),getGeometryDiagnostics:testMode?getGeometryDiagnostics:undefined,setView,setCameraShot,setDirectorShot,setQuality,setTime,startFlythrough,stopFlythrough,getReport,getState,setMenu,get stats(){return getReport();},camera,views:VIEWS,hero:CORRIDOR_HERO,director:DIRECTOR_SHOT_4B};
 initialize();
 </script>
 </body></html>

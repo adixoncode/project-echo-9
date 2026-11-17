@@ -1,0 +1,109 @@
+
+> project-echo-9@1.0.0 test:all
+> npm run build && npm test
+
+
+> project-echo-9@1.0.0 build
+> node scripts/build.mjs
+
+Built standalone index.html: 154,429 bytes raw · 50,268 bytes gzip
+
+> project-echo-9@1.0.0 test
+> node --test tests/*.test.mjs
+
+✔ seeded random has a stable, distinct sequence and a bounded range (3.659325ms)
+✔ projection maps the near/far clipping planes to WebGPU 0..1 depth (0.363538ms)
+✔ lookAngles and viewMatrix agree for all six views (0.60261ms)
+✔ matrix multiplication preserves a known translation through identity (0.317935ms)
+✔ architectural bounds allow one uninterrupted route and protect major solids (3.863889ms)
+✔ wide-room bulkhead collisions stop forward motion without sideways teleporting (1.138261ms)
+✔ 60-second route is finite, deterministic and reaches both approved endpoints (7.437203ms)
+✔ procedural geometry is deterministic, finite, structurally rich and changes with seed (1077.203949ms)
+✔ corridor is separately seeded, physically tessellated and has valid PBR attributes (2775.7213ms)
+✔ flared corridor exit has an opaque pressure shell in every cross-sectional direction (806.328618ms)
+✖ original approved flight and all saved cameras remain clear of the new corridor (827.813701ms)
+✔ cuboid helper produces twelve triangles and outward normals (0.447664ms)
+✔ build is byte-for-byte reproducible and standalone, with no external resources (44.339473ms)
+✔ iteration2 retains approved world seed, all six camera poses and full deterministic route (3.235239ms)
+✔ corridor actual triangles clear the whole unchanged route, saved cameras and selected4B shot (15181.502709ms)
+✔ pressure castings have eight closed bevelled sectors, recessed webs and metre-scale axial depth (66.294522ms)
+✖ 4B pressure portal has an actually open low passage and clears the original high flight approach (1020.549977ms)
+✖ 4A maintenance pocket is recessed behind the jamb and structural occlusion remains physical (681.934837ms)
+✔ 4A upper shoulder and soffit collisions keep manual camera spheres outside the actual frame mesh (485.583004ms)
+✔ corridor material coordinates are finite, primitive-owned and cover all six authored surfaces (2011.546521ms)
+✔ red pendant aperture leaves continuous falloff across both formerly clipped guard edges (13758.209904ms)
+✔ corrected pendant aperture preserves genuine nearby handle and panel occlusion (494.519805ms)
+✔ half-float diagnostics decode normal, subnormal, signed and nonfinite GPU values (1.040594ms)
+✔ HDR diagnostic reduction ignores padded rows and separates actual corridor coverage (0.380081ms)
+✔ transparent particles blend radiance without ever creating or erasing corridor coverage (0.239165ms)
+✔ only the final corridor display pass tone-maps; material and scattering retain linear HDR (0.442446ms)
+✔ one authored light table packs the same fixture, shadow and shader positions/spectra (1.544772ms)
+✔ primary cones illuminate the intended rib front and foreground reflection receiver (0.255275ms)
+✔ corridor overhaul preserves observatory and hangar geometry/material data from baseline (167.360053ms)
+✔ corridor generation preserves the original world particle seed stream (163.866322ms)
+✔ receiver-plane PCF matches ray-plane projected depth and prevents the observed flat-wall acne (7.590022ms)
+✔ receiver-plane correction retains a real caster ahead of the receiver (0.38061ms)
+ℹ tests 32
+ℹ suites 0
+ℹ pass 29
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 19813.170789
+
+✖ failing tests:
+
+test at tests/core.test.mjs:132:1
+✖ original approved flight and all saved cameras remain clear of the new corridor (827.813701ms)
+  AssertionError [ERR_ASSERTION]: pressure-frame jamb blocks manual flight
+      at TestContext.<anonymous> (file:///workspace/project-echo-9/tests/core.test.mjs:139:69)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/iteration4a-geometry.test.mjs:69:1
+✖ 4B pressure portal has an actually open low passage and clears the original high flight approach (1020.549977ms)
+  AssertionError [ERR_ASSERTION]: portal needs an actual enclosing jamb
+      at TestContext.<anonymous> (file:///workspace/project-echo-9/tests/iteration4a-geometry.test.mjs:72:70)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/iteration4a-geometry.test.mjs:75:1
+✖ 4A maintenance pocket is recessed behind the jamb and structural occlusion remains physical (681.934837ms)
+  AssertionError [ERR_ASSERTION]: solid jamb must stop the camera at its .45m expanded inner face
+      at TestContext.<anonymous> (file:///workspace/project-echo-9/tests/iteration4a-geometry.test.mjs:84:33)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

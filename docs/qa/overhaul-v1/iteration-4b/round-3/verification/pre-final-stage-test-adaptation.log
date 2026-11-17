@@ -1,0 +1,73 @@
+
+> project-echo-9@1.0.0 test:all
+> npm run build && npm test
+
+
+> project-echo-9@1.0.0 build
+> node scripts/build.mjs
+
+Built standalone index.html: 154,917 bytes raw · 50,406 bytes gzip
+
+> project-echo-9@1.0.0 test
+> node --test tests/*.test.mjs
+
+✔ seeded random has a stable, distinct sequence and a bounded range (3.937237ms)
+✔ projection maps the near/far clipping planes to WebGPU 0..1 depth (0.274848ms)
+✔ lookAngles and viewMatrix agree for all six views (0.53233ms)
+✔ matrix multiplication preserves a known translation through identity (0.68531ms)
+✔ architectural bounds allow one uninterrupted route and protect major solids (5.635478ms)
+✔ wide-room bulkhead collisions stop forward motion without sideways teleporting (1.05516ms)
+✔ 60-second route is finite, deterministic and reaches both approved endpoints (8.768513ms)
+✔ procedural geometry is deterministic, finite, structurally rich and changes with seed (1160.570442ms)
+✔ corridor is separately seeded, physically tessellated and has valid PBR attributes (4004.509886ms)
+✔ flared corridor exit has an opaque pressure shell in every cross-sectional direction (1293.244805ms)
+✔ original approved flight and all saved cameras remain clear of the new corridor (1085.782685ms)
+✔ cuboid helper produces twelve triangles and outward normals (0.491315ms)
+✔ build is byte-for-byte reproducible and standalone, with no external resources (50.698495ms)
+✔ iteration2 retains approved world seed, all six camera poses and full deterministic route (12.435353ms)
+✔ corridor actual triangles clear the whole unchanged route, saved cameras and selected4B shot (21631.152433ms)
+✔ pressure castings have eight closed bevelled sectors, recessed webs and metre-scale axial depth (117.613637ms)
+✖ 4B pressure portal has an actually open low passage and clears the original high flight approach (1781.654667ms)
+✔ 4A maintenance pocket is recessed behind the jamb and structural occlusion remains physical (796.537594ms)
+✔ 4A upper shoulder and soffit collisions keep manual camera spheres outside the actual frame mesh (753.358832ms)
+✔ corridor material coordinates are finite, primitive-owned and cover all six authored surfaces (2190.181484ms)
+✔ red pendant aperture leaves continuous falloff across both formerly clipped guard edges (14033.724687ms)
+✔ corrected pendant aperture preserves genuine nearby handle and panel occlusion (937.532942ms)
+✔ half-float diagnostics decode normal, subnormal, signed and nonfinite GPU values (1.11273ms)
+✔ HDR diagnostic reduction ignores padded rows and separates actual corridor coverage (0.517049ms)
+✔ transparent particles blend radiance without ever creating or erasing corridor coverage (0.494977ms)
+✔ only the final corridor display pass tone-maps; material and scattering retain linear HDR (0.830801ms)
+✔ one authored light table packs the same fixture, shadow and shader positions/spectra (1.407386ms)
+✔ primary cones illuminate the intended rib front and foreground reflection receiver (1.958633ms)
+✔ corridor overhaul preserves observatory and hangar geometry/material data from baseline (179.18761ms)
+✔ corridor generation preserves the original world particle seed stream (104.662801ms)
+✔ receiver-plane PCF matches ray-plane projected depth and prevents the observed flat-wall acne (5.306246ms)
+✔ receiver-plane correction retains a real caster ahead of the receiver (0.428029ms)
+ℹ tests 32
+ℹ suites 0
+ℹ pass 31
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 28103.237128
+
+✖ failing tests:
+
+test at tests/iteration4a-geometry.test.mjs:69:1
+✖ 4B pressure portal has an actually open low passage and clears the original high flight approach (1781.654667ms)
+  AssertionError [ERR_ASSERTION]: offset portal needs two actual enclosing jambs
+      at TestContext.<anonymous> (file:///workspace/project-echo-9/tests/iteration4a-geometry.test.mjs:73:9)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: null,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

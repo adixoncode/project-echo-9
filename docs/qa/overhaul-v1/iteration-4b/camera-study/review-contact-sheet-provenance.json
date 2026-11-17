@@ -1,0 +1,78 @@
+{
+  "targetPosition": [
+    180,
+    10
+  ],
+  "columns": [
+    "production",
+    "neutral"
+  ],
+  "rowLabels": "A\u2013D only",
+  "sceneImageChanges": false,
+  "records": [
+    {
+      "source": "thumbnails/production-A.png",
+      "sha256": "7b59c4ac956cd9f46ae990a21b56f5807ff103a260e2f0257a2f8863e2d06606",
+      "position": [
+        30,
+        210
+      ]
+    },
+    {
+      "source": "thumbnails/neutral-A.png",
+      "sha256": "e1f346b9a12b8195e7cd98b4a584cd0ed98ff8d260bc7e5d00dba40498ac401c",
+      "position": [
+        360,
+        210
+      ]
+    },
+    {
+      "source": "thumbnails/production-B.png",
+      "sha256": "c5832ec7443e777e1b1f88464ebd065295909da64a0dfd4f35fd811788dc35c0",
+      "position": [
+        30,
+        415
+      ]
+    },
+    {
+      "source": "thumbnails/neutral-B.png",
+      "sha256": "2fc22353b695ad369ae9eef8bfc426060682ba081071633e96d12bfe40da3339",
+      "position": [
+        360,
+        415
+      ]
+    },
+    {
+      "source": "thumbnails/production-C.png",
+      "sha256": "9969e89d96d8b90611918991b5f436db1549bb489457e54425b2ac5137572da9",
+      "position": [
+        30,
+        620
+      ]
+    },
+    {
+      "source": "thumbnails/neutral-C.png",
+      "sha256": "e39e7cea389d7fae92084a0fd91233740ecf49a06f54fe1aa87e4ed10882ab32",
+      "position": [
+        360,
+        620
+      ]
+    },
+    {
+      "source": "thumbnails/production-D.png",
+      "sha256": "1cfd7c6dadcf7c9452dc50c10876d35a6bcbffc21758aa32322527c40f0b8d64",
+      "position": [
+        30,
+        825
+      ]
+    },
+    {
+      "source": "thumbnails/neutral-D.png",
+      "sha256": "a2412f528acab76691a2dd4a374b6582eba2a86489ad6baad163ebaf166176b2",
+      "position": [
+        360,
+        825
+      ]
+    }
+  ]
+}

@@ -1,0 +1,114 @@
+{
+  "selectedC": {
+    "distance": 1.635088376001674,
+    "triangle": 98658,
+    "point": [
+      -1.2,
+      1.72,
+      25.6
+    ]
+  },
+  "walkingCentreline": {
+    "height": 1.72,
+    "stepMetres": 0.05,
+    "sampleMinimum": {
+      "distance": 1.4550000143051147,
+      "triangle": 68113,
+      "point": [
+        0,
+        1.72,
+        24.000000000000014
+      ]
+    },
+    "continuousClearanceLowerBound": 1.4300000143051148
+  },
+  "scope": "Double-sided distance to actual baked corridor triangles only; full unchanged 60s route and six saved cameras. Legacy-sector meshes covered separately by baseline regression.",
+  "triangleCount": 118552,
+  "routeSamples": 4801,
+  "stepSeconds": 0.0125,
+  "routeSampleMinimum": {
+    "distance": 0.7375445882762337,
+    "triangle": 76168,
+    "point": [
+      -3.0582022666931152,
+      5.061529159545898,
+      72.47164916992188
+    ],
+    "seconds": 40.1
+  },
+  "analyticSpeedBoundMetresPerSecond": 6.918523986460882,
+  "maximumDistanceToNearestTimeSample": 0.04324077491538052,
+  "continuousRouteClearanceLowerBound": 0.6943038133608532,
+  "requiredCameraRadius": 0.45,
+  "hero": {
+    "distance": 1.2687198293979127,
+    "triangle": 27163,
+    "point": [
+      -2.35,
+      1.72,
+      27.5
+    ]
+  },
+  "savedViews": [
+    {
+      "view": 1,
+      "distance": 7.461792115199803,
+      "triangle": 937,
+      "point": [
+        0,
+        5.8,
+        16
+      ]
+    },
+    {
+      "view": 2,
+      "distance": 27.069183528998156,
+      "triangle": 848,
+      "point": [
+        -10,
+        7,
+        -4
+      ]
+    },
+    {
+      "view": 3,
+      "distance": 20.938749875582253,
+      "triangle": 32900,
+      "point": [
+        17,
+        9.5,
+        7
+      ]
+    },
+    {
+      "view": 4,
+      "distance": 1.2687198293979127,
+      "triangle": 27163,
+      "point": [
+        -2.35,
+        1.72,
+        27.5
+      ]
+    },
+    {
+      "view": 5,
+      "distance": 13.239436901945309,
+      "triangle": 118508,
+      "point": [
+        -14,
+        7,
+        81
+      ]
+    },
+    {
+      "view": 6,
+      "distance": 41.48888536899793,
+      "triangle": 118365,
+      "point": [
+        16,
+        5.5,
+        112
+      ]
+    }
+  ]
+}

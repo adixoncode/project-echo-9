@@ -1,0 +1,24 @@
+{
+  "method": "Unnormalized encoded-sRGB luminance statistics; different compositions, diagnostic only",
+  "measurements": {
+    "reference": {
+      "meanDisplayLuminance": 0.09033045353941407,
+      "medianDisplayLuminance": 0.040595294117647056,
+      "darkPixelFractionBelow24of255": 0.6051144070095487,
+      "highlightFractionAbove220of255": 0.0005772908528645834
+    },
+    "before": {
+      "meanDisplayLuminance": 0.08410815078711267,
+      "medianDisplayLuminance": 0.019340392156862743,
+      "darkPixelFractionBelow24of255": 0.7105203510802469,
+      "highlightFractionAbove220of255": 2.7006172839506174e-05
+    },
+    "after": {
+      "meanDisplayLuminance": 0.08209580700269305,
+      "medianDisplayLuminance": 0.023261960784313723,
+      "darkPixelFractionBelow24of255": 0.7143552276234568,
+      "highlightFractionAbove220of255": 2.9899691358024692e-05
+    }
+  },
+  "ablations": []
+}
