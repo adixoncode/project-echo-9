@@ -1,0 +1,23 @@
+[
+  {
+    "mode": "missing-api",
+    "status": "PASS",
+    "message": "WebGPU is unavailable. Open this offline file in a recent desktop Chrome or Edge with WebGPU enabled. A compatible GPU and a secure context are required.",
+    "ready": false,
+    "loading": false
+  },
+  {
+    "mode": "null-adapter",
+    "status": "PASS",
+    "message": "No WebGPU adapter was found. Check hardware acceleration in Chrome or Edge and your graphics driver, then reload.",
+    "ready": false,
+    "loading": false
+  },
+  {
+    "mode": "device-rejection",
+    "status": "PASS",
+    "message": "Injected device initialization failure",
+    "ready": false,
+    "loading": false
+  }
+]

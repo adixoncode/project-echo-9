@@ -1,0 +1,417 @@
+{
+  "mode": "Software WebGPU offscreen readback diagnostics; audio audibility and hardware swapchain remain unverified",
+  "checks": [
+    {
+      "name": "startup and full-resolution High",
+      "status": "PASS",
+      "evidence": {
+        "ready": true,
+        "position": [
+          0,
+          5.800000190734863,
+          16
+        ],
+        "yaw": 0,
+        "pitch": -0.08186788792469124,
+        "sector": "OBSERVATORY",
+        "quality": "High",
+        "renderSize": [
+          1920,
+          1080
+        ],
+        "hero": {
+          "position": [
+            -2.35,
+            1.72,
+            27.5
+          ],
+          "target": [
+            -13.5,
+            1.78,
+            61
+          ],
+          "verticalFov": 64
+        },
+        "clean": false,
+        "view": 1,
+        "presentedView": 1,
+        "presentedFrames": 1,
+        "presentationMode": "readback",
+        "menuOpen": false,
+        "audio": false,
+        "pointerLocked": false,
+        "time": 12,
+        "flight": null
+      }
+    },
+    {
+      "name": "Escape opens menu",
+      "status": "PASS",
+      "evidence": true
+    },
+    {
+      "name": "Explore closes menu and acquires pointer lock",
+      "status": "PASS",
+      "evidence": {
+        "ready": true,
+        "position": [
+          0,
+          5.800000190734863,
+          16
+        ],
+        "yaw": 0,
+        "pitch": -0.08186788792469124,
+        "sector": "OBSERVATORY",
+        "quality": "High",
+        "renderSize": [
+          1920,
+          1080
+        ],
+        "hero": {
+          "position": [
+            -2.35,
+            1.72,
+            27.5
+          ],
+          "target": [
+            -13.5,
+            1.78,
+            61
+          ],
+          "verticalFov": 64
+        },
+        "clean": false,
+        "view": 1,
+        "presentedView": 1,
+        "presentedFrames": 1,
+        "presentationMode": "readback",
+        "menuOpen": false,
+        "audio": false,
+        "pointerLocked": true,
+        "time": 12,
+        "flight": null
+      }
+    },
+    {
+      "name": "W changes camera position",
+      "status": "PASS",
+      "evidence": {
+        "before": [
+          0,
+          5.800000190734863,
+          16
+        ],
+        "after": [
+          0,
+          5.800000190734863,
+          15.25
+        ],
+        "framesBefore": 1,
+        "framesAfter": 4
+      }
+    },
+    {
+      "name": "E ascends",
+      "status": "PASS",
+      "evidence": {
+        "before": 5.800000190734863,
+        "after": 6.550000190734863,
+        "framesBefore": 4,
+        "framesAfter": 7
+      }
+    },
+    {
+      "name": "Pointer motion changes camera direction",
+      "status": "PASS",
+      "evidence": {
+        "before": 0,
+        "after": -0.9989999999999999
+      }
+    },
+    {
+      "name": "H reveals telemetry",
+      "status": "PASS"
+    },
+    {
+      "name": "M starts synthesized audio after interaction",
+      "status": "PASS",
+      "evidence": true
+    },
+    {
+      "name": "M mutes audio",
+      "status": "PASS"
+    },
+    {
+      "name": "Low reports explicit 0.7 render scale",
+      "status": "PASS",
+      "evidence": {
+        "ready": true,
+        "position": [
+          0,
+          6.550000190734863,
+          15.25
+        ],
+        "yaw": -0.9989999999999999,
+        "pitch": 0.21153211207530873,
+        "sector": "OBSERVATORY",
+        "quality": "Low",
+        "renderSize": [
+          1344,
+          756
+        ],
+        "hero": {
+          "position": [
+            -2.35,
+            1.72,
+            27.5
+          ],
+          "target": [
+            -13.5,
+            1.78,
+            61
+          ],
+          "verticalFov": 64
+        },
+        "clean": false,
+        "view": 1,
+        "presentedView": 1,
+        "presentedFrames": 8,
+        "presentationMode": "readback",
+        "menuOpen": true,
+        "audio": false,
+        "pointerLocked": false,
+        "time": 12,
+        "flight": null
+      }
+    },
+    {
+      "name": "Medium preserves full resolution",
+      "status": "PASS",
+      "evidence": {
+        "ready": true,
+        "position": [
+          0,
+          6.550000190734863,
+          15.25
+        ],
+        "yaw": -0.9989999999999999,
+        "pitch": 0.21153211207530873,
+        "sector": "OBSERVATORY",
+        "quality": "Medium",
+        "renderSize": [
+          1920,
+          1080
+        ],
+        "hero": {
+          "position": [
+            -2.35,
+            1.72,
+            27.5
+          ],
+          "target": [
+            -13.5,
+            1.78,
+            61
+          ],
+          "verticalFov": 64
+        },
+        "clean": false,
+        "view": 1,
+        "presentedView": 1,
+        "presentedFrames": 9,
+        "presentationMode": "readback",
+        "menuOpen": true,
+        "audio": false,
+        "pointerLocked": false,
+        "time": 12,
+        "flight": null
+      }
+    },
+    {
+      "name": "View 4 selects corridor and closes menu",
+      "status": "PASS",
+      "evidence": {
+        "ready": true,
+        "position": [
+          -2.3499999046325684,
+          1.7200000286102295,
+          27.5
+        ],
+        "yaw": -2.8202899271972486,
+        "pitch": -0.0016993860988498693,
+        "sector": "SERVICE SPINE",
+        "quality": "High",
+        "renderSize": [
+          1920,
+          1080
+        ],
+        "hero": {
+          "position": [
+            -2.35,
+            1.72,
+            27.5
+          ],
+          "target": [
+            -13.5,
+            1.78,
+            61
+          ],
+          "verticalFov": 64
+        },
+        "clean": false,
+        "view": 4,
+        "presentedView": 1,
+        "presentedFrames": 9,
+        "presentationMode": "readback",
+        "menuOpen": false,
+        "audio": false,
+        "pointerLocked": false,
+        "time": 12,
+        "flight": null
+      }
+    },
+    {
+      "name": "View 5 selects hangar",
+      "status": "PASS",
+      "evidence": {
+        "ready": true,
+        "position": [
+          -14,
+          7,
+          81
+        ],
+        "yaw": 2.5283853047152838,
+        "pitch": 0.030279869006321083,
+        "sector": "HANGAR",
+        "quality": "High",
+        "renderSize": [
+          1920,
+          1080
+        ],
+        "hero": {
+          "position": [
+            -2.35,
+            1.72,
+            27.5
+          ],
+          "target": [
+            -13.5,
+            1.78,
+            61
+          ],
+          "verticalFov": 64
+        },
+        "clean": false,
+        "view": 5,
+        "presentedView": 1,
+        "presentedFrames": 9,
+        "presentationMode": "readback",
+        "menuOpen": false,
+        "audio": false,
+        "pointerLocked": false,
+        "time": 12,
+        "flight": null
+      }
+    },
+    {
+      "name": "View 1 selects observatory",
+      "status": "PASS",
+      "evidence": {
+        "ready": true,
+        "position": [
+          0,
+          5.800000190734863,
+          16
+        ],
+        "yaw": 0,
+        "pitch": -0.08186788792469124,
+        "sector": "OBSERVATORY",
+        "quality": "High",
+        "renderSize": [
+          1920,
+          1080
+        ],
+        "hero": {
+          "position": [
+            -2.35,
+            1.72,
+            27.5
+          ],
+          "target": [
+            -13.5,
+            1.78,
+            61
+          ],
+          "verticalFov": 64
+        },
+        "clean": false,
+        "view": 1,
+        "presentedView": 1,
+        "presentedFrames": 9,
+        "presentationMode": "readback",
+        "menuOpen": false,
+        "audio": false,
+        "pointerLocked": false,
+        "time": 12,
+        "flight": null
+      }
+    },
+    {
+      "name": "Standalone HTML renders from file with network offline",
+      "status": "PASS",
+      "evidence": {
+        "ready": true,
+        "position": [
+          0,
+          5.800000190734863,
+          16
+        ],
+        "yaw": 0,
+        "pitch": -0.08186788792469124,
+        "sector": "OBSERVATORY",
+        "quality": "High",
+        "renderSize": [
+          1920,
+          1080
+        ],
+        "hero": {
+          "position": [
+            -2.35,
+            1.72,
+            27.5
+          ],
+          "target": [
+            -13.5,
+            1.78,
+            61
+          ],
+          "verticalFov": 64
+        },
+        "clean": false,
+        "view": 1,
+        "presentedView": 1,
+        "presentedFrames": 1,
+        "presentationMode": "readback",
+        "menuOpen": false,
+        "audio": false,
+        "pointerLocked": false,
+        "time": 12,
+        "flight": null
+      }
+    },
+    {
+      "name": "No external runtime requests",
+      "status": "PASS",
+      "evidence": [
+        "http://localhost:4173/index.html?test=1&readback=1",
+        "file:///workspace/project-echo-9/index.html?test=1&readback=1"
+      ]
+    },
+    {
+      "name": "No runtime errors",
+      "status": "PASS",
+      "evidence": []
+    }
+  ],
+  "errors": []
+}

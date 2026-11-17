@@ -1,0 +1,58 @@
+{
+  "baselineCommit": "8726d3817ccebc3cb1d4e132bb0dc9a8a515b990",
+  "scope": "Production renderer, materials, light table, HDR/atmosphere, original sectors, controls/cameras/route/collision are locked; corridor geometry is the approved change. Neutral diagnostic HTML transform is separately identified and not production source.",
+  "files": [
+    {
+      "file": "src/math.js",
+      "sha256": "2e15df3a232e801747bb836bd2e4e53151750ec3bfa5f95be2bfcad6cea84be7"
+    },
+    {
+      "file": "src/geometry.js",
+      "sha256": "42cede1c9b5486b43c6d30e793ba3adecf0192cc55eca2082f2ac2395ac8b11a"
+    },
+    {
+      "file": "src/scene.js",
+      "sha256": "2f086ca8b3ba15d1be321977f46f012d56306c7d28b6eae7ba3cbcccd1a722e8"
+    },
+    {
+      "file": "src/shaders.js",
+      "sha256": "0a899f2ca194d365c9dd580fb2dd2ca51cb1942e13b4d3b3fc0e42860cba95f0"
+    },
+    {
+      "file": "src/hdr.js",
+      "sha256": "9e1e06147a44e7a781946a175e539cea63f6ca18695851ff0d4f4eacfb44c252"
+    },
+    {
+      "file": "src/corridor-lights.js",
+      "sha256": "26563511b8f80c60976be1f6b07e56c63d0f74238fab96352f9e11ceb5c73cb3"
+    },
+    {
+      "file": "src/corridor-shaders.js",
+      "sha256": "182e6b82108f8627d0ee74f7fad3ff8665c7c8514bb9da1830d761745f339ef7"
+    },
+    {
+      "file": "src/corridor-post-shaders.js",
+      "sha256": "e339279786bea68cf207bc1bdaa8c2a5785e3d242c4cf4a2a205baa628d2b22e"
+    },
+    {
+      "file": "src/corridor-post.js",
+      "sha256": "4468f792958dd195c697e65b9fd87dd4918cc151668308aa4918647a78ba4689"
+    },
+    {
+      "file": "src/corridor-renderer.js",
+      "sha256": "75c810d15dcbcdf034b68229ebc2f79e7d8b9a8911c284068ab0a5909530923f"
+    },
+    {
+      "file": "src/main.js",
+      "sha256": "7c74c675499b698a8574c5963dd799f98f695303c80a538c074d9938e97456b7"
+    },
+    {
+      "file": "src/style.css",
+      "sha256": "378b18e48cbedb84b8156c2a842a246213520dc899f8f85d818ff2a8b698f0cf"
+    },
+    {
+      "file": "src/template.html",
+      "sha256": "191994df702ea041204abeab9f47ce41e85a60c8e2bc0b8d7bd5685c9926a27b"
+    }
+  ]
+}

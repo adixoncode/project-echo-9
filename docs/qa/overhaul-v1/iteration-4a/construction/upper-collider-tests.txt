@@ -1,0 +1,12 @@
+✔ 4A actual corridor triangles clear the whole unchanged route and every saved camera sphere (13288.815204ms)
+✔ 4A pressure thresholds have broad connected octagonal flanges, recessed webs and real axial thickness (54.168426ms)
+✔ 4A maintenance pocket is recessed behind the jamb and structural occlusion remains physical (622.180612ms)
+✔ 4A upper shoulder and soffit collisions keep manual camera spheres outside the actual frame mesh (498.300456ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 16382.209163

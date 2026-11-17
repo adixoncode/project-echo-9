@@ -1,0 +1,95 @@
+{
+  "method": "Exact RGB pixel comparison at fixed camera, seed, time12, High1920\u00d71080; no normalization or retouching",
+  "checks": [
+    {
+      "view": 1,
+      "status": "PASS",
+      "reason": "Pixel-identical outside corridor view",
+      "changedPixels": 0,
+      "changedFraction": 0.0,
+      "meanAbsoluteRgbDifference": 0.0,
+      "maxChannelDifference": 0,
+      "changedBoundingBox": null,
+      "beforeSha256": "ce123c82808526e5352fdf6a945a8b75d7202b4bb5128e9fab7dfdf35f833114",
+      "afterSha256": "ce123c82808526e5352fdf6a945a8b75d7202b4bb5128e9fab7dfdf35f833114"
+    },
+    {
+      "view": 2,
+      "status": "PASS",
+      "reason": "Pixel-identical outside corridor view",
+      "changedPixels": 0,
+      "changedFraction": 0.0,
+      "meanAbsoluteRgbDifference": 0.0,
+      "maxChannelDifference": 0,
+      "changedBoundingBox": null,
+      "beforeSha256": "fdfe96f8662a532dea01675ee72fb7c0c0c0bdd4d4691227e38249165d2d3189",
+      "afterSha256": "fdfe96f8662a532dea01675ee72fb7c0c0c0bdd4d4691227e38249165d2d3189"
+    },
+    {
+      "view": 3,
+      "status": "PASS",
+      "reason": "Pixel-identical outside corridor view",
+      "changedPixels": 0,
+      "changedFraction": 0.0,
+      "meanAbsoluteRgbDifference": 0.0,
+      "maxChannelDifference": 0,
+      "changedBoundingBox": null,
+      "beforeSha256": "911e50164fed6d93f99f2b9319b9d443c54ef3ebbfc0cdf51f4edd2302b5db5f",
+      "afterSha256": "911e50164fed6d93f99f2b9319b9d443c54ef3ebbfc0cdf51f4edd2302b5db5f"
+    },
+    {
+      "view": 5,
+      "status": "PASS",
+      "reason": "Pixel-identical outside corridor view",
+      "changedPixels": 0,
+      "changedFraction": 0.0,
+      "meanAbsoluteRgbDifference": 0.0,
+      "maxChannelDifference": 0,
+      "changedBoundingBox": null,
+      "beforeSha256": "5c9750fbcf24ebca889971638f4614d69dcd19bf6e4820e564e5ab848c464191",
+      "afterSha256": "5c9750fbcf24ebca889971638f4614d69dcd19bf6e4820e564e5ab848c464191"
+    },
+    {
+      "view": 6,
+      "status": "PASS",
+      "reason": "Differences need manual classification against visible corridor geometry",
+      "changedPixels": 29644,
+      "changedFraction": 0.01429591049382716,
+      "meanAbsoluteRgbDifference": 0.015016718106995884,
+      "maxChannelDifference": 78,
+      "changedBoundingBox": [
+        1521,
+        410,
+        1794,
+        641
+      ],
+      "beforeSha256": "3a27a71299fcf612a73ce6e2aa52a8ba4a62ab5695e9b795a87920f54e03db7c",
+      "afterSha256": "7b39c7802ffea93169e9cd14b61566896988d9fbecdd16890d7c1b2ec7440f59",
+      "automatedStatus": "BLOCKED",
+      "scopeReview": "All29644 changed pixels are inside the visible corridor interior/doorway at[1521,410,1794,641]. Inspection confirms the redesigned corridor is the changed subject. All pixels outside this rectangle remain exactly identical; views1/2/3/5 and legacy scene/material/RNG data are unchanged. No normalization or generic tolerance."
+    }
+  ]
+}
+{
+  "measurements": {
+    "reference": {
+      "meanDisplayLuminance": 0.09033045353941407,
+      "medianDisplayLuminance": 0.040595294117647056,
+      "darkPixelFractionBelow24of255": 0.6051144070095487,
+      "highlightFractionAbove220of255": 0.0005772908528645834
+    },
+    "before": {
+      "meanDisplayLuminance": 0.0709476407573832,
+      "medianDisplayLuminance": 0.022428235294117645,
+      "darkPixelFractionBelow24of255": 0.737583912037037,
+      "highlightFractionAbove220of255": 1.1574074074074073e-05
+    },
+    "after": {
+      "meanDisplayLuminance": 0.08410815078711267,
+      "medianDisplayLuminance": 0.019340392156862743,
+      "darkPixelFractionBelow24of255": 0.7105203510802469,
+      "highlightFractionAbove220of255": 2.7006172839506174e-05
+    }
+  },
+  "ablations": []
+}

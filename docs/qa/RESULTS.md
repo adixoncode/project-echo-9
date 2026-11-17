@@ -1,6 +1,6 @@
 # QA results — PROJECT ECHO-9
 
-Historical **Issue #1 baseline** at7164bff, preserved unchanged below. The current approved corridor work is [iteration 3 / Issue #3](overhaul-v1/iteration-3/RESULTS.md), with separate source hashes, real FullHD renders, P0 shadow-depth diagnosis, controlled material/grade/AA comparisons, browser results and independent reference-relative review. [Iteration 2](overhaul-v1/iteration-2/RESULTS.md) and [iteration 1](overhaul-v1/iteration-1/RESULTS.md) remain historical evidence. Technical verification does not approve the art direction. STOP before iteration4.
+Historical **Issue #1 baseline** at7164bff, preserved unchanged below. The current approved corridor work is [phase4A / Issue #4](overhaul-v1/iteration-4a/RESULTS.md): architectural set construction with true neutral/production FullHD images, fixed-camera comparisons, clearance/collision checks and independent geometry/composition review. [Iteration 3](overhaul-v1/iteration-3/RESULTS.md), [iteration 2](overhaul-v1/iteration-2/RESULTS.md) and [iteration 1](overhaul-v1/iteration-1/RESULTS.md) remain historical evidence. Technical verification does not approve art direction. STOP before phase4B.
 
 **Acceptance remains BLOCKED.** Build/unit checks and software browser diagnostics have passed. Native presentation, hardware temporal stability and the agreed desktop 60 FPS target are not verified. Do not close Issue #1 as complete on this evidence.
 

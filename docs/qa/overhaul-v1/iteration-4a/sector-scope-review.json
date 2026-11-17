@@ -1,0 +1,20 @@
+{
+  "artifactSha256": "872c37fff35e4e273b78c6f55a237df655396660c269ca8e56520fbbe155b412",
+  "reviewer": "Root: actual hangar/corridor image, exact pixel differences and locked-source scope inspection",
+  "reviews": [
+    {
+      "view": 6,
+      "beforeSha256": "3a27a71299fcf612a73ce6e2aa52a8ba4a62ab5695e9b795a87920f54e03db7c",
+      "afterSha256": "7b39c7802ffea93169e9cd14b61566896988d9fbecdd16890d7c1b2ec7440f59",
+      "status": "PASS",
+      "changedPixels": 29644,
+      "changedBoundingBox": [
+        1521,
+        410,
+        1794,
+        641
+      ],
+      "reason": "All29644 changed pixels are inside the visible corridor interior/doorway at[1521,410,1794,641]. Inspection confirms the redesigned corridor is the changed subject. All pixels outside this rectangle remain exactly identical; views1/2/3/5 and legacy scene/material/RNG data are unchanged. No normalization or generic tolerance."
+    }
+  ]
+}

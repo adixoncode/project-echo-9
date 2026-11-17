@@ -6,7 +6,7 @@ import os
 import numpy as np
 from PIL import Image
 root = Path(__file__).resolve().parents[1]
-out = root / os.environ.get('QA_DIR','docs/qa/overhaul-v1/iteration-3')
+out = root / os.environ.get('QA_DIR','docs/qa/overhaul-v1/iteration-4a')
 checks = []
 for view in [1, 2, 3, 5, 6]:
     before_path, after_path = out / f'before-view-{view}.png', out / f'after-view-{view}.png'

@@ -1,0 +1,14 @@
+{
+  "productionSha256": "872c37fff35e4e273b78c6f55a237df655396660c269ca8e56520fbbe155b412",
+  "neutralSha256": "2b48a7d08ce28b67e347c3e3753239211c1f6208b9fe050883e9f951ebc9393b",
+  "productionMaterialFunctionSha256": "f03e7148f46705da1727062e9da45cb08a02e0a965c9472f851bbd936da97480",
+  "neutralMaterialFunctionSha256": "c64794b8038d8d2e5c697612697e713dc05e84bceb93f5ad98e798914f63b048",
+  "geometry": {
+    "triangles": 112204,
+    "positionNormalSha256": "31345247e8b113f7163b04143caa72a1d4de24b6533b03e9dcd290f1e6a372c8",
+    "surfaceStreamSha256": "fd6179a2afca20536d52ab989a66a5b1fcdd4ad2570e5db4fe2aaf570055603a"
+  },
+  "scope": "QA-only HTML transform; production source/index unchanged. Same exact geometry, source positions/powers/cones/shadows, projection and final transfer. Uniform gray rough nonmetallic GGX, no material detail/environment IBL/emission; white light colors and small hemisphere ambient. Fog/bloom must be disabled in capture URL.",
+  "requiredQuery": "test=1&readback=1&view=4&quality=High&clean=1&fog=0&bloom=0",
+  "hardwareAcceptance": "BLOCKED"
+}

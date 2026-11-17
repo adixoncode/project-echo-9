@@ -1,0 +1,1026 @@
+{
+  "capturedAt": "2026-11-17T11:21:15.689Z",
+  "artifactSha256": "872c37fff35e4e273b78c6f55a237df655396660c269ca8e56520fbbe155b412",
+  "url": "http://localhost:4173/index.html?view=1&quality=High&test=1&readback=1",
+  "browser": "151.0.7922.34",
+  "viewport": {
+    "width": 1920,
+    "height": 1080
+  },
+  "softwareFlag": true,
+  "adapter": {
+    "vendor": "google",
+    "architecture": "swiftshader",
+    "device": "",
+    "description": "",
+    "isFallbackAdapter": true,
+    "features": [
+      "depth32float-stencil8",
+      "rg11b10ufloat-renderable",
+      "bgra8unorm-storage",
+      "texture-compression-bc",
+      "core-features-and-limits",
+      "chromium-experimental-timestamp-query-inside-passes",
+      "float32-filterable",
+      "indirect-first-instance",
+      "texture-compression-astc-sliced-3d",
+      "float32-blendable",
+      "subgroup-size-control",
+      "texture-compression-astc",
+      "texture-compression-etc2",
+      "depth-clip-control",
+      "texture-compression-bc-sliced-3d",
+      "clip-distances",
+      "timestamp-query",
+      "texture-component-swizzle",
+      "subgroups"
+    ]
+  },
+  "routeOnly": true,
+  "hardwareAcceptance": "BLOCKED",
+  "states": [],
+  "flightStates": [
+    {
+      "ready": true,
+      "position": [
+        -7.535221576690674,
+        6.419336795806885,
+        4.907242298126221
+      ],
+      "yaw": 0.22590124404091688,
+      "pitch": -0.11929226852223929,
+      "sector": "OBSERVATORY",
+      "quality": "High",
+      "renderSize": [
+        1920,
+        1080
+      ],
+      "hero": {
+        "position": [
+          -2.35,
+          1.72,
+          27.5
+        ],
+        "target": [
+          -13.5,
+          1.78,
+          61
+        ],
+        "verticalFov": 64
+      },
+      "clean": false,
+      "view": 0,
+      "presentedView": 0,
+      "presentedFrames": 4,
+      "presentationMode": "readback",
+      "menuOpen": false,
+      "audio": false,
+      "pointerLocked": false,
+      "time": 5.0419,
+      "flight": {
+        "elapsed": 5.06089999999851,
+        "duration": 60
+      }
+    },
+    {
+      "ready": true,
+      "position": [
+        -10.406641006469727,
+        7.474172115325928,
+        -4.408636569976807
+      ],
+      "yaw": 0.4073092381861874,
+      "pitch": -0.12603598043119787,
+      "sector": "OBSERVATORY",
+      "quality": "High",
+      "renderSize": [
+        1920,
+        1080
+      ],
+      "hero": {
+        "position": [
+          -2.35,
+          1.72,
+          27.5
+        ],
+        "target": [
+          -13.5,
+          1.78,
+          61
+        ],
+        "verticalFov": 64
+      },
+      "clean": false,
+      "view": 0,
+      "presentedView": 0,
+      "presentedFrames": 6,
+      "presentationMode": "readback",
+      "menuOpen": false,
+      "audio": false,
+      "pointerLocked": false,
+      "time": 8.7418,
+      "flight": {
+        "elapsed": 10.1275,
+        "duration": 60
+      }
+    },
+    {
+      "ready": true,
+      "position": [
+        -10.579365730285645,
+        8.224584579467773,
+        1.937880516052246
+      ],
+      "yaw": 0.44578852599654284,
+      "pitch": 0.1518385716601171,
+      "sector": "OBSERVATORY",
+      "quality": "High",
+      "renderSize": [
+        1920,
+        1080
+      ],
+      "hero": {
+        "position": [
+          -2.35,
+          1.72,
+          27.5
+        ],
+        "target": [
+          -13.5,
+          1.78,
+          61
+        ],
+        "verticalFov": 64
+      },
+      "clean": false,
+      "view": 0,
+      "presentedView": 0,
+      "presentedFrames": 10,
+      "presentationMode": "readback",
+      "menuOpen": false,
+      "audio": false,
+      "pointerLocked": false,
+      "time": 14.824900000000001,
+      "flight": {
+        "elapsed": 15.199699999999256,
+        "duration": 60
+      }
+    },
+    {
+      "ready": true,
+      "position": [
+        -0.6394137144088745,
+        6.724276542663574,
+        10.98504638671875
+      ],
+      "yaw": -1.5308619042417217,
+      "pitch": 1.1420978087959037,
+      "sector": "OBSERVATORY",
+      "quality": "High",
+      "renderSize": [
+        1920,
+        1080
+      ],
+      "hero": {
+        "position": [
+          -2.35,
+          1.72,
+          27.5
+        ],
+        "target": [
+          -13.5,
+          1.78,
+          61
+        ],
+        "verticalFov": 64
+      },
+      "clean": false,
+      "view": 0,
+      "presentedView": 0,
+      "presentedFrames": 12,
+      "presentationMode": "readback",
+      "menuOpen": false,
+      "audio": false,
+      "pointerLocked": false,
+      "time": 19.3747,
+      "flight": {
+        "elapsed": 20.267800000000744,
+        "duration": 60
+      }
+    },
+    {
+      "ready": true,
+      "position": [
+        4.750569820404053,
+        5.6038336753845215,
+        14.540764808654785
+      ],
+      "yaw": -2.6045523495456604,
+      "pitch": 0.1696338271485711,
+      "sector": "OBSERVATORY",
+      "quality": "High",
+      "renderSize": [
+        1920,
+        1080
+      ],
+      "hero": {
+        "position": [
+          -2.35,
+          1.72,
+          27.5
+        ],
+        "target": [
+          -13.5,
+          1.78,
+          61
+        ],
+        "verticalFov": 64
+      },
+      "clean": false,
+      "view": 0,
+      "presentedView": 0,
+      "presentedFrames": 13,
+      "presentationMode": "readback",
+      "menuOpen": false,
+      "audio": false,
+      "pointerLocked": false,
+      "time": 21.5746,
+      "flight": {
+        "elapsed": 25.354599999997763,
+        "duration": 60
+      }
+    },
+    {
+      "ready": true,
+      "position": [
+        4.750569820404053,
+        5.6038336753845215,
+        14.540764808654785
+      ],
+      "yaw": -2.6045523495456604,
+      "pitch": 0.1696338271485711,
+      "sector": "OBSERVATORY",
+      "quality": "High",
+      "renderSize": [
+        1920,
+        1080
+      ],
+      "hero": {
+        "position": [
+          -2.35,
+          1.72,
+          27.5
+        ],
+        "target": [
+          -13.5,
+          1.78,
+          61
+        ],
+        "verticalFov": 64
+      },
+      "clean": false,
+      "view": 0,
+      "presentedView": 0,
+      "presentedFrames": 13,
+      "presentationMode": "readback",
+      "menuOpen": false,
+      "audio": false,
+      "pointerLocked": false,
+      "time": 21.5746,
+      "flight": {
+        "elapsed": 30.431,
+        "duration": 60
+      }
+    },
+    {
+      "ready": true,
+      "position": [
+        4.750569820404053,
+        5.6038336753845215,
+        14.540764808654785
+      ],
+      "yaw": -2.6045523495456604,
+      "pitch": 0.1696338271485711,
+      "sector": "OBSERVATORY",
+      "quality": "High",
+      "renderSize": [
+        1920,
+        1080
+      ],
+      "hero": {
+        "position": [
+          -2.35,
+          1.72,
+          27.5
+        ],
+        "target": [
+          -13.5,
+          1.78,
+          61
+        ],
+        "verticalFov": 64
+      },
+      "clean": false,
+      "view": 0,
+      "presentedView": 0,
+      "presentedFrames": 13,
+      "presentationMode": "readback",
+      "menuOpen": false,
+      "audio": false,
+      "pointerLocked": false,
+      "time": 21.5746,
+      "flight": {
+        "elapsed": 35.51380000000074,
+        "duration": 60
+      }
+    },
+    {
+      "ready": true,
+      "position": [
+        0.7394126653671265,
+        3.772045135498047,
+        59.66362762451172
+      ],
+      "yaw": -3.1145828792631653,
+      "pitch": -0.025048937666330384,
+      "sector": "SERVICE SPINE",
+      "quality": "High",
+      "renderSize": [
+        1920,
+        1080
+      ],
+      "hero": {
+        "position": [
+          -2.35,
+          1.72,
+          27.5
+        ],
+        "target": [
+          -13.5,
+          1.78,
+          61
+        ],
+        "verticalFov": 64
+      },
+      "clean": false,
+      "view": 0,
+      "presentedView": 0,
+      "presentedFrames": 14,
+      "presentationMode": "readback",
+      "menuOpen": false,
+      "audio": false,
+      "pointerLocked": false,
+      "time": 36.274,
+      "flight": {
+        "elapsed": 40.6155,
+        "duration": 60
+      }
+    },
+    {
+      "ready": true,
+      "position": [
+        0.7394126653671265,
+        3.772045135498047,
+        59.66362762451172
+      ],
+      "yaw": -3.1145828792631653,
+      "pitch": -0.025048937666330384,
+      "sector": "SERVICE SPINE",
+      "quality": "High",
+      "renderSize": [
+        1920,
+        1080
+      ],
+      "hero": {
+        "position": [
+          -2.35,
+          1.72,
+          27.5
+        ],
+        "target": [
+          -13.5,
+          1.78,
+          61
+        ],
+        "verticalFov": 64
+      },
+      "clean": false,
+      "view": 0,
+      "presentedView": 0,
+      "presentedFrames": 14,
+      "presentationMode": "readback",
+      "menuOpen": false,
+      "audio": false,
+      "pointerLocked": false,
+      "time": 36.274,
+      "flight": {
+        "elapsed": 45.69630000000075,
+        "duration": 60
+      }
+    },
+    {
+      "ready": true,
+      "position": [
+        0.7394126653671265,
+        3.772045135498047,
+        59.66362762451172
+      ],
+      "yaw": -3.1145828792631653,
+      "pitch": -0.025048937666330384,
+      "sector": "SERVICE SPINE",
+      "quality": "High",
+      "renderSize": [
+        1920,
+        1080
+      ],
+      "hero": {
+        "position": [
+          -2.35,
+          1.72,
+          27.5
+        ],
+        "target": [
+          -13.5,
+          1.78,
+          61
+        ],
+        "verticalFov": 64
+      },
+      "clean": false,
+      "view": 0,
+      "presentedView": 0,
+      "presentedFrames": 14,
+      "presentationMode": "readback",
+      "menuOpen": false,
+      "audio": false,
+      "pointerLocked": false,
+      "time": 36.274,
+      "flight": {
+        "elapsed": 50.78909999999777,
+        "duration": 60
+      }
+    },
+    {
+      "ready": true,
+      "position": [
+        0.7394126653671265,
+        3.772045135498047,
+        59.66362762451172
+      ],
+      "yaw": -3.1145828792631653,
+      "pitch": -0.025048937666330384,
+      "sector": "SERVICE SPINE",
+      "quality": "High",
+      "renderSize": [
+        1920,
+        1080
+      ],
+      "hero": {
+        "position": [
+          -2.35,
+          1.72,
+          27.5
+        ],
+        "target": [
+          -13.5,
+          1.78,
+          61
+        ],
+        "verticalFov": 64
+      },
+      "clean": false,
+      "view": 0,
+      "presentedView": 0,
+      "presentedFrames": 14,
+      "presentationMode": "readback",
+      "menuOpen": false,
+      "audio": false,
+      "pointerLocked": false,
+      "time": 36.274,
+      "flight": {
+        "elapsed": 55.84939999999851,
+        "duration": 60
+      }
+    },
+    {
+      "ready": true,
+      "position": [
+        0.7394126653671265,
+        3.772045135498047,
+        59.66362762451172
+      ],
+      "yaw": -3.1145828792631653,
+      "pitch": -0.025048937666330384,
+      "sector": "SERVICE SPINE",
+      "quality": "High",
+      "renderSize": [
+        1920,
+        1080
+      ],
+      "hero": {
+        "position": [
+          -2.35,
+          1.72,
+          27.5
+        ],
+        "target": [
+          -13.5,
+          1.78,
+          61
+        ],
+        "verticalFov": 64
+      },
+      "clean": false,
+      "view": 0,
+      "presentedView": 0,
+      "presentedFrames": 14,
+      "presentationMode": "readback",
+      "menuOpen": false,
+      "audio": false,
+      "pointerLocked": false,
+      "time": 36.274,
+      "flight": {
+        "elapsed": 60,
+        "duration": 60
+      }
+    }
+  ],
+  "finalPresentedState": {
+    "ready": true,
+    "position": [
+      16,
+      5.5,
+      112
+    ],
+    "yaw": -1.0460005551447893,
+    "pitch": 0.059144326187611784,
+    "sector": "HANGAR",
+    "quality": "High",
+    "renderSize": [
+      1920,
+      1080
+    ],
+    "hero": {
+      "position": [
+        -2.35,
+        1.72,
+        27.5
+      ],
+      "target": [
+        -13.5,
+        1.78,
+        61
+      ],
+      "verticalFov": 64
+    },
+    "clean": false,
+    "view": 0,
+    "presentedView": 0,
+    "presentedFrames": 16,
+    "presentationMode": "readback",
+    "menuOpen": false,
+    "audio": false,
+    "pointerLocked": false,
+    "time": 60,
+    "flight": null
+  },
+  "report": {
+    "project": "PROJECT ECHO-9",
+    "seed": 15515657,
+    "status": "BLOCKED",
+    "reason": "CPU readback presentation is diagnostic only; hardware swapchain measurement is required.",
+    "measurementStatus": "PASS",
+    "adapter": {
+      "vendor": "google",
+      "architecture": "swiftshader",
+      "device": "unreported",
+      "description": "unreported",
+      "isFallbackAdapter": true
+    },
+    "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/151.0.0.0 Safari/537.36",
+    "resolution": [
+      1920,
+      1080
+    ],
+    "cssResolution": [
+      1920,
+      1080
+    ],
+    "devicePixelRatio": 1,
+    "quality": "High",
+    "presentationMode": "readback",
+    "readbackOverhead": "GPU copy, async map, BGRA→RGBA conversion and 2D upload included in frame times",
+    "renderScale": 1,
+    "msaa": 4,
+    "triangles": 143698,
+    "vertices": 431094,
+    "legacyVertices": 116874,
+    "corridor": {
+      "triangles": 112204,
+      "geometryBytes": 16157376,
+      "surfaceBytes": 10771584,
+      "materials": {
+        "families": 6,
+        "coordinates": "Authored primitive-local metres and half extents",
+        "detailAA": true
+      },
+      "diagnostics": {
+        "onlyLight": -1
+      },
+      "estimatedGpuBytes": 179800496,
+      "shadowMaps": {
+        "count": 2,
+        "resolution": 2048,
+        "format": "depth32float",
+        "filter": "Receiver-plane-corrected bilinear 2x2 PCF",
+        "enabled": true,
+        "cached": true
+      },
+      "environment": {
+        "source": "Six native HDR renders of actual procedural corridor geometry, direct lights and geometric shadows",
+        "resolution": 128,
+        "faces": 6,
+        "mips": 8,
+        "prefilter": "128-sample GGX importance convolution per mip texel",
+        "parallaxCorrection": "Room-box projected reflected rays",
+        "enabled": true,
+        "cached": true
+      },
+      "hdr": {
+        "stage": "final",
+        "sceneFormat": "rgba16float",
+        "compositeFormat": "rgba16float",
+        "alpha": "Per-material/ray-bounded corridor coverage; HDR dust preserves destination alpha",
+        "displayCurve": "agx",
+        "dither": "Stable triangular, quarter code-value amplitude; legacy bypass remains exact",
+        "toneMapping": "Lighting + reflection → shadowed scattering → linear HDR bloom → one final exposure/filmic/gamma; exact legacy display bypass elsewhere",
+        "exposure": 1.35,
+        "estimatedGpuBytes": 117481920,
+        "fog": {
+          "enabled": true,
+          "resolution": [
+            960,
+            540
+          ],
+          "steps": 24,
+          "extinctionNear": 0.0073,
+          "extinctionFar": 0.099,
+          "albedo": 0.2,
+          "anisotropy": 0.16,
+          "finiteSourceFootprint": 0.65,
+          "source": "Same authored light table/shadows, three-step source-path extinction and actual-room probe bounce",
+          "reconstruction": "Receiver-distance bilateral 2x2; full-resolution transmittance"
+        },
+        "bloom": {
+          "enabled": true,
+          "levels": 4,
+          "threshold": 1.35,
+          "knee": 0.5,
+          "strength": 0.045,
+          "source": "Only scoped linear HDR luminance above threshold"
+        }
+      },
+      "bakeMilliseconds": 2404.699999999255,
+      "lightTable": [
+        {
+          "id": "cold-rib-key",
+          "position": [
+            -1,
+            4.3,
+            31.8
+          ],
+          "target": [
+            -3.75,
+            2.4,
+            35.3
+          ],
+          "color": [
+            0.57,
+            0.74,
+            0.94
+          ],
+          "power": 150,
+          "fov": 104,
+          "far": 38,
+          "shadow": 0,
+          "size": [
+            0.3,
+            0.19,
+            0.1
+          ],
+          "mount": "ceiling",
+          "radius": 0.18,
+          "direction": [
+            -0.5682194167592653,
+            -0.39258796067003787,
+            0.7231883486027006
+          ],
+          "outerCos": 0.6156614753256583,
+          "innerCos": 0.8458209421247207,
+          "emission": 6.578947368421052
+        },
+        {
+          "id": "red-depth-key",
+          "position": [
+            0.45,
+            4.75,
+            44.1
+          ],
+          "target": [
+            0.45,
+            0.45,
+            45.2
+          ],
+          "color": [
+            1,
+            0.048,
+            0.021
+          ],
+          "power": 165,
+          "fov": 124,
+          "far": 38,
+          "shadow": 1,
+          "size": [
+            0.2,
+            0.28,
+            0.2
+          ],
+          "mount": "pendant",
+          "radius": 0.18,
+          "direction": [
+            0,
+            -0.9688027044775657,
+            0.24783324998263342
+          ],
+          "outerCos": 0.46947156278589086,
+          "innerCos": 0.7832596234234375,
+          "emission": 7.366071428571428
+        },
+        {
+          "id": "cold-left-graze",
+          "position": [
+            1.35,
+            4.55,
+            29.8
+          ],
+          "target": [
+            3.7,
+            2.15,
+            33.1
+          ],
+          "color": [
+            0.53,
+            0.68,
+            0.84
+          ],
+          "power": 72,
+          "fov": 96,
+          "far": 38,
+          "shadow": -1,
+          "size": [
+            0.3,
+            0.19,
+            0.1
+          ],
+          "mount": "ceiling",
+          "radius": 0.18,
+          "direction": [
+            0.49906892676595455,
+            -0.5096874145694854,
+            0.7008201950330426
+          ],
+          "outerCos": 0.6691306063588582,
+          "innerCos": 0.8681121951482392,
+          "emission": 3.1578947368421053
+        },
+        {
+          "id": "cold-middle-rib",
+          "position": [
+            -0.3,
+            4.65,
+            38.7
+          ],
+          "target": [
+            -3.7,
+            2.4,
+            41.4
+          ],
+          "color": [
+            0.45,
+            0.61,
+            0.79
+          ],
+          "power": 74,
+          "fov": 96,
+          "far": 38,
+          "shadow": -1,
+          "size": [
+            0.3,
+            0.19,
+            0.1
+          ],
+          "mount": "ceiling",
+          "radius": 0.18,
+          "direction": [
+            -0.6952907081536089,
+            -0.4601188509840059,
+            0.5521426211808061
+          ],
+          "outerCos": 0.6691306063588582,
+          "innerCos": 0.8681121951482392,
+          "emission": 3.245614035087719
+        },
+        {
+          "id": "red-middle",
+          "position": [
+            0.45,
+            4.75,
+            52.5
+          ],
+          "target": [
+            0.2,
+            0.55,
+            54.5
+          ],
+          "color": [
+            1,
+            0.055,
+            0.024
+          ],
+          "power": 88,
+          "fov": 116,
+          "far": 38,
+          "shadow": -1,
+          "size": [
+            0.2,
+            0.28,
+            0.2
+          ],
+          "mount": "pendant",
+          "radius": 0.18,
+          "direction": [
+            -0.05366425767258279,
+            -0.9015595288993908,
+            0.4293140613806623
+          ],
+          "outerCos": 0.5299192642332049,
+          "innerCos": 0.8094271487069733,
+          "emission": 3.9285714285714284
+        },
+        {
+          "id": "red-far",
+          "position": [
+            0.45,
+            4.75,
+            61.7
+          ],
+          "target": [
+            0.2,
+            0.4,
+            63
+          ],
+          "color": [
+            1,
+            0.068,
+            0.032
+          ],
+          "power": 74,
+          "fov": 116,
+          "far": 38,
+          "shadow": -1,
+          "size": [
+            0.2,
+            0.28,
+            0.2
+          ],
+          "mount": "pendant",
+          "radius": 0.18,
+          "direction": [
+            -0.05498158425339618,
+            -0.9566795660090934,
+            0.2859042381176595
+          ],
+          "outerCos": 0.5299192642332049,
+          "innerCos": 0.8094271487069733,
+          "emission": 3.3035714285714284
+        },
+        {
+          "id": "cold-service-bay",
+          "position": [
+            -4.3,
+            3.6,
+            33.5
+          ],
+          "target": [
+            -1.5,
+            1.6,
+            35
+          ],
+          "color": [
+            0.55,
+            0.71,
+            0.87
+          ],
+          "power": 22,
+          "fov": 110,
+          "far": 38,
+          "shadow": -1,
+          "size": [
+            0.72,
+            0.36,
+            0.07
+          ],
+          "mount": "wall",
+          "radius": 0.18,
+          "direction": [
+            0.7459376616259147,
+            -0.5328126154470819,
+            0.39960946158531147
+          ],
+          "outerCos": 0.5735764363510462,
+          "innerCos": 0.8280603346224944,
+          "emission": 0.21219135802469138
+        },
+        {
+          "id": "cold-exit-veil",
+          "position": [
+            -0.4,
+            6.5,
+            69.4
+          ],
+          "target": [
+            0,
+            2.4,
+            62.5
+          ],
+          "color": [
+            0.34,
+            0.46,
+            0.6
+          ],
+          "power": 36,
+          "fov": 124,
+          "far": 38,
+          "shadow": -1,
+          "size": [
+            0.3,
+            0.19,
+            0.1
+          ],
+          "mount": "ceiling",
+          "radius": 0.18,
+          "direction": [
+            0.04977496587888369,
+            -0.5101934002585577,
+            -0.8586181614107444
+          ],
+          "outerCos": 0.46947156278589086,
+          "innerCos": 0.7832596234234375,
+          "emission": 1.5789473684210527
+        }
+      ],
+      "fixedExposure": 1.35
+    },
+    "estimatedGpuBytes": 268368208,
+    "diagnosticCpuPixelBytes": 8294400,
+    "frame": {
+      "count": 13,
+      "meanMs": 5001.084615384615,
+      "p99Ms": 29548.899999999994,
+      "maxMs": 29548.899999999994
+    },
+    "gpu": {
+      "count": 0,
+      "meanMs": null,
+      "p99Ms": null,
+      "maxMs": null,
+      "samplingEveryNthFrame": 30,
+      "status": "PENDING",
+      "reason": null
+    },
+    "flythrough": {
+      "status": "PASS",
+      "reason": null,
+      "durationSeconds": 60,
+      "wallClockSeconds": 65.84830000000075,
+      "completedAt": "2026-11-17T11:21:06.341Z",
+      "quality": "High",
+      "frame": {
+        "count": 13,
+        "meanMs": 5001.084615384615,
+        "p99Ms": 29548.899999999994,
+        "maxMs": 29548.899999999994
+      },
+      "gpu": {
+        "count": 0,
+        "meanMs": null,
+        "p99Ms": null,
+        "maxMs": null
+      }
+    },
+    "runtimeErrors": [],
+    "elapsedSeconds": 74.43239999999851
+  },
+  "errors": [],
+  "unexpectedRequests": []
+}

@@ -1,0 +1,36 @@
+{
+  "status": "PASS",
+  "beforeArtifactSha256": "02d826d6387c319160526e3e2cff3c353efa1b19c23209de41b7aa32ca4e1077",
+  "afterArtifactSha256": "872c37fff35e4e273b78c6f55a237df655396660c269ca8e56520fbbe155b412",
+  "method": "Exact unnormalized RGB; collider repair did not alter any of seven actual FullHD frames",
+  "checks": [
+    {
+      "image": "after-clean.png",
+      "changedPixels": 0
+    },
+    {
+      "image": "after-hud.png",
+      "changedPixels": 0
+    },
+    {
+      "image": "after-view-1.png",
+      "changedPixels": 0
+    },
+    {
+      "image": "after-view-2.png",
+      "changedPixels": 0
+    },
+    {
+      "image": "after-view-3.png",
+      "changedPixels": 0
+    },
+    {
+      "image": "after-view-5.png",
+      "changedPixels": 0
+    },
+    {
+      "image": "after-view-6.png",
+      "changedPixels": 0
+    }
+  ]
+}

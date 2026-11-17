@@ -1,0 +1,16 @@
+{
+  "artifactSha256": "02d826d6387c319160526e3e2cff3c353efa1b19c23209de41b7aa32ca4e1077",
+  "status": "SUPERSEDED_BY_LOCAL_COLLIDER_FIX",
+  "reason": "Green30 tests +smoke/fallback +FullHD image capture did not cover manual upper-shoulder navigation. Root found constrainPosition([2.85,4.26,34.77]) unchanged while actual downward mesh hit was0.2368504315m away, below0.45m camera radius. QA controller deliberately stopped143 before neutral/route jobs; no infrastructure failure. Preserve these images for RGB equality check after collider-only repair.",
+  "failedPoint": [
+    2.85,
+    4.26,
+    34.77
+  ],
+  "meshHit": [
+    2.85,
+    4.023149568499909,
+    34.77
+  ],
+  "cameraRadius": 0.45
+}

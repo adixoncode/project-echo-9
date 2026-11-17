@@ -1,0 +1,33 @@
+✔ 4A actual corridor triangles clear the whole unchanged route and every saved camera sphere (13268.032347ms)
+✔ 4A pressure thresholds have broad connected octagonal flanges, recessed webs and real axial thickness (67.164558ms)
+✔ 4A maintenance pocket is recessed behind the jamb and structural occlusion remains physical (647.426492ms)
+✖ 4A upper shoulder and soffit collisions keep manual camera spheres outside the actual frame mesh (471.200939ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 3
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 16284.917593
+
+✖ failing tests:
+
+test at tests/iteration4a-geometry.test.mjs:78:1
+✖ 4A upper shoulder and soffit collisions keep manual camera spheres outside the actual frame mesh (471.200939ms)
+  AssertionError [ERR_ASSERTION]: frame28.4 shoulder-1,f1,offset-0.3,dz-0.95: triangle302 only0.44283m from camera at[-3.6799999999999997,3.22,27.27]
+      at assertClear (file:///workspace/project-echo-9/tests/iteration4a-geometry.test.mjs:25:55)
+      at TestContext.<anonymous> (file:///workspace/project-echo-9/tests/iteration4a-geometry.test.mjs:95:78)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

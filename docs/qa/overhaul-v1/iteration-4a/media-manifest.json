@@ -1,0 +1,114 @@
+{
+  "productionArtifactSha256": "872c37fff35e4e273b78c6f55a237df655396660c269ca8e56520fbbe155b412",
+  "neutralArtifactSha256": "2b48a7d08ce28b67e347c3e3753239211c1f6208b9fe050883e9f951ebc9393b",
+  "images": [
+    {
+      "file": "after-clean.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "sha256": "2f5d63c7ebe3095575f31c58bacc24300963d0c0f5c99bed5abbe4ef7542c648"
+    },
+    {
+      "file": "after-hud.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "sha256": "dbfa8d9b34398d3ecd64e96fef8abf83d47fd89d23d889ba8798a7204076a730"
+    },
+    {
+      "file": "neutral-clean.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "sha256": "4626397441ddacf3ea2c7aef00a5cb511cc597b0805e53311050a6ea67a508a7"
+    },
+    {
+      "file": "neutral-hud.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "sha256": "4626397441ddacf3ea2c7aef00a5cb511cc597b0805e53311050a6ea67a508a7"
+    },
+    {
+      "file": "after-view-1.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "sha256": "ce123c82808526e5352fdf6a945a8b75d7202b4bb5128e9fab7dfdf35f833114"
+    },
+    {
+      "file": "after-view-2.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "sha256": "fdfe96f8662a532dea01675ee72fb7c0c0c0bdd4d4691227e38249165d2d3189"
+    },
+    {
+      "file": "after-view-3.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "sha256": "911e50164fed6d93f99f2b9319b9d443c54ef3ebbfc0cdf51f4edd2302b5db5f"
+    },
+    {
+      "file": "after-view-5.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "sha256": "5c9750fbcf24ebca889971638f4614d69dcd19bf6e4820e564e5ab848c464191"
+    },
+    {
+      "file": "after-view-6.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "sha256": "7b39c7802ffea93169e9cd14b61566896988d9fbecdd16890d7c1b2ec7440f59"
+    },
+    {
+      "file": "thumbnails/reference.png",
+      "size": [
+        320,
+        180
+      ],
+      "sha256": "65722ceac5bda867f1abdc44859a37109587928b65cbebea1354d21aef954328",
+      "method": "Declared thumbnail resampling only"
+    },
+    {
+      "file": "thumbnails/neutral.png",
+      "size": [
+        320,
+        180
+      ],
+      "sha256": "e1f346b9a12b8195e7cd98b4a584cd0ed98ff8d260bc7e5d00dba40498ac401c",
+      "method": "Declared thumbnail resampling only"
+    },
+    {
+      "file": "thumbnails/production.png",
+      "size": [
+        320,
+        180
+      ],
+      "sha256": "7b59c4ac956cd9f46ae990a21b56f5807ff103a260e2f0257a2f8863e2d06606",
+      "method": "Declared thumbnail resampling only"
+    },
+    {
+      "file": "thumbnails/iteration3.png",
+      "size": [
+        320,
+        180
+      ],
+      "sha256": "1aa19b5fc172b9e923b663a6145689379d1c20427d26187b8138066137b8e826",
+      "method": "Declared thumbnail resampling only"
+    }
+  ]
+}

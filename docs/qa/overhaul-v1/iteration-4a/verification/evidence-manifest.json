@@ -1,0 +1,25 @@
+{
+  "productionArtifactSha256": "872c37fff35e4e273b78c6f55a237df655396660c269ca8e56520fbbe155b412",
+  "neutralArtifactSha256": "2b48a7d08ce28b67e347c3e3753239211c1f6208b9fe050883e9f951ebc9393b",
+  "status": "PASS",
+  "scope": "Evidence file integrity; no art or hardware acceptance",
+  "sha256": {
+    "artifact-manifest.json": "2e961b801cacc5e83994ddbad3544144c5545f714fbfad6eb56c3235357d9ed2",
+    "after-capture.json": "6b2161ee0400216b721893c33e2a3a4a5c04e29c2b9bae7f1151e8b821f80c98",
+    "neutral-capture.json": "b4c0ae425ab29e170c6b728a960e1179c27ac8c9851738af3bb61549fc2e633f",
+    "neutral-source.json": "fb6bcab26144134adca9646e36236c1a2161ff5e5932b7ef98f797af60c32e2a",
+    "media-manifest.json": "f70b3c2a9aa2bd7f42235d81615bc66a6df2d45f7981cbac653652816039c310",
+    "sector-image-regressions.json": "71eb38f65c07b96a73c056fa65d21cc1d229ed36aeab508e5406284913917d2d",
+    "sector-scope-review.json": "b19bd40d12e9d42eca5725906e02eb547737a9ebf1d667f49849578a4270a81d",
+    "verification/build.txt": "c43db4c3d4b0d91e72cb75b55971ff9965ca298890daf9c5b4b1fb3679429873",
+    "verification/build-and-tests.txt": "84a11e3b6c2ae1e514cdf6faf42033c634bba4e248f8399e0fa7fe8cc9c77cb5",
+    "verification/smoke-report.json": "3d9f43dc7701cb9b55ae4257bdf845a0b6ff765cebe7b889df9b832d9cad90fe",
+    "verification/fallback-report.json": "301eae399b745eb8d1f47ff12a68f5fe82119f6f2a67a540f63c82557b97d13e",
+    "verification/locked-sources.json": "6f36885a220d5522bfcd60b5916051aa7c7ac85dafc843dc4b4d23ffbdd70b80",
+    "verification/collider-only-image-equality.json": "2e620cccf1a6de89450b42b4d97d4acecf0b32aa3a883f5d55775355e4f8cf5d",
+    "verification/neutral-geometry-equality.json": "5f70052170d8682253f578c7707a4c5669563f9abb0ef2af22e17537415e1d74",
+    "route/browser-report.json": "97348e0c33612bf509477c9277eb58f828544085da58ff6e0cda39bc498a356e",
+    "construction/actual-mesh-clearance.json": "b5278bae45e8e56fa2902facfc6932b4fb716ee4765aadddad931a762f4fe844",
+    "construction/frozen-source-identity.json": "2820f72ac03c239d11ec3ef0f6d6476c2c4ee891bd26a391743659908b01fed2"
+  }
+}

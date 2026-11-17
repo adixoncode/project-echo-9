@@ -1,0 +1,442 @@
+{
+  "html": {
+    "sha256": "02d826d6387c319160526e3e2cff3c353efa1b19c23209de41b7aa32ca4e1077",
+    "rawBytes": 148322,
+    "gzipBytes": 48230
+  },
+  "source": {
+    "file": "src/corridor.js",
+    "sha256": "b23625034dd1d76a183fdfdd3d6ce76b96189843aa6a847da71fb1cca16356f8"
+  },
+  "corridor": {
+    "triangles": 112204,
+    "vertices": 336612,
+    "vertexBytes": 16157376,
+    "surfaceBytes": 10771584,
+    "geometrySha256": "e22599e217c88f2c88824d6ca96bfb5d21d75c94d56187b86993d358ffb934c7",
+    "surfaceSha256": "fd6179a2afca20536d52ab989a66a5b1fcdd4ad2570e5db4fe2aaf570055603a",
+    "frames": [
+      {
+        "z": 28.4,
+        "firstVertex": 203460,
+        "vertexCount": 1560,
+        "inner": [
+          [
+            -2.39,
+            0.065
+          ],
+          [
+            2.39,
+            0.065
+          ],
+          [
+            3.6799999999999997,
+            0.98
+          ],
+          [
+            3.6799999999999997,
+            3.52
+          ],
+          [
+            2.17,
+            4.94
+          ],
+          [
+            -2.17,
+            4.94
+          ],
+          [
+            -3.6799999999999997,
+            3.52
+          ],
+          [
+            -3.6799999999999997,
+            0.98
+          ]
+        ],
+        "outer": [
+          [
+            -2.87,
+            -0.32
+          ],
+          [
+            2.87,
+            -0.32
+          ],
+          [
+            4.17,
+            0.67
+          ],
+          [
+            4.17,
+            4.12
+          ],
+          [
+            2.68,
+            5.79
+          ],
+          [
+            -2.68,
+            5.79
+          ],
+          [
+            -4.17,
+            4.12
+          ],
+          [
+            -4.17,
+            0.67
+          ]
+        ],
+        "flangeDepth": 1.22,
+        "webDepth": 0.9
+      },
+      {
+        "z": 35.3,
+        "firstVertex": 205020,
+        "vertexCount": 1560,
+        "inner": [
+          [
+            -2.25,
+            0.065
+          ],
+          [
+            2.25,
+            0.065
+          ],
+          [
+            3.3,
+            0.98
+          ],
+          [
+            3.3,
+            3.52
+          ],
+          [
+            2.03,
+            4.94
+          ],
+          [
+            -2.03,
+            4.94
+          ],
+          [
+            -3.3,
+            3.52
+          ],
+          [
+            -3.3,
+            0.98
+          ]
+        ],
+        "outer": [
+          [
+            -2.87,
+            -0.32
+          ],
+          [
+            2.87,
+            -0.32
+          ],
+          [
+            4.17,
+            0.67
+          ],
+          [
+            4.17,
+            4.12
+          ],
+          [
+            2.68,
+            5.79
+          ],
+          [
+            -2.68,
+            5.79
+          ],
+          [
+            -4.17,
+            4.12
+          ],
+          [
+            -4.17,
+            0.67
+          ]
+        ],
+        "flangeDepth": 1.22,
+        "webDepth": 0.9
+      },
+      {
+        "z": 41.4,
+        "firstVertex": 206580,
+        "vertexCount": 1560,
+        "inner": [
+          [
+            -2.25,
+            0.065
+          ],
+          [
+            2.25,
+            0.065
+          ],
+          [
+            3.3,
+            0.98
+          ],
+          [
+            3.3,
+            3.52
+          ],
+          [
+            2.03,
+            4.94
+          ],
+          [
+            -2.03,
+            4.94
+          ],
+          [
+            -3.3,
+            3.52
+          ],
+          [
+            -3.3,
+            0.98
+          ]
+        ],
+        "outer": [
+          [
+            -2.87,
+            -0.32
+          ],
+          [
+            2.87,
+            -0.32
+          ],
+          [
+            4.17,
+            0.67
+          ],
+          [
+            4.17,
+            4.12
+          ],
+          [
+            2.68,
+            5.79
+          ],
+          [
+            -2.68,
+            5.79
+          ],
+          [
+            -4.17,
+            4.12
+          ],
+          [
+            -4.17,
+            0.67
+          ]
+        ],
+        "flangeDepth": 1.22,
+        "webDepth": 0.9
+      }
+    ],
+    "cavities": [
+      {
+        "side": -1,
+        "z": 27.5,
+        "firstVertex": 3660,
+        "vertexCount": 2256
+      },
+      {
+        "side": -1,
+        "z": 32,
+        "firstVertex": 6576,
+        "vertexCount": 4980
+      }
+    ],
+    "obstacles": [
+      [
+        -5.55,
+        0.78,
+        31.9,
+        -4.01,
+        3.75,
+        33.8
+      ],
+      [
+        -4.18,
+        0.98,
+        27.729999999999997,
+        -3.6799999999999997,
+        3.52,
+        29.07
+      ],
+      [
+        3.6799999999999997,
+        0.98,
+        27.729999999999997,
+        4.18,
+        3.52,
+        29.07
+      ],
+      [
+        -4.18,
+        0.98,
+        34.629999999999995,
+        -3.3,
+        3.52,
+        35.97
+      ],
+      [
+        3.3,
+        0.98,
+        34.629999999999995,
+        4.18,
+        3.52,
+        35.97
+      ],
+      [
+        -4.18,
+        0.98,
+        40.73,
+        -3.3,
+        3.52,
+        42.07
+      ],
+      [
+        3.3,
+        0.98,
+        40.73,
+        4.18,
+        3.52,
+        42.07
+      ],
+      [
+        -3.85,
+        0.3,
+        45.65,
+        -3.2,
+        3.1,
+        47.15
+      ],
+      [
+        3.2,
+        0.3,
+        54.75,
+        3.85,
+        3.1,
+        56.25
+      ]
+    ]
+  },
+  "legacy": {
+    "triangles": 38958,
+    "vertexBytes": 5609952,
+    "countDefinition": "triangles is all resident legacy VBO triangles, including the original corridor range deliberately skipped by both production draw calls.",
+    "residentTriangles": 38958,
+    "drawnTriangles": 31494,
+    "skippedOriginalCorridorTriangles": 7464,
+    "skippedOriginalCorridorVertexRange": {
+      "firstVertex": 43656,
+      "vertexCount": 22392
+    }
+  },
+  "locked": [
+    {
+      "file": "src/math.js",
+      "sha256": "2e15df3a232e801747bb836bd2e4e53151750ec3bfa5f95be2bfcad6cea84be7",
+      "baselineSha256": "2e15df3a232e801747bb836bd2e4e53151750ec3bfa5f95be2bfcad6cea84be7",
+      "unchanged": true
+    },
+    {
+      "file": "src/geometry.js",
+      "sha256": "42cede1c9b5486b43c6d30e793ba3adecf0192cc55eca2082f2ac2395ac8b11a",
+      "baselineSha256": "42cede1c9b5486b43c6d30e793ba3adecf0192cc55eca2082f2ac2395ac8b11a",
+      "unchanged": true
+    },
+    {
+      "file": "src/scene.js",
+      "sha256": "2f086ca8b3ba15d1be321977f46f012d56306c7d28b6eae7ba3cbcccd1a722e8",
+      "baselineSha256": "2f086ca8b3ba15d1be321977f46f012d56306c7d28b6eae7ba3cbcccd1a722e8",
+      "unchanged": true
+    },
+    {
+      "file": "src/shaders.js",
+      "sha256": "0a899f2ca194d365c9dd580fb2dd2ca51cb1942e13b4d3b3fc0e42860cba95f0",
+      "baselineSha256": "0a899f2ca194d365c9dd580fb2dd2ca51cb1942e13b4d3b3fc0e42860cba95f0",
+      "unchanged": true
+    },
+    {
+      "file": "src/hdr.js",
+      "sha256": "9e1e06147a44e7a781946a175e539cea63f6ca18695851ff0d4f4eacfb44c252",
+      "baselineSha256": "9e1e06147a44e7a781946a175e539cea63f6ca18695851ff0d4f4eacfb44c252",
+      "unchanged": true
+    },
+    {
+      "file": "src/corridor-lights.js",
+      "sha256": "26563511b8f80c60976be1f6b07e56c63d0f74238fab96352f9e11ceb5c73cb3",
+      "baselineSha256": "26563511b8f80c60976be1f6b07e56c63d0f74238fab96352f9e11ceb5c73cb3",
+      "unchanged": true
+    },
+    {
+      "file": "src/corridor-shaders.js",
+      "sha256": "182e6b82108f8627d0ee74f7fad3ff8665c7c8514bb9da1830d761745f339ef7",
+      "baselineSha256": "182e6b82108f8627d0ee74f7fad3ff8665c7c8514bb9da1830d761745f339ef7",
+      "unchanged": true
+    },
+    {
+      "file": "src/corridor-post-shaders.js",
+      "sha256": "e339279786bea68cf207bc1bdaa8c2a5785e3d242c4cf4a2a205baa628d2b22e",
+      "baselineSha256": "e339279786bea68cf207bc1bdaa8c2a5785e3d242c4cf4a2a205baa628d2b22e",
+      "unchanged": true
+    },
+    {
+      "file": "src/corridor-post.js",
+      "sha256": "4468f792958dd195c697e65b9fd87dd4918cc151668308aa4918647a78ba4689",
+      "baselineSha256": "4468f792958dd195c697e65b9fd87dd4918cc151668308aa4918647a78ba4689",
+      "unchanged": true
+    },
+    {
+      "file": "src/corridor-renderer.js",
+      "sha256": "75c810d15dcbcdf034b68229ebc2f79e7d8b9a8911c284068ab0a5909530923f",
+      "baselineSha256": "75c810d15dcbcdf034b68229ebc2f79e7d8b9a8911c284068ab0a5909530923f",
+      "unchanged": true
+    },
+    {
+      "file": "src/main.js",
+      "sha256": "7c74c675499b698a8574c5963dd799f98f695303c80a538c074d9938e97456b7",
+      "baselineSha256": "7c74c675499b698a8574c5963dd799f98f695303c80a538c074d9938e97456b7",
+      "unchanged": true
+    },
+    {
+      "file": "src/style.css",
+      "sha256": "378b18e48cbedb84b8156c2a842a246213520dc899f8f85d818ff2a8b698f0cf",
+      "baselineSha256": "378b18e48cbedb84b8156c2a842a246213520dc899f8f85d818ff2a8b698f0cf",
+      "unchanged": true
+    },
+    {
+      "file": "src/template.html",
+      "sha256": "191994df702ea041204abeab9f47ce41e85a60c8e2bc0b8d7bd5685c9926a27b",
+      "baselineSha256": "191994df702ea041204abeab9f47ce41e85a60c8e2bc0b8d7bd5685c9926a27b",
+      "unchanged": true
+    }
+  ],
+  "comparisonToIteration3": {
+    "baselineHtmlSha256": "8e6cec19966228ee8f5a0ec4b39b9a7a7d22be85237e4d5a89b521c38091d281",
+    "baselineCorridorTriangles": 128192,
+    "baselineCorridorGeometryBytes": 18459648,
+    "baselineCorridorSurfaceBytes": 12306432,
+    "baselineResidentVboTriangles": 167150,
+    "finalResidentVboTriangles": 151162,
+    "residentVboTriangleDelta": -15988,
+    "baselineDrawnArchitectureTriangles": 159686,
+    "finalDrawnArchitectureTriangles": 143698,
+    "drawnArchitectureTriangleDelta": -15988,
+    "corridorGeometryByteDelta": -2302272,
+    "corridorSurfaceByteDelta": -1534848,
+    "corridorGeometryAndSurfaceByteDelta": -3837120,
+    "definition": "Resident VBO totals include 7464 original corridor triangles kept in the legacy buffer but not drawn. Production getReport.triangles excludes that range and correctly reports the submitted architecture total; this is not a broken legacy counter. Extra shadow/probe passes, sky and dust are excluded from both architecture totals."
+  }
+}

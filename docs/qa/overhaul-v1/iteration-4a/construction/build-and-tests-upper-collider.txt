@@ -1,0 +1,56 @@
+
+> project-echo-9@1.0.0 RunAllTests
+> npm run test:all
+
+
+> project-echo-9@1.0.0 test:all
+> npm run build && npm test
+
+
+> project-echo-9@1.0.0 build
+> node scripts/build.mjs
+
+Built standalone index.html: 149,436 bytes raw · 48,619 bytes gzip
+
+> project-echo-9@1.0.0 test
+> node --test tests/*.test.mjs
+
+✔ seeded random has a stable, distinct sequence and a bounded range (3.90972ms)
+✔ projection maps the near/far clipping planes to WebGPU 0..1 depth (0.380966ms)
+✔ lookAngles and viewMatrix agree for all six views (0.679498ms)
+✔ matrix multiplication preserves a known translation through identity (0.368291ms)
+✔ architectural bounds allow one uninterrupted route and protect major solids (4.451778ms)
+✔ wide-room bulkhead collisions stop forward motion without sideways teleporting (1.150952ms)
+✔ 60-second route is finite, deterministic and reaches both approved endpoints (5.87215ms)
+✔ procedural geometry is deterministic, finite, structurally rich and changes with seed (1268.120652ms)
+✔ corridor is separately seeded, physically tessellated and has valid PBR attributes (3873.444705ms)
+✔ flared corridor exit has an opaque pressure shell in every cross-sectional direction (1038.39388ms)
+✔ original approved flight and all saved cameras remain clear of the new corridor (1175.18279ms)
+✔ cuboid helper produces twelve triangles and outward normals (0.664331ms)
+✔ build is byte-for-byte reproducible and standalone, with no external resources (142.036639ms)
+✔ iteration2 retains approved world seed, all six camera poses and full deterministic route (2.66044ms)
+✔ 4A actual corridor triangles clear the whole unchanged route and every saved camera sphere (14835.646518ms)
+✔ 4A pressure thresholds have broad connected octagonal flanges, recessed webs and real axial thickness (56.213812ms)
+✔ 4A maintenance pocket is recessed behind the jamb and structural occlusion remains physical (685.926309ms)
+✔ 4A upper shoulder and soffit collisions keep manual camera spheres outside the actual frame mesh (479.589006ms)
+✔ corridor material coordinates are finite, primitive-owned and cover all six authored surfaces (2212.59249ms)
+✔ red pendant aperture leaves continuous falloff across both formerly clipped guard edges (12075.214857ms)
+✔ corrected pendant aperture preserves genuine nearby handle and panel occlusion (765.545942ms)
+✔ half-float diagnostics decode normal, subnormal, signed and nonfinite GPU values (1.539575ms)
+✔ HDR diagnostic reduction ignores padded rows and separates actual corridor coverage (0.565385ms)
+✔ transparent particles blend radiance without ever creating or erasing corridor coverage (0.26562ms)
+✔ only the final corridor display pass tone-maps; material and scattering retain linear HDR (0.430332ms)
+✔ one authored light table packs the same fixture, shadow and shader positions/spectra (1.312661ms)
+✔ primary cones illuminate the intended rib front and foreground reflection receiver (0.468875ms)
+✔ corridor overhaul preserves observatory and hangar geometry/material data from baseline (232.242236ms)
+✔ corridor generation preserves the original world particle seed stream (159.719319ms)
+✔ receiver-plane PCF matches ray-plane projected depth and prevents the observed flat-wall acne (5.236745ms)
+✔ receiver-plane correction retains a real caster ahead of the receiver (0.336894ms)
+ℹ tests 31
+ℹ suites 0
+ℹ pass 31
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 18804.946266

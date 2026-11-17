@@ -1,0 +1,73 @@
+{
+  "artifactSha256": "872c37fff35e4e273b78c6f55a237df655396660c269ca8e56520fbbe155b412",
+  "build": "PASS",
+  "RunAllTests": {
+    "status": "PASS",
+    "passed": 31,
+    "failed": 0
+  },
+  "smoke": {
+    "status": "PASS",
+    "passed": 17
+  },
+  "fallback": {
+    "status": "PASS",
+    "passed": 3
+  },
+  "productionFullHD": "PASS",
+  "neutralFullHD_actualGeometryIdentity": "PASS",
+  "colliderOnlyFinalVsPreFixSevenFrames": "PIXEL_IDENTICAL",
+  "sectorRegressions": "PASS",
+  "identicalViews": [
+    1,
+    2,
+    3,
+    5
+  ],
+  "view6OnlyVisibleCorridor": {
+    "changedPixels": 29644,
+    "bounds": [
+      1521,
+      410,
+      1794,
+      641
+    ]
+  },
+  "runtimeErrors": [],
+  "externalRequests": [],
+  "route": {
+    "status": "PASS",
+    "reason": null,
+    "durationSeconds": 60,
+    "wallClockSeconds": 65.84830000000075,
+    "completedAt": "2026-11-17T11:21:06.341Z",
+    "quality": "High",
+    "frame": {
+      "count": 13,
+      "meanMs": 5001.084615384615,
+      "p99Ms": 29548.899999999994,
+      "maxMs": 29548.899999999994
+    },
+    "gpu": {
+      "count": 0,
+      "meanMs": null,
+      "p99Ms": null,
+      "maxMs": null
+    }
+  },
+  "freshGoalFramePresented": true,
+  "nativePhysicalGPU_60FPS_temporal": "BLOCKED",
+  "artDirection": "NOT ACCEPTED",
+  "independentReview": {
+    "model": "GPT-6 Astra/high",
+    "inputs": "Seven actual/reference/thumbnail image files only",
+    "geometry": "FAIL",
+    "composition": "FAIL",
+    "basicDepth": "PASS_WITH_LIMITATIONS",
+    "critical": 0,
+    "major": 3,
+    "minor": 2,
+    "reportSha256": "070660084fc0f9b6536353e598f3205d387f18823411a60ac7a86b70564bc73b"
+  },
+  "nextPhase": "STOP_BEFORE_4B"
+}

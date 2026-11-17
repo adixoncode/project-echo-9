@@ -1,0 +1,29 @@
+{
+  "status": "PASS",
+  "productionArtifactSha256": "872c37fff35e4e273b78c6f55a237df655396660c269ca8e56520fbbe155b412",
+  "neutralArtifactSha256": "2b48a7d08ce28b67e347c3e3753239211c1f6208b9fe050883e9f951ebc9393b",
+  "method": "Runtime actual neutral geometry position/normal +surface-stream hashes equal production geometry identities; source/servedSHA equal; actual fog/bloomdisabled and High1920x1080/MSAA4",
+  "diagnostic": {
+    "mode": "QA-only uniform rough neutral blockout",
+    "triangles": 112204,
+    "positionNormalSha256": "31345247e8b113f7163b04143caa72a1d4de24b6533b03e9dcd290f1e6a372c8",
+    "surfaceStreamSha256": "fd6179a2afca20536d52ab989a66a5b1fcdd4ad2570e5db4fe2aaf570055603a",
+    "productionSha256": "872c37fff35e4e273b78c6f55a237df655396660c269ca8e56520fbbe155b412",
+    "overrides": {
+      "base": [
+        0.32,
+        0.32,
+        0.32
+      ],
+      "roughness": 0.88,
+      "metal": 0,
+      "proceduralDetail": false,
+      "environmentIBL": false,
+      "emission": false,
+      "neutralLightColors": true,
+      "sameLightPositionsPowersCones": true,
+      "geometricShadows": true,
+      "ambientHemisphere": 0.025
+    }
+  }
+}
