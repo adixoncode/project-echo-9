@@ -5,7 +5,7 @@ import { resolve } from 'node:path';
 import { createHash } from 'node:crypto';
 const { chromium } = createRequire(import.meta.url)('playwright');
 const root = resolve(import.meta.dirname, '..');
-const out = resolve(root, 'docs/qa');
+const out = resolve(root, process.env.QA_DIR || 'docs/qa');
 await mkdir(out, { recursive: true });
 const software = process.argv.includes('--software');
 const benchmark = process.argv.includes('--benchmark');
@@ -63,8 +63,9 @@ try {
     for (let step = 0; step < 12; step++) {
       await page.waitForTimeout(5050);
       flightStates.push(await page.evaluate(() => window.echo9.getState()));
+      await writeFile(resolve(out, 'flight-progress.json'), JSON.stringify({artifactSha256,flightStates,hardwareAcceptance:'BLOCKED'}, null, 2) + '\n');
     }
-    await page.waitForFunction(() => window.echo9.getReport().flythrough.status !== 'RUNNING', null, { timeout: 30000 });
+    await page.waitForFunction(() => window.echo9.getReport().flythrough.status !== 'RUNNING', null, { timeout: software ? 120000 : 30000 });
     report = await page.evaluate(() => window.echo9.getReport());
     if (report.flythrough.status !== 'PASS') throw new Error('Flight did not complete with fixed configuration: ' + JSON.stringify(report.flythrough));
   }
@@ -76,6 +77,7 @@ try {
   if (errors.length || result.unexpectedRequests.length) process.exitCode = 1;
   }
 } catch (error) {
-  await writeFile(resolve(out, 'capture-failure.json'), JSON.stringify({message:error.message,errors}, null, 2) + '\n');
+  const runtime = await page.evaluate(() => ({state:window.echo9?.getState(),report:window.echo9?.getReport()})).catch(() => null);
+  await writeFile(resolve(out, 'capture-failure.json'), JSON.stringify({artifactSha256,message:error.message,errors,runtime}, null, 2) + '\n');
   console.error(error); process.exitCode = 1;
 } finally { await context.close(); await browser.close(); }

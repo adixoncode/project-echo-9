@@ -1,0 +1,199 @@
+{
+  "method": "Same camera encoded-sRGB patches; regions from preimplementation image-space brief. Different reference framing is not scored with these regions. No thresholds establish artistic acceptance.",
+  "regions": {
+    "cold_middle_rib": [
+      0.43,
+      0.12,
+      0.5,
+      0.66
+    ],
+    "red_depth": [
+      0.23,
+      0.37,
+      0.36,
+      0.58
+    ],
+    "floor_reflection": [
+      0.1,
+      0.56,
+      0.45,
+      0.94
+    ],
+    "dark_foreground": [
+      0.65,
+      0.08,
+      1.0,
+      0.9
+    ]
+  },
+  "captures": {
+    "before": {
+      "cold_middle_rib": {
+        "meanDisplayLuminance": 0.06494613467823832,
+        "p95DisplayLuminance": 0.11264,
+        "meanRgb": [
+          0.06259194392276049,
+          0.0644824008300304,
+          0.07647194358140458
+        ],
+        "visibleRedPixelFraction": 0.0
+      },
+      "red_depth": {
+        "meanDisplayLuminance": 0.0636594725248382,
+        "p95DisplayLuminance": 0.08147843137254902,
+        "meanRgb": [
+          0.09743795588385167,
+          0.053542436272904365,
+          0.06441291802638914
+        ],
+        "visibleRedPixelFraction": 0.7980239542239755
+      },
+      "floor_reflection": {
+        "meanDisplayLuminance": 0.08348475267017376,
+        "p95DisplayLuminance": 0.18801960784313723,
+        "meanRgb": [
+          0.08648906310513343,
+          0.08113764204887285,
+          0.09788831386229518
+        ],
+        "visibleRedPixelFraction": 0.07353368176538909
+      },
+      "dark_foreground": {
+        "meanDisplayLuminance": 0.02592204648300253,
+        "p95DisplayLuminance": 0.04595764705882353,
+        "meanRgb": [
+          0.024125460003515814,
+          0.02577031470990855,
+          0.032715299250055244
+        ],
+        "visibleRedPixelFraction": 0.0
+      }
+    },
+    "hdr": {
+      "cold_middle_rib": {
+        "meanDisplayLuminance": 0.06967333423689744,
+        "p95DisplayLuminance": 0.14488235294117646,
+        "meanRgb": [
+          0.06045827767625522,
+          0.07108635010795569,
+          0.08281089758547212
+        ],
+        "visibleRedPixelFraction": 0.0
+      },
+      "red_depth": {
+        "meanDisplayLuminance": 0.1108318351734197,
+        "p95DisplayLuminance": 0.4844439215686274,
+        "meanRgb": [
+          0.13042968333503788,
+          0.10347459593708498,
+          0.12600351083315894
+        ],
+        "visibleRedPixelFraction": 0.20332658065891887
+      },
+      "floor_reflection": {
+        "meanDisplayLuminance": 0.10399120219022567,
+        "p95DisplayLuminance": 0.27826745098039213,
+        "meanRgb": [
+          0.10496090102739034,
+          0.1018537780967671,
+          0.12230876090316069
+        ],
+        "visibleRedPixelFraction": 0.08124637049941928
+      },
+      "dark_foreground": {
+        "meanDisplayLuminance": 0.023840996314439995,
+        "p95DisplayLuminance": 0.04595764705882353,
+        "meanRgb": [
+          0.02040639431107675,
+          0.024329991590435585,
+          0.029110621863814464
+        ],
+        "visibleRedPixelFraction": 0.0
+      }
+    },
+    "relit": {
+      "cold_middle_rib": {
+        "meanDisplayLuminance": 0.47919496498940073,
+        "p95DisplayLuminance": 0.9613866666666665,
+        "meanRgb": [
+          0.4200947637957889,
+          0.48944381111289237,
+          0.5516981232470798
+        ],
+        "visibleRedPixelFraction": 0.0
+      },
+      "red_depth": {
+        "meanDisplayLuminance": 0.19272049494525037,
+        "p95DisplayLuminance": 0.5521794117647058,
+        "meanRgb": [
+          0.2758025682461862,
+          0.16751650014943376,
+          0.1977433245039601
+        ],
+        "visibleRedPixelFraction": 0.45138074421580127
+      },
+      "floor_reflection": {
+        "meanDisplayLuminance": 0.211912073073945,
+        "p95DisplayLuminance": 0.6216775686274499,
+        "meanRgb": [
+          0.20070268554593843,
+          0.21161616679205103,
+          0.2478504104897094
+        ],
+        "visibleRedPixelFraction": 0.05569105691056911
+      },
+      "dark_foreground": {
+        "meanDisplayLuminance": 0.03230895789598759,
+        "p95DisplayLuminance": 0.06474745098039215,
+        "meanRgb": [
+          0.026719084925304684,
+          0.033162149359605736,
+          0.040317329904217186
+        ],
+        "visibleRedPixelFraction": 0.0
+      }
+    },
+    "after": {
+      "cold_middle_rib": {
+        "meanDisplayLuminance": 0.4374455735247684,
+        "p95DisplayLuminance": 0.9275286274509804,
+        "meanRgb": [
+          0.38486570276459753,
+          0.44651643407420755,
+          0.5024178873565954
+        ],
+        "visibleRedPixelFraction": 0.0
+      },
+      "red_depth": {
+        "meanDisplayLuminance": 0.2296108754155961,
+        "p95DisplayLuminance": 0.3910173333333332,
+        "meanRgb": [
+          0.48747528723257305,
+          0.15827969173231915,
+          0.17689742137030692
+        ],
+        "visibleRedPixelFraction": 0.8927568681806873
+      },
+      "floor_reflection": {
+        "meanDisplayLuminance": 0.20809995667657305,
+        "p95DisplayLuminance": 0.5663286274509803,
+        "meanRgb": [
+          0.22918561123653558,
+          0.19930212532186958,
+          0.2331608822392968
+        ],
+        "visibleRedPixelFraction": 0.16023519163763067
+      },
+      "dark_foreground": {
+        "meanDisplayLuminance": 0.0261862936239206,
+        "p95DisplayLuminance": 0.05800549019607843,
+        "meanRgb": [
+          0.023212678600629626,
+          0.026469830784206234,
+          0.03213372820931052
+        ],
+        "visibleRedPixelFraction": 0.0
+      }
+    }
+  }
+}

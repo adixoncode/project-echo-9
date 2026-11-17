@@ -2,10 +2,11 @@
 from pathlib import Path
 import json
 import hashlib
+import os
 import numpy as np
 from PIL import Image
 root = Path(__file__).resolve().parents[1]
-out = root / 'docs/qa/overhaul-v1/iteration-1'
+out = root / os.environ.get('QA_DIR','docs/qa/overhaul-v1/iteration-2')
 checks = []
 for view in [1, 2, 3, 5, 6]:
     before_path, after_path = out / f'before-view-{view}.png', out / f'after-view-{view}.png'
@@ -51,7 +52,7 @@ for name, path in [('reference', root/'docs/references/target-red-corridor.jpg')
                           'highlightFractionAbove220of255':float((luminance>220/255).mean())}
 base = np.asarray(Image.open(out/'after-clean.png').convert('RGB'), dtype=np.int16)
 ablations = []
-for name in ['no-shadows','no-environment']:
+for name in ['no-shadows','no-environment','no-atmosphere','no-bloom']:
     path=out/(name+'.png')
     if not path.exists():
         continue

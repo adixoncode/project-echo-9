@@ -1,17 +1,6 @@
 import {COMMON} from './shaders.js';
-export const CORRIDOR_SHADER=COMMON+/* wgsl */`
-struct Lighting {
-  shadowMatrices:array<mat4x4<f32>,2>,
-  probe:vec4<f32>,
-  boxMin:vec4<f32>,
-  boxMax:vec4<f32>,
-  options:vec4<f32>,
-};
-@group(1) @binding(0) var<uniform> lighting:Lighting;
-@group(1) @binding(1) var shadowMap:texture_depth_2d_array;
-@group(1) @binding(2) var shadowSampler:sampler_comparison;
-@group(1) @binding(3) var environment:texture_cube<f32>;
-@group(1) @binding(4) var environmentSampler:sampler;
+import {CORRIDOR_LIGHTING_WGSL} from './corridor-lights.js';
+export const CORRIDOR_SHADER=COMMON+CORRIDOR_LIGHTING_WGSL+/* wgsl */`
 struct CorridorIn {@location(0) position:vec3<f32>,@location(1) normal:vec3<f32>,@location(2) color:vec3<f32>,@location(3) material:vec3<f32>};
 struct CorridorOut {@builtin(position) position:vec4<f32>,@location(0) world:vec3<f32>,@location(1) normal:vec3<f32>,@location(2) color:vec3<f32>,@location(3) material:vec3<f32>};
 @vertex fn corridorVertex(input:CorridorIn)->CorridorOut{
@@ -26,32 +15,11 @@ fn ggx(n:vec3<f32>,v:vec3<f32>,l:vec3<f32>,base:vec3<f32>,roughness:f32,metal:f3
   let f=fresnelSchlick(vh,mix(vec3(.04),base,metal));
   return ((1.-f)*(1.-metal)*base/3.14159265+distribution*visibility*f)*nl;
 }
-fn geometricShadow(p:vec3<f32>,n:vec3<f32>,index:i32)->f32{
-  if(lighting.options.x<.5){return 1.;}
-  let position=lighting.shadowMatrices[index]*vec4(p+n*.006,1.);let clip=position.xyz/position.w;
-  let uv=clip.xy*vec2(.5,-.5)+.5;
-  if(position.w<=0. || any(uv<vec2(0.)) || any(uv>vec2(1.)) || clip.z<0. || clip.z>1.){return 0.;}
-  let texel=1./lighting.options.z;let bias=.000012;
-  var value=0.;
-  for(var y=0;y<2;y++){for(var x=0;x<2;x++){
-    let offset=(vec2(f32(x),f32(y))-.5)*texel*1.5;
-    value+=textureSampleCompareLevel(shadowMap,shadowSampler,uv+offset,index,clip.z-bias);
-  }}
-  return value*.25;
-}
-fn directRadiance(p:vec3<f32>,n:vec3<f32>,v:vec3<f32>,base:vec3<f32>,rough:f32,metal:f32)->vec3<f32>{
+fn directRadiance(p:vec3<f32>,n:vec3<f32>,v:vec3<f32>,base:vec3<f32>,rough:f32,metal:f32,receiverNormal:vec3<f32>)->vec3<f32>{
   var color=vec3(.00075,.0011,.0016)*base;
-  let positions=array<vec3<f32>,6>(vec3(-3.3,4.45,33.6),vec3(.45,4.85,48.),vec3(.45,4.78,41.2),vec3(.45,4.78,56.3),vec3(.45,4.78,65.3),vec3(.8,5.04,29.3));
-  let targets=array<vec3<f32>,6>(vec3(2.2,.65,37.2),vec3(-.3,.3,51.),vec3(.45,.1,42.2),vec3(.45,.1,57.3),vec3(.45,.1,66.3),vec3(.8,1.,30.));
-  let colors=array<vec3<f32>,6>(vec3(.57,.72,.92),vec3(1.,.018,.009),vec3(1.,.022,.012),vec3(1.,.018,.009),vec3(1.,.022,.012),vec3(.48,.58,.66));
-  let powers=array<f32,6>(155.,125.,28.,30.,26.,6.);
-  for(var i=0;i<6;i++){
-    let delta=positions[i]-p;let distance2=dot(delta,delta);let l=normalize(delta);
-    let spot=dot(-l,normalize(targets[i]-positions[i]));
-    let cone=smoothstep(select(.44,.60,i==0),.88,spot);
-    var visibility=1.;if(i<2){visibility=geometricShadow(p,n,i);}
-    let radiance=colors[i]*powers[i]*cone*visibility/max(distance2,.16);
-    color+=ggx(n,v,l,base,rough,metal)*radiance;
+  for(var i=0;i<i32(corridorLights.info.x);i++){
+    let delta=corridorLights.entries[i].positionPower.xyz-p;let l=normalize(delta);
+    color+=ggx(n,v,l,base,rough,metal)*lightRadiance(p,receiverNormal,i);
   }
   return color;
 }
@@ -70,35 +38,47 @@ fn environmentBRDF(rough:f32,nv:f32)->vec2<f32>{
   let r=rough*c0+c1;let a004=min(r.x*r.x,exp2(-9.28*nv))*r.x+r.y;
   return vec2(-1.04,1.04)*a004+r.zw;
 }
-fn surfaceColor(input:CorridorOut,n:vec3<f32>,v:vec3<f32>,useEnvironment:bool)->vec3<f32>{
+fn surfaceColor(input:CorridorOut,n:vec3<f32>,v:vec3<f32>,useEnvironment:bool,receiverNormal:vec3<f32>)->vec3<f32>{
   let p=input.world;let emission=input.material.x;
+  if(emission>0.){return input.color*emission;}
   let broadVariation=noise(p*vec3(3.1,.85,2.1));let stains=noise(p*vec3(7.,.55,4.));
   let wear=pow(max(0.,noise(p*vec3(17.,4.,13.))-.58),2.)*.5;
   var base=input.color*(.84+.23*broadVariation);
   // Low-amplitude wear changes roughness and reflectance, never replaces geometry.
   base=mix(base,vec3(.105,.05,.025),smoothstep(.69,.86,stains)*.18);
-  let rough=clamp(input.material.y+(stains-.5)*.12+wear,.18,.92);let metal=clamp(input.material.z-stains*.035,0.,1.);
-  var color=directRadiance(p,n,v,base,rough,metal);
+  let floorFacing=abs(n.y)>.8;
+  let rough=clamp(input.material.y+select(.11,.08,floorFacing)+(stains-.5)*.15+wear,.25,.92);let metal=clamp(input.material.z-stains*.035,0.,1.);
+  var shadingNormal=n;
+  if(floorFacing){
+    shadingNormal=normalize(n+vec3(sin(p.z*.83+p.x*1.9)*.026,0.,sin(p.x*2.4+p.z*.19)*.015));
+  }else{
+    let tangent=normalize(cross(n,vec3(0.,1.,0.)));let bitangent=cross(n,tangent);
+    shadingNormal=normalize(n+tangent*(noise(p*vec3(.45,3.,.45))-.5)*.025+bitangent*(noise(p*vec3(2.,.3,2.))-.5)*.012);
+  }
+  var color=directRadiance(p,shadingNormal,v,base,rough,metal,receiverNormal);
   if(useEnvironment && lighting.options.y>.5){
-    let nv=max(dot(n,v),.001);let reflected=reflect(-v,n);
+    let nv=max(dot(shadingNormal,v),.001);let reflected=reflect(-v,shadingNormal);
     let specularEnvironment=textureSampleLevel(environment,environmentSampler,parallaxDirection(p,reflected),rough*lighting.probe.w).rgb;
     let brdf=environmentBRDF(rough,nv);let f0=mix(vec3(.04),base,metal);
     color+=specularEnvironment*(f0*brdf.x+brdf.y);
-    let diffuseEnvironment=textureSampleLevel(environment,environmentSampler,n,lighting.probe.w).rgb;
+    let diffuseEnvironment=textureSampleLevel(environment,environmentSampler,shadingNormal,lighting.probe.w).rgb;
     color+=diffuseEnvironment*base*(1.-metal)*.28;
   }
   color+=input.color*emission;
   return color;
 }
-@fragment fn corridorFragment(input:CorridorOut,@builtin(front_facing) front:bool)->@location(0) vec4<f32>{
+struct CorridorMRT {@location(0) display:vec4<f32>,@location(1) radiance:vec4<f32>};
+@fragment fn corridorFragment(input:CorridorOut,@builtin(front_facing) front:bool)->CorridorMRT{
   let v=normalize(u.camera.xyz-input.world);var n=normalize(input.normal);if(dot(n,v)<0.){n=-n;}
-  var color=surfaceColor(input,n,v,true);
-  // Fixed exposure: lamps may be bright, but black recesses remain black.
-  return vec4(tone(color*1.35),1.);
+  var face=normalize(cross(dpdx(input.world),dpdy(input.world)));if(dot(face,v)<0.){face=-face;}
+  var color=surfaceColor(input,n,v,true,face);
+  // Surface radiance stays linear and unbounded until the final composition pass.
+  var o:CorridorMRT;o.display=vec4(0.,0.,0.,1.);o.radiance=vec4(color,1.);return o;
 }
 @fragment fn corridorProbeFragment(input:CorridorOut,@builtin(front_facing) front:bool)->@location(0) vec4<f32>{
   let v=normalize(u.camera.xyz-input.world);var n=normalize(input.normal);if(dot(n,v)<0.){n=-n;}
-  return vec4(surfaceColor(input,n,v,false),1.);
+  var face=normalize(cross(dpdx(input.world),dpdy(input.world)));if(dot(face,v)<0.){face=-face;}
+  return vec4(surfaceColor(input,n,v,false,face),1.);
 }
 `;
 export const CORRIDOR_SHADOW_SHADER=/* wgsl */`
@@ -134,29 +114,3 @@ fn faceDirection(face:u32,uv:vec2<f32>)->vec3<f32>{
   textureStore(destination,vec2<i32>(id.xy),i32(id.z),vec4(color/max(weight,.0001),1.));
 }
 `;
-// Bounded aerial perspective. Shared scene depth limits the integration to the visible
-// ray segment inside the physical corridor, including a distant room seen through its exit.
-export function corridorAtmosphereShader(multisampled){return COMMON+/* wgsl */`
-@group(0) @binding(1) var sceneDepth:${multisampled?'texture_depth_multisampled_2d':'texture_depth_2d'};
-struct FogVertex {@builtin(position) position:vec4<f32>,@location(0) uv:vec2<f32>};
-@vertex fn fogVertex(@builtin(vertex_index) id:u32)->FogVertex{
-  let points=array<vec2<f32>,3>(vec2(-1.,-1.),vec2(3.,-1.),vec2(-1.,3.));var o:FogVertex;o.position=vec4(points[id],0.,1.);o.uv=points[id];return o;
-}
-@fragment fn fogFragment(input:FogVertex)->@location(0) vec4<f32>{
-  let ray=normalize(u.forward.xyz+u.right.xyz*input.uv.x*u.resolution.z+u.up.xyz*input.uv.y*u.resolution.w);
-  let pixel=vec2<i32>(input.position.xy);let depth=textureLoad(sceneDepth,pixel,0);
-  let viewDistance=(.12*700.)/max(.0001,700.-depth*(700.-.12));
-  let visibleDistance=viewDistance/max(.001,dot(ray,u.forward.xyz));
-  let safe=select(min(ray,vec3(-.000001)),max(ray,vec3(.000001)),ray>=vec3(0.));
-  let a=(vec3(-3.9,0.,24.)-u.camera.xyz)/safe;let b=(vec3(3.9,5.6,72.)-u.camera.xyz)/safe;
-  let nearHit=min(a,b);let farHit=max(a,b);let begin=max(0.,max(nearHit.x,max(nearHit.y,nearHit.z)));
-  let end=min(visibleDistance,min(farHit.x,min(farHit.y,farHit.z)));let distance=max(0.,end-begin);
-  var scattered=vec3(0.);
-  for(var i=0;i<4;i++){
-    let p=u.camera.xyz+ray*mix(begin,end,(f32(i)+.5)*.25);
-    let red=exp(-abs(p.z-52.)/15.);let cold=exp(-length(p-vec3(-1.,2.6,34.))*.22);
-    scattered+=vec3(.0022,.0028,.004)+vec3(.014,.00065,.0003)*red+vec3(.001,.0025,.004)*cold;
-  }
-  return vec4(tone(scattered*.25*1.35),1.-exp(-distance*.065));
-}
-`}

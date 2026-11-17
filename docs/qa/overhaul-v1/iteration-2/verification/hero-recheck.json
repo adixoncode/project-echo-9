@@ -1,0 +1,17 @@
+{
+  "artifactSha256": "8d0da9eb540d3373eee1a33fecd49381d46e64c797afb6dd28c0c76ebe8a3e08",
+  "method": "Exact RGB(A) comparison of fresh fixed-camera screenshots with preserved reviewed images",
+  "status": "PASS",
+  "checks": [
+    {
+      "image": "clean",
+      "changedPixels": 0,
+      "sha256": "9592daaed8b3b3d692795a73daa22a36ff9e97da7370b478c4dc7b82563c2e61"
+    },
+    {
+      "image": "hud",
+      "changedPixels": 0,
+      "sha256": "dcb3510248b56dc39faf989e9e0609a77c44b664d4bd900a0f3bf3cd5f1be379"
+    }
+  ]
+}

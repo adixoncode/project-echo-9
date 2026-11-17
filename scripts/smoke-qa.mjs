@@ -9,14 +9,17 @@ const checks=[],errors=[],requests=[];
 page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error')errors.push(m.text());});page.on('request',r=>requests.push(r.url()));
 const check=(name,pass,evidence)=>{checks.push({name,status:pass?'PASS':'FAIL',evidence});if(!pass)process.exitCode=1;};
 const state=()=>page.evaluate(()=>window.echo9.getState());
+// Software readback can take longer than a short key press. Observe actual
+// presented frames so this remains an input test rather than a timing gate.
+const advanceFrames=before=>page.waitForFunction(n=>window.echo9.getState().presentedFrames>=n+3,before,{timeout:120000});
 try{
   const url=process.env.ECHO_URL||'http://localhost:4173/index.html?test=1&readback=1';
   await page.goto(url);await page.waitForFunction(()=>window.echo9?.ready,null,{timeout:90000});
   let s=await state();check('startup and full-resolution High',s.ready&&s.renderSize[0]===1920&&s.renderSize[1]===1080,s);
   await page.keyboard.press('Escape');s=await state();check('Escape opens menu',s.menuOpen,s.menuOpen);
   await page.locator('#explore').click();await page.waitForTimeout(300);s=await state();check('Explore closes menu and acquires pointer lock',!s.menuOpen&&s.pointerLocked,s);
-  const before=s.position;await page.keyboard.down('KeyW');await page.waitForTimeout(1800);await page.keyboard.up('KeyW');s=await state();check('W changes camera position',Math.hypot(...s.position.map((v,i)=>v-before[i]))>.02,{before,after:s.position});
-  const y=s.position[1];await page.keyboard.down('KeyE');await page.waitForTimeout(1100);await page.keyboard.up('KeyE');s=await state();check('E ascends',s.position[1]>y,{before:y,after:s.position[1]});
+  const before=s.position,framesBeforeW=s.presentedFrames;await page.keyboard.down('KeyW');await advanceFrames(framesBeforeW);await page.keyboard.up('KeyW');s=await state();check('W changes camera position',Math.hypot(...s.position.map((v,i)=>v-before[i]))>.02,{before,after:s.position,framesBefore:framesBeforeW,framesAfter:s.presentedFrames});
+  const y=s.position[1],framesBeforeE=s.presentedFrames;await page.keyboard.down('KeyE');await advanceFrames(framesBeforeE);await page.keyboard.up('KeyE');s=await state();check('E ascends',s.position[1]>y,{before:y,after:s.position[1],framesBefore:framesBeforeE,framesAfter:s.presentedFrames});
   const yaw=s.yaw;await page.mouse.move(1000,540);await page.mouse.move(1150,550);s=await state();check('Pointer motion changes camera direction',s.yaw!==yaw,{before:yaw,after:s.yaw});
   await page.keyboard.press('KeyH');check('H reveals telemetry',await page.locator('#stats').isVisible());
   await page.keyboard.press('KeyM');await page.waitForTimeout(300);s=await state();check('M starts synthesized audio after interaction',s.audio,s.audio);await page.keyboard.press('KeyM');await page.waitForTimeout(100);check('M mutes audio',!(await state()).audio);

@@ -636,15 +636,124 @@ struct DustOut {@builtin(position) position:vec4<f32>,@location(0) uv:vec2<f32>,
 @fragment fn dustFragment(i:DustOut)->@location(0) vec4<f32>{let a=exp(-dot(i.uv,i.uv)*3.)*i.alpha;return vec4(.4,.7,.83,a);}
 `;
 
+// hdr.js
+
+// The legacy display output remains bit-for-bit the same expression. A second MRT target
+// retains the existing pre-tone linear radiance for physically scoped corridor composition.
+const LEGACY_MRT=/* wgsl */`
+struct LegacyMRT {@location(0) display:vec4<f32>,@location(1) radiance:vec4<f32>};
+fn legacyOutput(display:vec3<f32>,radiance:vec3<f32>)->LegacyMRT{
+  var o:LegacyMRT;o.display=vec4(display,1.);o.radiance=vec4(radiance,0.);return o;
+}
+`;
+function legacyHdrVariant(source,kind){
+  let result=source.replace('@fragment fn',LEGACY_MRT+'\n@fragment fn');
+  result=result.replace('->@location(0) vec4<f32>{','->LegacyMRT{');
+  if(kind==='sky')result=result.replace('return vec4(tone(color*vignette),1.);','return legacyOutput(tone(color*vignette),color*vignette);');
+  if(kind==='mesh')result=result.replace('return vec4(tone(color),1.);','return legacyOutput(tone(color),color);').replace('return vec4(.05,.2,.3,1.);','return legacyOutput(vec3(.05,.2,.3),vec3(.05,.2,.3));').replace('return vec4(n*.5+.5,1.);','return legacyOutput(n*.5+.5,n*.5+.5);');
+  if(kind==='dust')result=result.replace('return vec4(.4,.7,.83,a);','var o:LegacyMRT;o.display=vec4(.4,.7,.83,a);o.radiance=vec4(pow(vec3(.4,.7,.83),vec3(2.2)),a);return o;');
+  return result;
+}
+const HDR_SKY_SHADER=legacyHdrVariant(SKY_SHADER,'sky');
+const HDR_MESH_SHADER=legacyHdrVariant(MESH_SHADER,'mesh');
+const HDR_DUST_SHADER=legacyHdrVariant(DUST_SHADER,'dust');
+const HDR_PARTICLE_BLEND={color:{srcFactor:'src-alpha',dstFactor:'one-minus-src-alpha',operation:'add'},alpha:{srcFactor:'zero',dstFactor:'one',operation:'add'}};
+
+function halfToNumber(bits){
+  const sign=bits&0x8000?-1:1,exponent=(bits>>>10)&31,fraction=bits&1023;
+  if(exponent===31)return fraction?NaN:sign*Infinity;
+  if(exponent===0)return sign*fraction*2**-24;
+  return sign*(1+fraction/1024)*2**(exponent-15);
+}
+function summarizeHdrPixels(values,width,height,strideBytes){
+  let maximum=-Infinity,minimum=Infinity,sum=0,count=0,negative=0,nonFinite=0,corridorMaximum=-Infinity,corridorSum=0,corridorCount=0,aboveOne=0;
+  for(let y=0;y<height;y++)for(let x=0;x<width;x++){
+    const index=y*strideBytes/2+x*4,coverage=halfToNumber(values[index+3]);
+    for(let channel=0;channel<3;channel++){
+      const value=halfToNumber(values[index+channel]);if(!Number.isFinite(value)){nonFinite++;continue;}
+      maximum=Math.max(maximum,value);minimum=Math.min(minimum,value);sum+=value;count++;
+      if(value<0)negative++;if(value>1)aboveOne++;
+      if(coverage>.5){corridorMaximum=Math.max(corridorMaximum,value);corridorSum+=value;corridorCount++;}
+    }
+  }
+  return {format:'rgba16float',width,height,maximum,minimum,mean:count?sum/count:null,finite:nonFinite===0,nonFiniteValues:nonFinite,negativeValues:negative,valuesAboveOne:aboveOne,corridor:{maximum:corridorCount?corridorMaximum:null,mean:corridorCount?corridorSum/corridorCount:null,rgbValues:corridorCount},alphaSemantics:'Spatial corridor coverage; not opacity or display gamma'};
+}
+
+// corridor-lights.js
+// Single authoring table: fixtures, BRDF, shadow cameras, HDR probe and scattering
+// consume these positions, spectra, cones and calibrated source intensities.
+function light(id,position,target,color,power,fov,shadow=-1,size=[.30,.19,.10],mount='ceiling'){
+  return {id,position,target,color,power,fov,far:38,shadow,size,mount,radius:.18,direction:normalize(target.map((v,i)=>v-position[i])),outerCos:Math.cos(fov*Math.PI/360),innerCos:Math.cos(fov*.31*Math.PI/180),emission:power/(400*size[0]*size[1])};
+}
+const CORRIDOR_LIGHT_TABLE=[
+  light('cold-rib-key',[-1,4.3,31.8],[-3.75,2.4,35.3],[.57,.74,.94],280,104,0),
+  light('red-depth-key',[.45,4.75,44.1],[.45,.45,45.2],[1,.025,.011],360,148,1,[.20,.28,.20],'pendant'),
+  light('cold-left-graze',[1.35,4.55,29.8],[3.7,2.15,33.1],[.53,.68,.84],105,96),
+  light('cold-middle-rib',[-.3,4.65,38.7],[-3.7,2.4,41.4],[.45,.61,.79],110,96),
+  light('red-middle',[.45,4.75,52.5],[.2,.55,54.5],[1,.022,.008],110,120,-1,[.20,.28,.20],'pendant'),
+  light('red-far',[.45,4.75,61.7],[.2,.4,63],[1,.022,.008],90,120,-1,[.20,.28,.20],'pendant'),
+  light('cold-service-bay',[-4.3,3.6,33.5],[-1.5,1.6,35],[.55,.71,.87],30,110,-1,[.72,.36,.07],'wall')
+];
+const CORRIDOR_LIGHTS=CORRIDOR_LIGHT_TABLE.filter(light=>light.shadow>=0);
+function packCorridorLights(lights=CORRIDOR_LIGHT_TABLE){
+  const data=new Float32Array(8*16+4);
+  for(let i=0;i<lights.length;i++){
+    const l=lights[i];data.set([...l.position,l.power,...l.direction,l.outerCos,...l.color,l.innerCos,l.radius,l.shadow,l.far,l.emission],i*16);
+  }
+  data[128]=lights.length;return data;
+}
+const CORRIDOR_LIGHTING_WGSL=/* wgsl */`
+struct Lighting {shadowMatrices:array<mat4x4<f32>,2>,probe:vec4<f32>,boxMin:vec4<f32>,boxMax:vec4<f32>,options:vec4<f32>};
+struct CorridorLight {positionPower:vec4<f32>,directionOuter:vec4<f32>,colorInner:vec4<f32>,shape:vec4<f32>};
+struct LightTable {entries:array<CorridorLight,8>,info:vec4<f32>};
+@group(1) @binding(0) var<uniform> lighting:Lighting;
+@group(1) @binding(1) var shadowMap:texture_depth_2d_array;
+@group(1) @binding(2) var shadowSampler:sampler_comparison;
+@group(1) @binding(3) var environment:texture_cube<f32>;
+@group(1) @binding(4) var environmentSampler:sampler;
+@group(1) @binding(5) var<uniform> corridorLights:LightTable;
+fn geometricShadow(p:vec3<f32>,normal:vec3<f32>,lightIndex:i32)->f32{
+  let source=corridorLights.entries[lightIndex];let index=i32(source.shape.y);
+  if(lighting.options.x<.5 || index<0){return 1.;}
+  let receiver=p+normal*.006;
+  let position=lighting.shadowMatrices[index]*vec4(receiver,1.);let clip=position.xyz/position.w;
+  let uv=clip.xy*vec2(.5,-.5)+.5;
+  if(position.w<=0. || any(uv<vec2(0.)) || any(uv>vec2(1.)) || clip.z<0. || clip.z>1.){return 0.;}
+  // A planar receiver's projected depth is affine in shadow UV. Correct each PCF
+  // comparison at its actual texel centre rather than comparing all taps with one
+  // centre depth (which self-shadows sloping planes). Zero normal = volume sample.
+  var gradient=vec2(0.);
+  let planeDistance=-dot(normal,receiver-source.positionPower.xyz);
+  if(dot(normal,normal)>.5 && abs(planeDistance)>.0001){
+    let back=-source.directionOuter.xyz;let right=normalize(cross(vec3(0.,1.,0.),back));let up=cross(back,right);
+    let tangent=sqrt(max(0.,1.-source.directionOuter.w*source.directionOuter.w))/source.directionOuter.w;
+    let nearTerm=.15*source.shape.z/(source.shape.z-.15);
+    gradient=vec2(dot(normal,right),-dot(normal,up))*(2.*nearTerm*tangent/planeDistance);
+  }
+  let resolution=lighting.options.z;let coordinate=uv*resolution-.5;let base=vec2<i32>(floor(coordinate));let fraction=fract(coordinate);var visibility=0.;
+  for(var y=0;y<2;y++){for(var x=0;x<2;x++){
+    let texel=clamp(base+vec2(x,y),vec2(0),vec2(i32(resolution)-1));let sampleUv=(vec2<f32>(texel)+.5)/resolution;
+    let expected=clip.z+dot(gradient,sampleUv-uv)-.000012;
+    let stored=textureLoad(shadowMap,texel,index,0);
+    let weight=select(1.-fraction.x,fraction.x,x==1)*select(1.-fraction.y,fraction.y,y==1);
+    visibility+=select(0.,1.,expected<=stored)*weight;
+  }}
+  return visibility;
+}
+fn lightRadiance(p:vec3<f32>,normal:vec3<f32>,index:i32)->vec3<f32>{
+  let source=corridorLights.entries[index];let delta=source.positionPower.xyz-p;let distance2=dot(delta,delta);let l=delta*inverseSqrt(max(distance2,.00000001));
+  let cone=smoothstep(source.directionOuter.w,source.colorInner.w,dot(-l,source.directionOuter.xyz));
+  let rangeFade=1.-smoothstep(source.shape.z*.85,source.shape.z,sqrt(distance2));
+  let visibility=geometricShadow(p,normal,index);
+  return source.colorInner.rgb*source.positionPower.w*cone*visibility*rangeFade/max(distance2,source.shape.x*source.shape.x);
+}
+`;
+
 // corridor.js
 
 // Corridor-only construction. Its RNG and material encoding do not touch the legacy world.
 // Vertex material = (emission, perceptual roughness, metallic fraction), all in linear light.
 const CORRIDOR_HERO={position:[-2.35,1.72,27.5],target:[-13.5,1.78,61],verticalFov:64};
-const CORRIDOR_LIGHTS=[
-  {position:[-3.3,4.45,33.6],target:[2.2,.65,37.2],color:[.57,.72,.92],power:155,fov:104,far:34},
-  {position:[.45,4.85,48],target:[-.3,.3,51],color:[1,.018,.009],power:125,fov:126,far:32}
-];
 const CORRIDOR_PROBE={position:[0,2.55,38],min:[-3.9,-.25,23],max:[3.9,5.6,72],size:128,mips:8};
 function buildCorridor(seed=WORLD_SEED^0xC0771D0){
   const random=seededRandom(seed),g=new Geometry(),obstacles=[];
@@ -705,7 +814,6 @@ function buildCorridor(seed=WORLD_SEED^0xC0771D0){
         for(const dz of [-1.45,1.45])box(side*4.02,2.1,z+dz,.9,3.7,.13,.04,steel,.44,.8);
         box(side*4.13,4.0,z,1.2,.14,3,.04,steel,.44,.8);box(side*4.2,.34,z,1.0,.18,3,.04,steel,.5,.8);
         for(let j=0;j<6;j++)box(side*4.45,.75+j*.45,z+.6,.32,.14,1.2,.025,dark,.48,.6);
-        if(bay===3){box(side*4.47,3.6,z, .05,.65,1.35,.018,[.62,.75,.86],.35,.05,3.4);}
       }else{
         // Full-height removable panels with raised perimeter lips and double-recessed centres.
         for(const dy of [-1.28,1.28])box(side*3.955,2.35+dy,z,.12,.075,2.64,.018,steel,.46,.8);
@@ -778,15 +886,21 @@ function buildCorridor(seed=WORLD_SEED^0xC0771D0){
     for(let j=0;j<5;j++)box(side*3.16,1.14+j*.16,z+.25,.045,.045,.48,.008,steel,.4,.8);
     obstacles.push([Math.min(side*3.2,side*3.85),.3,z-.75,Math.max(side*3.2,side*3.85),3.1,z+.75]);
   }
-  // Hanging practicals: red light is concentrated deeper along the spine, cold at the side bay.
-  for(const z of [41.2,48,56.3,65.3]){
-    box(.45,5.05,z,.55,.22,.6,.045,dark,.5,.6);
-    tube([[.45,5.6,z],[.45,4.95,z]],.035,steel,.4,.9,10);
-    box(.45,4.78,z,.19,.32,.22,.04,[1,.025,.012],.32,.05,5.5);
-    for(const dx of [-.16,.16])box(.45+dx,4.78,z,.035,.42,.29,.008,dark,.38,.8);
+  // Every scene-light housing and emitter is built from the same table as the shaders.
+  for(const source of CORRIDOR_LIGHT_TABLE){
+    const direction=source.direction,u=normalize(cross(direction,Math.abs(direction[1])>.95?[1,0,0]:[0,1,0])),v=cross(direction,u),basis=[u,v,direction];
+    const back=source.position.map((p,i)=>p-direction[i]*.065),front=source.position.map((p,i)=>p+direction[i]*.045);
+    if(source.mount==='pendant'){
+      // Diffuser is visible from both axial directions; the dark housing sits above it.
+      box(...source.position,...source.size,.035,source.color,.28,0,source.emission);
+      box(source.position[0],source.position[1]+.22,source.position[2],.40,.12,.38,.025,dark,.5,.75);
+      for(const dx of [-.145,.145])box(source.position[0]+dx,source.position[1],source.position[2],.025,.40,.28,.006,dark,.45,.8);
+    }else{
+      chamfer(back,[source.size[0]+.14,source.size[1]+.12,.17],.025,dark,.5,.75,0,basis);
+      chamfer(front,[source.size[0],source.size[1],.035],.012,source.color,.28,0,source.emission,basis);
+    }
+    if(source.mount!=='wall')tube([[source.position[0],source.position[1]+.12,source.position[2]],[source.position[0],5.56,source.position[2]]],.025,steel,.4,.9,10);
   }
-  box(.8,5.15,29.3,.38,.14,1.2,.025,steel,.42,.8);
-  box(.8,5.04,29.3,.21,.055,.8,.015,[.55,.65,.7],.4,.05,2.0);
   // Offset wall cable loops, an exposed valve and a small field-repair plate.
   for(const side of [-1,1])for(const z of [32.1,44.6,58.4]){
     const pts=[];for(let k=0;k<=20;k++){const t=k/20;pts.push([side*3.75,3.35-Math.sin(t*Math.PI)*.42,z+t*2.2]);}tube(pts,.035,dark,.65,.15,10);
@@ -810,23 +924,11 @@ function buildCorridor(seed=WORLD_SEED^0xC0771D0){
   for(const side of [-1,1])box(side*4.05,4,70.8,.35,8,.5,.07,dark,.6,.65);
   box(0,8,70.8,8.5,.4,.5,.08,steel,.43,.8);
   box(0,8.15,69.3,8.5,.2,5.7,.04,dark,.68,.3);
-  return {vertices:g.finish(),triangles:g.triangles,obstacles,exitShellRange,seed,hero:CORRIDOR_HERO,probe:CORRIDOR_PROBE,lights:CORRIDOR_LIGHTS};
+  return {vertices:g.finish(),triangles:g.triangles,obstacles,exitShellRange,seed,hero:CORRIDOR_HERO,probe:CORRIDOR_PROBE,lights:CORRIDOR_LIGHT_TABLE};
 }
 
 // corridor-shaders.js
-const CORRIDOR_SHADER=COMMON+/* wgsl */`
-struct Lighting {
-  shadowMatrices:array<mat4x4<f32>,2>,
-  probe:vec4<f32>,
-  boxMin:vec4<f32>,
-  boxMax:vec4<f32>,
-  options:vec4<f32>,
-};
-@group(1) @binding(0) var<uniform> lighting:Lighting;
-@group(1) @binding(1) var shadowMap:texture_depth_2d_array;
-@group(1) @binding(2) var shadowSampler:sampler_comparison;
-@group(1) @binding(3) var environment:texture_cube<f32>;
-@group(1) @binding(4) var environmentSampler:sampler;
+const CORRIDOR_SHADER=COMMON+CORRIDOR_LIGHTING_WGSL+/* wgsl */`
 struct CorridorIn {@location(0) position:vec3<f32>,@location(1) normal:vec3<f32>,@location(2) color:vec3<f32>,@location(3) material:vec3<f32>};
 struct CorridorOut {@builtin(position) position:vec4<f32>,@location(0) world:vec3<f32>,@location(1) normal:vec3<f32>,@location(2) color:vec3<f32>,@location(3) material:vec3<f32>};
 @vertex fn corridorVertex(input:CorridorIn)->CorridorOut{
@@ -841,32 +943,11 @@ fn ggx(n:vec3<f32>,v:vec3<f32>,l:vec3<f32>,base:vec3<f32>,roughness:f32,metal:f3
   let f=fresnelSchlick(vh,mix(vec3(.04),base,metal));
   return ((1.-f)*(1.-metal)*base/3.14159265+distribution*visibility*f)*nl;
 }
-fn geometricShadow(p:vec3<f32>,n:vec3<f32>,index:i32)->f32{
-  if(lighting.options.x<.5){return 1.;}
-  let position=lighting.shadowMatrices[index]*vec4(p+n*.006,1.);let clip=position.xyz/position.w;
-  let uv=clip.xy*vec2(.5,-.5)+.5;
-  if(position.w<=0. || any(uv<vec2(0.)) || any(uv>vec2(1.)) || clip.z<0. || clip.z>1.){return 0.;}
-  let texel=1./lighting.options.z;let bias=.000012;
-  var value=0.;
-  for(var y=0;y<2;y++){for(var x=0;x<2;x++){
-    let offset=(vec2(f32(x),f32(y))-.5)*texel*1.5;
-    value+=textureSampleCompareLevel(shadowMap,shadowSampler,uv+offset,index,clip.z-bias);
-  }}
-  return value*.25;
-}
-fn directRadiance(p:vec3<f32>,n:vec3<f32>,v:vec3<f32>,base:vec3<f32>,rough:f32,metal:f32)->vec3<f32>{
+fn directRadiance(p:vec3<f32>,n:vec3<f32>,v:vec3<f32>,base:vec3<f32>,rough:f32,metal:f32,receiverNormal:vec3<f32>)->vec3<f32>{
   var color=vec3(.00075,.0011,.0016)*base;
-  let positions=array<vec3<f32>,6>(vec3(-3.3,4.45,33.6),vec3(.45,4.85,48.),vec3(.45,4.78,41.2),vec3(.45,4.78,56.3),vec3(.45,4.78,65.3),vec3(.8,5.04,29.3));
-  let targets=array<vec3<f32>,6>(vec3(2.2,.65,37.2),vec3(-.3,.3,51.),vec3(.45,.1,42.2),vec3(.45,.1,57.3),vec3(.45,.1,66.3),vec3(.8,1.,30.));
-  let colors=array<vec3<f32>,6>(vec3(.57,.72,.92),vec3(1.,.018,.009),vec3(1.,.022,.012),vec3(1.,.018,.009),vec3(1.,.022,.012),vec3(.48,.58,.66));
-  let powers=array<f32,6>(155.,125.,28.,30.,26.,6.);
-  for(var i=0;i<6;i++){
-    let delta=positions[i]-p;let distance2=dot(delta,delta);let l=normalize(delta);
-    let spot=dot(-l,normalize(targets[i]-positions[i]));
-    let cone=smoothstep(select(.44,.60,i==0),.88,spot);
-    var visibility=1.;if(i<2){visibility=geometricShadow(p,n,i);}
-    let radiance=colors[i]*powers[i]*cone*visibility/max(distance2,.16);
-    color+=ggx(n,v,l,base,rough,metal)*radiance;
+  for(var i=0;i<i32(corridorLights.info.x);i++){
+    let delta=corridorLights.entries[i].positionPower.xyz-p;let l=normalize(delta);
+    color+=ggx(n,v,l,base,rough,metal)*lightRadiance(p,receiverNormal,i);
   }
   return color;
 }
@@ -885,35 +966,47 @@ fn environmentBRDF(rough:f32,nv:f32)->vec2<f32>{
   let r=rough*c0+c1;let a004=min(r.x*r.x,exp2(-9.28*nv))*r.x+r.y;
   return vec2(-1.04,1.04)*a004+r.zw;
 }
-fn surfaceColor(input:CorridorOut,n:vec3<f32>,v:vec3<f32>,useEnvironment:bool)->vec3<f32>{
+fn surfaceColor(input:CorridorOut,n:vec3<f32>,v:vec3<f32>,useEnvironment:bool,receiverNormal:vec3<f32>)->vec3<f32>{
   let p=input.world;let emission=input.material.x;
+  if(emission>0.){return input.color*emission;}
   let broadVariation=noise(p*vec3(3.1,.85,2.1));let stains=noise(p*vec3(7.,.55,4.));
   let wear=pow(max(0.,noise(p*vec3(17.,4.,13.))-.58),2.)*.5;
   var base=input.color*(.84+.23*broadVariation);
   // Low-amplitude wear changes roughness and reflectance, never replaces geometry.
   base=mix(base,vec3(.105,.05,.025),smoothstep(.69,.86,stains)*.18);
-  let rough=clamp(input.material.y+(stains-.5)*.12+wear,.18,.92);let metal=clamp(input.material.z-stains*.035,0.,1.);
-  var color=directRadiance(p,n,v,base,rough,metal);
+  let floorFacing=abs(n.y)>.8;
+  let rough=clamp(input.material.y+select(.11,.08,floorFacing)+(stains-.5)*.15+wear,.25,.92);let metal=clamp(input.material.z-stains*.035,0.,1.);
+  var shadingNormal=n;
+  if(floorFacing){
+    shadingNormal=normalize(n+vec3(sin(p.z*.83+p.x*1.9)*.026,0.,sin(p.x*2.4+p.z*.19)*.015));
+  }else{
+    let tangent=normalize(cross(n,vec3(0.,1.,0.)));let bitangent=cross(n,tangent);
+    shadingNormal=normalize(n+tangent*(noise(p*vec3(.45,3.,.45))-.5)*.025+bitangent*(noise(p*vec3(2.,.3,2.))-.5)*.012);
+  }
+  var color=directRadiance(p,shadingNormal,v,base,rough,metal,receiverNormal);
   if(useEnvironment && lighting.options.y>.5){
-    let nv=max(dot(n,v),.001);let reflected=reflect(-v,n);
+    let nv=max(dot(shadingNormal,v),.001);let reflected=reflect(-v,shadingNormal);
     let specularEnvironment=textureSampleLevel(environment,environmentSampler,parallaxDirection(p,reflected),rough*lighting.probe.w).rgb;
     let brdf=environmentBRDF(rough,nv);let f0=mix(vec3(.04),base,metal);
     color+=specularEnvironment*(f0*brdf.x+brdf.y);
-    let diffuseEnvironment=textureSampleLevel(environment,environmentSampler,n,lighting.probe.w).rgb;
+    let diffuseEnvironment=textureSampleLevel(environment,environmentSampler,shadingNormal,lighting.probe.w).rgb;
     color+=diffuseEnvironment*base*(1.-metal)*.28;
   }
   color+=input.color*emission;
   return color;
 }
-@fragment fn corridorFragment(input:CorridorOut,@builtin(front_facing) front:bool)->@location(0) vec4<f32>{
+struct CorridorMRT {@location(0) display:vec4<f32>,@location(1) radiance:vec4<f32>};
+@fragment fn corridorFragment(input:CorridorOut,@builtin(front_facing) front:bool)->CorridorMRT{
   let v=normalize(u.camera.xyz-input.world);var n=normalize(input.normal);if(dot(n,v)<0.){n=-n;}
-  var color=surfaceColor(input,n,v,true);
-  // Fixed exposure: lamps may be bright, but black recesses remain black.
-  return vec4(tone(color*1.35),1.);
+  var face=normalize(cross(dpdx(input.world),dpdy(input.world)));if(dot(face,v)<0.){face=-face;}
+  var color=surfaceColor(input,n,v,true,face);
+  // Surface radiance stays linear and unbounded until the final composition pass.
+  var o:CorridorMRT;o.display=vec4(0.,0.,0.,1.);o.radiance=vec4(color,1.);return o;
 }
 @fragment fn corridorProbeFragment(input:CorridorOut,@builtin(front_facing) front:bool)->@location(0) vec4<f32>{
   let v=normalize(u.camera.xyz-input.world);var n=normalize(input.normal);if(dot(n,v)<0.){n=-n;}
-  return vec4(surfaceColor(input,n,v,false),1.);
+  var face=normalize(cross(dpdx(input.world),dpdy(input.world)));if(dot(face,v)<0.){face=-face;}
+  return vec4(surfaceColor(input,n,v,false,face),1.);
 }
 `;
 const CORRIDOR_SHADOW_SHADER=/* wgsl */`
@@ -949,32 +1042,185 @@ fn faceDirection(face:u32,uv:vec2<f32>)->vec3<f32>{
   textureStore(destination,vec2<i32>(id.xy),i32(id.z),vec4(color/max(weight,.0001),1.));
 }
 `;
-// Bounded aerial perspective. Shared scene depth limits the integration to the visible
-// ray segment inside the physical corridor, including a distant room seen through its exit.
-function corridorAtmosphereShader(multisampled){return COMMON+/* wgsl */`
-@group(0) @binding(1) var sceneDepth:${multisampled?'texture_depth_multisampled_2d':'texture_depth_2d'};
-struct FogVertex {@builtin(position) position:vec4<f32>,@location(0) uv:vec2<f32>};
-@vertex fn fogVertex(@builtin(vertex_index) id:u32)->FogVertex{
-  let points=array<vec2<f32>,3>(vec2(-1.,-1.),vec2(3.,-1.),vec2(-1.,3.));var o:FogVertex;o.position=vec4(points[id],0.,1.);o.uv=points[id];return o;
+
+// corridor-post-shaders.js
+const POST_VERTEX=/* wgsl */`
+struct PostVertex {@builtin(position) position:vec4<f32>,@location(0) uv:vec2<f32>};
+@vertex fn postVertex(@builtin(vertex_index) id:u32)->PostVertex{
+  let points=array<vec2<f32>,3>(vec2(-1.,-1.),vec2(3.,-1.),vec2(-1.,3.));var o:PostVertex;o.position=vec4(points[id],0.,1.);o.uv=points[id];return o;
 }
-@fragment fn fogFragment(input:FogVertex)->@location(0) vec4<f32>{
-  let ray=normalize(u.forward.xyz+u.right.xyz*input.uv.x*u.resolution.z+u.up.xyz*input.uv.y*u.resolution.w);
-  let pixel=vec2<i32>(input.position.xy);let depth=textureLoad(sceneDepth,pixel,0);
-  let viewDistance=(.12*700.)/max(.0001,700.-depth*(700.-.12));
-  let visibleDistance=viewDistance/max(.001,dot(ray,u.forward.xyz));
-  let safe=select(min(ray,vec3(-.000001)),max(ray,vec3(.000001)),ray>=vec3(0.));
-  let a=(vec3(-3.9,0.,24.)-u.camera.xyz)/safe;let b=(vec3(3.9,5.6,72.)-u.camera.xyz)/safe;
-  let nearHit=min(a,b);let farHit=max(a,b);let begin=max(0.,max(nearHit.x,max(nearHit.y,nearHit.z)));
-  let end=min(visibleDistance,min(farHit.x,min(farHit.y,farHit.z)));let distance=max(0.,end-begin);
-  var scattered=vec3(0.);
-  for(var i=0;i<4;i++){
-    let p=u.camera.xyz+ray*mix(begin,end,(f32(i)+.5)*.25);
-    let red=exp(-abs(p.z-52.)/15.);let cold=exp(-length(p-vec3(-1.,2.6,34.))*.22);
-    scattered+=vec3(.0022,.0028,.004)+vec3(.014,.00065,.0003)*red+vec3(.001,.0025,.004)*cold;
+`;
+const POST_OPTIONS=/* wgsl */`
+struct PostOptions {display:vec4<f32>,volume:vec4<f32>,glare:vec4<f32>};
+fn extinction(p:vec3<f32>,maximum:f32)->f32{return maximum*(.12+.88*smoothstep(34.,52.,p.z))+.035*smoothstep(61.,70.,p.z);}
+struct RaySegment {direction:vec3<f32>,surfaceDistance:f32,begin:f32,end:f32};
+fn raySegment(uv:vec2<f32>,depth:f32)->RaySegment{
+  var o:RaySegment;o.direction=normalize(u.forward.xyz+u.right.xyz*uv.x*u.resolution.z+u.up.xyz*uv.y*u.resolution.w);
+  o.surfaceDistance=(.12*700.)/max(.0001,700.-depth*(700.-.12))/max(.001,dot(o.direction,u.forward.xyz));
+  let safe=select(min(o.direction,vec3(-.000001)),max(o.direction,vec3(.000001)),o.direction>=vec3(0.));
+  let a=(vec3(-3.9,0.,24.)-u.camera.xyz)/safe;let b=(vec3(3.9,8.3,72.25)-u.camera.xyz)/safe;
+  let nearHit=min(a,b);let farHit=max(a,b);o.begin=max(0.,max(nearHit.x,max(nearHit.y,nearHit.z)));o.end=max(o.begin,min(o.surfaceDistance,min(farHit.x,min(farHit.y,farHit.z))));return o;
+}
+`;
+const depthDeclaration=multisampled=>`var sceneDepth:${multisampled?'texture_depth_multisampled_2d':'texture_depth_2d'};`;
+const depthExpression=(multisampled,pixel='pixel')=>multisampled?`min(min(textureLoad(sceneDepth,${pixel},0),textureLoad(sceneDepth,${pixel},1)),min(textureLoad(sceneDepth,${pixel},2),textureLoad(sceneDepth,${pixel},3)))`:`textureLoad(sceneDepth,${pixel},0)`;
+function corridorVolumeShader(multisampled){return COMMON+CORRIDOR_LIGHTING_WGSL+POST_VERTEX+POST_OPTIONS+/* wgsl */`
+@group(0) @binding(1) ${depthDeclaration(multisampled)}
+@group(0) @binding(2) var<uniform> options:PostOptions;
+@fragment fn volumeFragment(input:PostVertex)->@location(0) vec4<f32>{
+  let pixel=vec2<i32>(min(input.position.xy*2.,u.resolution.xy-1.));let depth=${depthExpression(multisampled)};
+  let segment=raySegment(input.uv,depth);let distance=segment.end-segment.begin;
+  var scatter=vec3(0.);var transmittance=1.;let step=distance/24.;let anisotropy=options.volume.z;
+  if(distance>.002){for(var i=0;i<24;i++){
+    let p=u.camera.xyz+segment.direction*(segment.begin+(f32(i)+.5)*step);let sigma=extinction(p,options.volume.x);let stepT=exp(-sigma*step);var incident=vec3(0.);
+    for(var lightIndex=0;lightIndex<i32(corridorLights.info.x);lightIndex++){
+      let source=corridorLights.entries[lightIndex];let displacement=p-source.positionPower.xyz;let distance2=dot(displacement,displacement);let travel=displacement*inverseSqrt(max(distance2,.00000001));let cosine=dot(travel,-segment.direction);
+      let phase=(1.-anisotropy*anisotropy)/(12.5663706*pow(max(.001,1.+anisotropy*anisotropy-2.*anisotropy*cosine),1.5));
+      // Finite quadrature footprint averages the source near-field instead of sampling a point singularity.
+      incident+=lightRadiance(p,vec3(0.),lightIndex)*phase*distance2/(distance2+.4225);
+    }
+    scatter+=transmittance*options.volume.y*(1.-stepT)*incident;transmittance*=stepT;
+  }}
+  // Alpha stores receiver distance for bilateral reconstruction, never fog opacity.
+  return vec4(scatter,segment.surfaceDistance);
+}
+`;}
+function corridorComposeShader(multisampled){return COMMON+POST_VERTEX+POST_OPTIONS+/* wgsl */`
+@group(0) @binding(1) var scene:texture_2d<f32>;
+@group(0) @binding(2) ${depthDeclaration(multisampled)}
+@group(0) @binding(3) var volumeTexture:texture_2d<f32>;
+@group(0) @binding(4) var<uniform> options:PostOptions;
+fn bilateralScatter(pixel:vec2<f32>,distance:f32)->vec3<f32>{
+  let coordinate=pixel*.5-.5;let base=vec2<i32>(floor(coordinate));let fraction=fract(coordinate);let size=vec2<i32>(textureDimensions(volumeTexture));var radiance=vec3(0.);var total=0.;
+  for(var y=0;y<2;y++){for(var x=0;x<2;x++){
+    let neighbor=textureLoad(volumeTexture,clamp(base+vec2(x,y),vec2(0),size-1),0);
+    let spatial=select(1.-fraction.x,fraction.x,x==1)*select(1.-fraction.y,fraction.y,y==1);
+    let depthWeight=exp(-abs(neighbor.a-distance)/max(.1,distance*.04));let weight=spatial*depthWeight;radiance+=neighbor.rgb*weight;total+=weight;
+  }}
+  return radiance/max(total,.0001);
+}
+@fragment fn composeFragment(input:PostVertex)->@location(0) vec4<f32>{
+  let pixel=vec2<i32>(input.position.xy);let surface=textureLoad(scene,pixel,0);let depth=${depthExpression(multisampled)};
+  let segment=raySegment(input.uv,depth);let distance=segment.end-segment.begin;var color=surface.rgb;
+  if(options.display.y>.5 && distance>.002){
+    let step=distance/24.;var opticalDepth=0.;
+    for(var i=0;i<24;i++){let p=u.camera.xyz+segment.direction*(segment.begin+(f32(i)+.5)*step);opticalDepth+=extinction(p,options.volume.x)*step;}
+    color=surface.rgb*exp(-opticalDepth)+bilateralScatter(input.position.xy,segment.surfaceDistance);
   }
-  return vec4(tone(scattered*.25*1.35),1.-exp(-distance*.065));
+  return vec4(max(color,vec3(0.)),select(surface.a,1.,distance>.002));
 }
-`}
+`;}
+const CORRIDOR_FINAL_SHADER=COMMON+POST_VERTEX+/* wgsl */`
+struct PostOptions {display:vec4<f32>,volume:vec4<f32>,glare:vec4<f32>};
+@group(0) @binding(1) var composed:texture_2d<f32>;
+@group(0) @binding(2) var legacy:texture_2d<f32>;
+@group(0) @binding(3) var<uniform> options:PostOptions;
+@group(0) @binding(4) var bloom0:texture_2d<f32>;
+@group(0) @binding(5) var bloom1:texture_2d<f32>;
+@group(0) @binding(6) var bloom2:texture_2d<f32>;
+@group(0) @binding(7) var bloom3:texture_2d<f32>;
+@group(0) @binding(8) var bloomSampler:sampler;
+@fragment fn finalFragment(input:PostVertex)->@location(0) vec4<f32>{
+  let pixel=vec2<i32>(input.position.xy);let color=textureLoad(composed,pixel,0);
+  if(color.a<=0. || options.display.w<.5){return textureLoad(legacy,pixel,0);}
+  var radiance=color.rgb;
+  if(options.display.z>.5){
+    let uv=input.position.xy/u.resolution.xy;
+    let glare=textureSampleLevel(bloom0,bloomSampler,uv,0.).rgb*.45+textureSampleLevel(bloom1,bloomSampler,uv,0.).rgb*.30+textureSampleLevel(bloom2,bloomSampler,uv,0.).rgb*.17+textureSampleLevel(bloom3,bloomSampler,uv,0.).rgb*.08;
+    radiance+=glare*options.glare.x;
+  }
+  return vec4(tone(max(radiance,vec3(0.))*options.display.x),1.);
+}
+`;
+const CORRIDOR_BLOOM_SHADER=POST_VERTEX+/* wgsl */`
+struct BloomOptions {threshold:f32,knee:f32,first:f32,padding:f32};
+@group(0) @binding(0) var source:texture_2d<f32>;
+@group(0) @binding(1) var linearSampler:sampler;
+@group(0) @binding(2) var<uniform> options:BloomOptions;
+fn sampleRadiance(uv:vec2<f32>)->vec3<f32>{
+  let color=textureSampleLevel(source,linearSampler,uv,0.);var value=max(color.rgb,vec3(0.));
+  if(options.first>.5){
+    value*=clamp(color.a,0.,1.);let luminance=dot(value,vec3(.2126,.7152,.0722));
+    let knee=clamp(luminance-options.threshold+options.knee,0.,2.*options.knee);let soft=knee*knee/(4.*options.knee+.0001);
+    value=min(value,vec3(24.))*max(luminance-options.threshold,soft)/max(luminance,.0001);
+  }
+  return value;
+}
+@fragment fn bloomFragment(input:PostVertex)->@location(0) vec4<f32>{
+  let uv=input.uv*vec2(.5,-.5)+.5;let texel=1./vec2<f32>(textureDimensions(source));var value=vec3(0.);
+  for(var y=-1;y<=1;y++){for(var x=-1;x<=1;x++){
+    let weight=select(1.,2.,x==0)*select(1.,2.,y==0);value+=sampleRadiance(uv+vec2(f32(x),f32(y))*texel)*weight;
+  }}
+  return vec4(value/16.,1.);
+}
+`;
+
+// corridor-post.js
+const CORRIDOR_STAGE='final';
+class CorridorPost{
+  constructor(device,format,mainUniform,{fog=true,bloom=true}={}){
+    this.device=device;this.format=format;this.mainUniform=mainUniform;this.fogEnabled=fog;this.bloomEnabled=bloom;this.exposure=1.35;this.textures=[];this.readbackBusy=false;this.buffers=[];
+  }
+  setLighting(layout,group){this.lightingLayout=layout;this.lightingGroup=group;}
+  resize(depth,samples,width,height){
+    for(const texture of this.textures)texture.destroy();for(const buffer of this.buffers)buffer.destroy();this.textures=[];this.buffers=[];this.width=width;this.height=height;this.gpuBytes=0;
+    const device=this.device,make=(label,format,w=width,h=height,sampleCount=1,extraUsage=0)=>{
+      const texture=device.createTexture({label,size:[w,h],format,sampleCount,usage:GPUTextureUsage.RENDER_ATTACHMENT|(sampleCount===1?GPUTextureUsage.TEXTURE_BINDING:0)|extraUsage});this.textures.push(texture);this.gpuBytes+=w*h*sampleCount*(format==='rgba16float'?8:4);return texture;
+    };
+    const buffer=(size,data)=>{const value=device.createBuffer({size,usage:GPUBufferUsage.UNIFORM|GPUBufferUsage.COPY_DST});if(data)device.queue.writeBuffer(value,0,data);this.buffers.push(value);return value;};
+    const module=(label,code)=>device.createShaderModule({label,code});
+    this.legacy=make('Unchanged legacy display before corridor composition',this.format);
+    this.scene=make('Common linear scene radiance / corridor coverage','rgba16float',width,height,1,GPUTextureUsage.COPY_SRC);
+    this.composed=make('Linear light-linked corridor composite before tone mapping','rgba16float',width,height,1,GPUTextureUsage.COPY_SRC);
+    this.msaa=samples>1?make('4xMSAA linear scene radiance','rgba16float',width,height,samples):null;
+    this.volume=make('Half-resolution shadowed scattering / receiver distance','rgba16float',Math.ceil(width/2),Math.ceil(height/2));
+    this.legacyView=this.legacy.createView();this.sceneView=this.scene.createView();this.composedView=this.composed.createView();this.volumeView=this.volume.createView();
+    this.hdrAttachment={view:this.msaa?this.msaa.createView():this.sceneView,resolveTarget:this.msaa?this.sceneView:undefined,clearValue:{r:0,g:0,b:0,a:0},loadOp:'clear',storeOp:'store'};
+    this.optionBuffer=buffer(48);this.options=new Float32Array([this.exposure,this.fogEnabled?1:0,this.bloomEnabled?1:0,1,.065,.16,.20,24,.06,1.35,.5,0]);device.queue.writeBuffer(this.optionBuffer,0,this.options);
+    const uniform={binding:0,visibility:GPUShaderStage.VERTEX|GPUShaderStage.FRAGMENT,buffer:{type:'uniform'}};
+    const volumeLayout=device.createBindGroupLayout({entries:[uniform,{binding:1,visibility:GPUShaderStage.FRAGMENT,texture:{sampleType:'depth',multisampled:samples>1}},{binding:2,visibility:GPUShaderStage.FRAGMENT,buffer:{type:'uniform'}}]});
+    const volumeModule=module('Same-source, shadowed 24-step Beer-Lambert scattering',corridorVolumeShader(samples>1));
+    this.volumeGroup=device.createBindGroup({layout:volumeLayout,entries:[{binding:0,resource:{buffer:this.mainUniform}},{binding:1,resource:depth.createView()},{binding:2,resource:{buffer:this.optionBuffer}}]});
+    this.volumePipeline=device.createRenderPipeline({layout:device.createPipelineLayout({bindGroupLayouts:[volumeLayout,this.lightingLayout]}),vertex:{module:volumeModule,entryPoint:'postVertex'},fragment:{module:volumeModule,entryPoint:'volumeFragment',targets:[{format:'rgba16float'}]},primitive:{topology:'triangle-list'}});
+    const composeLayout=device.createBindGroupLayout({entries:[uniform,{binding:1,visibility:GPUShaderStage.FRAGMENT,texture:{sampleType:'float'}},{binding:2,visibility:GPUShaderStage.FRAGMENT,texture:{sampleType:'depth',multisampled:samples>1}},{binding:3,visibility:GPUShaderStage.FRAGMENT,texture:{sampleType:'float'}},{binding:4,visibility:GPUShaderStage.FRAGMENT,buffer:{type:'uniform'}}]});
+    const composeModule=module('Linear HDR transmittance + depth-bilateral in-scattering',corridorComposeShader(samples>1));
+    this.composeGroup=device.createBindGroup({layout:composeLayout,entries:[{binding:0,resource:{buffer:this.mainUniform}},{binding:1,resource:this.sceneView},{binding:2,resource:depth.createView()},{binding:3,resource:this.volumeView},{binding:4,resource:{buffer:this.optionBuffer}}]});
+    this.composePipeline=device.createRenderPipeline({layout:device.createPipelineLayout({bindGroupLayouts:[composeLayout]}),vertex:{module:composeModule,entryPoint:'postVertex'},fragment:{module:composeModule,entryPoint:'composeFragment',targets:[{format:'rgba16float'}]},primitive:{topology:'triangle-list'}});
+    this.bloomTextures=[];this.bloomGroups=[];this.bloomViews=[];this.bloomSampler=device.createSampler({minFilter:'linear',magFilter:'linear',addressModeU:'clamp-to-edge',addressModeV:'clamp-to-edge'});
+    const bloomModule=module('HDR-only luminance threshold / tent bloom pyramid',CORRIDOR_BLOOM_SHADER);
+    this.bloomPipeline=device.createRenderPipeline({layout:'auto',vertex:{module:bloomModule,entryPoint:'postVertex'},fragment:{module:bloomModule,entryPoint:'bloomFragment',targets:[{format:'rgba16float'}]},primitive:{topology:'triangle-list'}});
+    for(let level=0;level<4;level++){
+      const texture=make(`HDR bloom level ${level}`,'rgba16float',Math.max(1,width>>(level+1)),Math.max(1,height>>(level+1))),view=texture.createView();this.bloomTextures.push(texture);this.bloomViews.push(view);
+      const options=buffer(16,new Float32Array([1.35,.5,level===0?1:0,0]));
+      this.bloomGroups.push(device.createBindGroup({layout:this.bloomPipeline.getBindGroupLayout(0),entries:[{binding:0,resource:level===0?this.composedView:this.bloomViews[level-1]},{binding:1,resource:this.bloomSampler},{binding:2,resource:{buffer:options}}]}));
+    }
+    const finalEntries=[uniform,{binding:1,visibility:GPUShaderStage.FRAGMENT,texture:{sampleType:'float'}},{binding:2,visibility:GPUShaderStage.FRAGMENT,texture:{sampleType:'float'}},{binding:3,visibility:GPUShaderStage.FRAGMENT,buffer:{type:'uniform'}}];
+    for(let i=0;i<4;i++)finalEntries.push({binding:4+i,visibility:GPUShaderStage.FRAGMENT,texture:{sampleType:'float'}});finalEntries.push({binding:8,visibility:GPUShaderStage.FRAGMENT,sampler:{type:'filtering'}});
+    const finalLayout=device.createBindGroupLayout({entries:finalEntries}),finalModule=module('Only final exposure / filmic / gamma after linear bloom',CORRIDOR_FINAL_SHADER);
+    this.finalGroup=device.createBindGroup({layout:finalLayout,entries:[{binding:0,resource:{buffer:this.mainUniform}},{binding:1,resource:this.composedView},{binding:2,resource:this.legacyView},{binding:3,resource:{buffer:this.optionBuffer}},...this.bloomViews.map((view,i)=>({binding:4+i,resource:view})),{binding:8,resource:this.bloomSampler}]});
+    this.finalPipeline=device.createRenderPipeline({layout:device.createPipelineLayout({bindGroupLayouts:[finalLayout]}),vertex:{module:finalModule,entryPoint:'postVertex'},fragment:{module:finalModule,entryPoint:'finalFragment',targets:[{format:this.format}]},primitive:{topology:'triangle-list'}});
+    this.check=Promise.all([volumeModule,composeModule,bloomModule,finalModule].map(async shader=>{const info=await shader.getCompilationInfo(),errors=info.messages.filter(m=>m.type==='error');if(errors.length)throw Error(errors.map(e=>e.message).join('\n'));}));
+  }
+  draw(encoder,target,timestampSet=null,enabled=true){
+    this.options[1]=this.fogEnabled&&enabled?1:0;this.options[2]=this.bloomEnabled&&enabled?1:0;this.options[3]=enabled?1:0;this.device.queue.writeBuffer(this.optionBuffer,0,this.options);
+    if(this.options[1]){const pass=encoder.beginRenderPass({colorAttachments:[{view:this.volumeView,clearValue:{r:0,g:0,b:0,a:0},loadOp:'clear',storeOp:'store'}]});pass.setPipeline(this.volumePipeline);pass.setBindGroup(0,this.volumeGroup);pass.setBindGroup(1,this.lightingGroup);pass.draw(3);pass.end();}
+    const composePass=encoder.beginRenderPass({colorAttachments:[{view:this.composedView,clearValue:{r:0,g:0,b:0,a:0},loadOp:'clear',storeOp:'store'}]});composePass.setPipeline(this.composePipeline);composePass.setBindGroup(0,this.composeGroup);composePass.draw(3);composePass.end();
+    if(this.options[2])for(let level=0;level<4;level++){const pass=encoder.beginRenderPass({colorAttachments:[{view:this.bloomViews[level],clearValue:{r:0,g:0,b:0,a:0},loadOp:'clear',storeOp:'store'}]});pass.setPipeline(this.bloomPipeline);pass.setBindGroup(0,this.bloomGroups[level]);pass.draw(3);pass.end();}
+    const descriptor={colorAttachments:[{view:target,loadOp:'clear',storeOp:'store'}]};if(timestampSet)descriptor.timestampWrites={querySet:timestampSet,endOfPassWriteIndex:1};
+    const pass=encoder.beginRenderPass(descriptor);pass.setPipeline(this.finalPipeline);pass.setBindGroup(0,this.finalGroup);pass.draw(3);pass.end();
+  }
+  async diagnostics(){
+    if(this.readbackBusy)throw Error('HDR diagnostic readback already in progress');this.readbackBusy=true;
+    const device=this.device,width=this.width,height=this.height,stride=Math.ceil(width*8/256)*256,buffers=[],encoder=device.createCommandEncoder();
+    try{
+      for(const texture of [this.scene,this.composed]){const buffer=device.createBuffer({label:'On-demand HDR numeric diagnostics',size:stride*height,usage:GPUBufferUsage.COPY_DST|GPUBufferUsage.MAP_READ});buffers.push(buffer);encoder.copyTextureToBuffer({texture},{buffer,bytesPerRow:stride,rowsPerImage:height},[width,height]);}
+      device.queue.submit([encoder.finish()]);const reports=[];
+      for(const buffer of buffers){await buffer.mapAsync(GPUMapMode.READ);reports.push(summarizeHdrPixels(new Uint16Array(buffer.getMappedRange()),width,height,stride));buffer.unmap();}
+      return {stage:CORRIDOR_STAGE,presentation:'Actual GPU texture copies; scene before scattering, composite after scattering before bloom/final tone',scene:reports[0],composite:reports[1],exposure:this.exposure};
+    }finally{for(const buffer of buffers)buffer.destroy();this.readbackBusy=false;}
+  }
+  report(){return {stage:CORRIDOR_STAGE,sceneFormat:'rgba16float',compositeFormat:'rgba16float',alpha:'Per-material/ray-bounded corridor coverage; HDR dust preserves destination alpha',toneMapping:'Lighting + reflection → shadowed scattering → linear HDR bloom → one final exposure/filmic/gamma; exact legacy display bypass elsewhere',exposure:this.exposure,estimatedGpuBytes:this.gpuBytes||0,fog:{enabled:this.fogEnabled,resolution:[Math.ceil(this.width/2),Math.ceil(this.height/2)],steps:24,extinctionNear:.0078,extinctionFar:.10,albedo:.16,anisotropy:.2,finiteSourceFootprint:.65,source:'Same authored light table and geometric shadow maps',reconstruction:'Receiver-distance bilateral 2x2; full-resolution transmittance'},bloom:{enabled:this.bloomEnabled,levels:4,threshold:1.35,knee:.5,strength:.06,source:'Only scoped linear HDR luminance above threshold'}};}
+}
 
 // corridor-renderer.js
 
@@ -994,12 +1240,12 @@ function cubeCamera(position,face){
   return multiply(new Float32Array(16),perspective(new Float32Array(16),Math.PI*.5,1,.06,100),view);
 }
 class CorridorRenderer{
-  constructor(device,format,mainUniform,geometry,{shadows=true,probe=true}={}){
-    this.device=device;this.format=format;this.mainUniform=mainUniform;this.geometry=geometry;this.shadowResolution=2048;this.probeOptions=CORRIDOR_PROBE;this.shadowsEnabled=shadows;this.probeEnabled=probe;this.bakeMilliseconds=null;
+  constructor(device,format,mainUniform,geometry,{shadows=true,probe=true,fog=true,bloom=true}={}){
+    this.device=device;this.format=format;this.mainUniform=mainUniform;this.post=new CorridorPost(device,format,mainUniform,{fog,bloom});this.geometry=geometry;this.shadowResolution=2048;this.probeOptions=CORRIDOR_PROBE;this.shadowsEnabled=shadows;this.probeEnabled=probe;this.bakeMilliseconds=null;
     this.vertexBuffer=device.createBuffer({label:'Beveled service-spine architecture',size:geometry.vertices.byteLength,usage:GPUBufferUsage.VERTEX|GPUBufferUsage.COPY_DST});device.queue.writeBuffer(this.vertexBuffer,0,geometry.vertices);
     this.cameraLayout=device.createBindGroupLayout({entries:[{binding:0,visibility:GPUShaderStage.VERTEX|GPUShaderStage.FRAGMENT,buffer:{type:'uniform'}}]});
     this.mainCameraGroup=device.createBindGroup({layout:this.cameraLayout,entries:[{binding:0,resource:{buffer:mainUniform}}]});
-    this.lightingLayout=device.createBindGroupLayout({entries:[{binding:0,visibility:GPUShaderStage.VERTEX|GPUShaderStage.FRAGMENT,buffer:{type:'uniform'}},{binding:1,visibility:GPUShaderStage.FRAGMENT,texture:{sampleType:'depth',viewDimension:'2d-array'}},{binding:2,visibility:GPUShaderStage.FRAGMENT,sampler:{type:'comparison'}},{binding:3,visibility:GPUShaderStage.FRAGMENT,texture:{sampleType:'float',viewDimension:'cube'}},{binding:4,visibility:GPUShaderStage.FRAGMENT,sampler:{type:'filtering'}}]});
+    this.lightingLayout=device.createBindGroupLayout({entries:[{binding:0,visibility:GPUShaderStage.VERTEX|GPUShaderStage.FRAGMENT,buffer:{type:'uniform'}},{binding:1,visibility:GPUShaderStage.FRAGMENT,texture:{sampleType:'depth',viewDimension:'2d-array'}},{binding:2,visibility:GPUShaderStage.FRAGMENT,sampler:{type:'comparison'}},{binding:3,visibility:GPUShaderStage.FRAGMENT,texture:{sampleType:'float',viewDimension:'cube'}},{binding:4,visibility:GPUShaderStage.FRAGMENT,sampler:{type:'filtering'}},{binding:5,visibility:GPUShaderStage.FRAGMENT,buffer:{type:'uniform'}}]});
     this.lightingBuffer=device.createBuffer({size:192,usage:GPUBufferUsage.UNIFORM|GPUBufferUsage.COPY_DST});
     this.shadowTexture=device.createTexture({label:'Two cached geometric spotlight shadow maps',size:[this.shadowResolution,this.shadowResolution,2],format:'depth32float',usage:GPUTextureUsage.RENDER_ATTACHMENT|GPUTextureUsage.TEXTURE_BINDING});
     this.shadowSampler=device.createSampler({compare:'less-equal',minFilter:'linear',magFilter:'linear',addressModeU:'clamp-to-edge',addressModeV:'clamp-to-edge'});
@@ -1007,7 +1253,9 @@ class CorridorRenderer{
     this.rawProbe=device.createTexture({label:'Actual room radiance: six HDR views',size:[p.size,p.size,6],format:'rgba16float',usage:GPUTextureUsage.RENDER_ATTACHMENT|GPUTextureUsage.TEXTURE_BINDING|GPUTextureUsage.COPY_SRC});
     this.filteredProbe=device.createTexture({label:'GGX roughness-prefiltered local room reflection',size:[p.size,p.size,6],mipLevelCount:p.mips,format:'rgba16float',usage:GPUTextureUsage.TEXTURE_BINDING|GPUTextureUsage.STORAGE_BINDING|GPUTextureUsage.COPY_DST});
     this.probeSampler=device.createSampler({minFilter:'linear',magFilter:'linear',mipmapFilter:'linear',addressModeU:'clamp-to-edge',addressModeV:'clamp-to-edge'});
-    this.lightingGroup=device.createBindGroup({layout:this.lightingLayout,entries:[{binding:0,resource:{buffer:this.lightingBuffer}},{binding:1,resource:this.shadowTexture.createView({dimension:'2d-array'})},{binding:2,resource:this.shadowSampler},{binding:3,resource:this.filteredProbe.createView({dimension:'cube'})},{binding:4,resource:this.probeSampler}]});
+    this.lightTableBuffer=device.createBuffer({size:528,usage:GPUBufferUsage.UNIFORM|GPUBufferUsage.COPY_DST});device.queue.writeBuffer(this.lightTableBuffer,0,packCorridorLights());
+    this.lightingGroup=device.createBindGroup({layout:this.lightingLayout,entries:[{binding:0,resource:{buffer:this.lightingBuffer}},{binding:1,resource:this.shadowTexture.createView({dimension:'2d-array'})},{binding:2,resource:this.shadowSampler},{binding:3,resource:this.filteredProbe.createView({dimension:'cube'})},{binding:4,resource:this.probeSampler},{binding:5,resource:{buffer:this.lightTableBuffer}}]});
+    this.post.setLighting(this.lightingLayout,this.lightingGroup);
     this.lightingData=new Float32Array(48);
     this.shadowCameras=CORRIDOR_LIGHTS.map((light,index)=>{
       const matrix=cameraMatrix(light.position,light.target,light.fov*Math.PI/180,.15,light.far);this.lightingData.set(matrix,index*16);
@@ -1057,23 +1305,12 @@ class CorridorRenderer{
   }
   setSamples(samples){
     if(!this.module)return;
-    this.pipeline=this.device.createRenderPipeline({label:'Beveled corridor: GGX / PCF / local HDR reflections',layout:this.layout,vertex:{module:this.module,entryPoint:'corridorVertex',buffers:[CORRIDOR_VERTEX_LAYOUT]},fragment:{module:this.module,entryPoint:'corridorFragment',targets:[{format:this.format}]},primitive:{topology:'triangle-list',cullMode:'none'},depthStencil:{format:'depth24plus',depthWriteEnabled:true,depthCompare:'less'},multisample:{count:samples}});
+    this.pipeline=this.device.createRenderPipeline({label:'Beveled corridor: GGX / PCF / local HDR reflections',layout:this.layout,vertex:{module:this.module,entryPoint:'corridorVertex',buffers:[CORRIDOR_VERTEX_LAYOUT]},fragment:{module:this.module,entryPoint:'corridorFragment',targets:[{format:this.format},{format:'rgba16float'}]},primitive:{topology:'triangle-list',cullMode:'none'},depthStencil:{format:'depth24plus',depthWriteEnabled:true,depthCompare:'less'},multisample:{count:samples}});
   }
-  setDepth(texture,samples){
-    const device=this.device,multisampled=samples>1;
-    const layout=device.createBindGroupLayout({entries:[{binding:0,visibility:GPUShaderStage.VERTEX|GPUShaderStage.FRAGMENT,buffer:{type:'uniform'}},{binding:1,visibility:GPUShaderStage.FRAGMENT,texture:{sampleType:'depth',multisampled}}]});
-    const module=device.createShaderModule({label:'Ray-bounded corridor aerial perspective',code:corridorAtmosphereShader(multisampled)});
-    this.atmosphereCheck=module.getCompilationInfo().then(info=>{const errors=info.messages.filter(message=>message.type==='error');if(errors.length)throw Error(errors.map(error=>error.message).join('\n'));});
-    this.atmosphereGroup=device.createBindGroup({layout,entries:[{binding:0,resource:{buffer:this.mainUniform}},{binding:1,resource:texture.createView()}]});
-    this.atmospherePipeline=device.createRenderPipeline({layout:device.createPipelineLayout({bindGroupLayouts:[layout]}),vertex:{module,entryPoint:'fogVertex'},fragment:{module,entryPoint:'fogFragment',targets:[{format:this.format,blend:{color:{srcFactor:'src-alpha',dstFactor:'one-minus-src-alpha',operation:'add'},alpha:{srcFactor:'one',dstFactor:'one-minus-src-alpha',operation:'add'}}}]},primitive:{topology:'triangle-list'}});
-  }
-  drawAtmosphere(encoder,target,timestampSet=null){
-    const descriptor={colorAttachments:[{view:target,loadOp:'load',storeOp:'store'}]};
-    if(timestampSet)descriptor.timestampWrites={querySet:timestampSet,endOfPassWriteIndex:1};
-    const pass=encoder.beginRenderPass(descriptor);pass.setPipeline(this.atmospherePipeline);pass.setBindGroup(0,this.atmosphereGroup);pass.draw(3);pass.end();
-  }
+  setDepth(texture,samples,width,height){this.post.resize(texture,samples,width,height);this.atmosphereCheck=this.post.check;}
+  drawAtmosphere(encoder,target,timestampSet=null,enabled=true){this.post.draw(encoder,target,timestampSet,enabled);}
   draw(pass){pass.setPipeline(this.pipeline);pass.setBindGroup(0,this.mainCameraGroup);pass.setBindGroup(1,this.lightingGroup);pass.setVertexBuffer(0,this.vertexBuffer);pass.draw(this.geometry.vertices.length/12);}
-  report(){const p=CORRIDOR_PROBE;let filteredBytes=0;for(let mip=0;mip<p.mips;mip++)filteredBytes+=(p.size>>mip)**2*6*8;return {triangles:this.geometry.triangles,geometryBytes:this.geometry.vertices.byteLength,estimatedGpuBytes:this.geometry.vertices.byteLength+2*this.shadowResolution**2*4+p.size**2*6*8+filteredBytes+192,shadowMaps:{count:2,resolution:this.shadowResolution,format:'depth32float',filter:'4-tap comparison PCF',enabled:this.shadowsEnabled,cached:true},environment:{source:'Six native HDR renders of actual procedural corridor geometry, direct lights and geometric shadows',resolution:CORRIDOR_PROBE.size,faces:6,mips:CORRIDOR_PROBE.mips,prefilter:'128-sample GGX importance convolution per mip texel',parallaxCorrection:'Room-box projected reflected rays',enabled:this.probeEnabled,cached:true},atmosphere:{bounds:[[-3.9,0,24],[3.9,5.6,72]],extinctionPerMetre:.065,integration:'Shared-depth-clipped ray length inside physical corridor; 4 source samples, display-space composite'},bakeMilliseconds:this.bakeMilliseconds,fixedExposure:1.35};}
+  report(){const p=CORRIDOR_PROBE;let filteredBytes=0;for(let mip=0;mip<p.mips;mip++)filteredBytes+=(p.size>>mip)**2*6*8;return {triangles:this.geometry.triangles,geometryBytes:this.geometry.vertices.byteLength,estimatedGpuBytes:this.geometry.vertices.byteLength+2*this.shadowResolution**2*4+p.size**2*6*8+filteredBytes+192+(this.post.gpuBytes||0),shadowMaps:{count:2,resolution:this.shadowResolution,format:'depth32float',filter:'Receiver-plane-corrected bilinear 2x2 PCF',enabled:this.shadowsEnabled,cached:true},environment:{source:'Six native HDR renders of actual procedural corridor geometry, direct lights and geometric shadows',resolution:CORRIDOR_PROBE.size,faces:6,mips:CORRIDOR_PROBE.mips,prefilter:'128-sample GGX importance convolution per mip texel',parallaxCorrection:'Room-box projected reflected rays',enabled:this.probeEnabled,cached:true},hdr:this.post.report(),bakeMilliseconds:this.bakeMilliseconds,lightTable:CORRIDOR_LIGHT_TABLE,fixedExposure:1.35};}
 }
 
 // main.js
@@ -1153,17 +1390,17 @@ function createPipelines(){
   if(!bindGroupLayout)bindGroupLayout=device.createBindGroupLayout({entries:[{binding:0,visibility:GPUShaderStage.VERTEX|GPUShaderStage.FRAGMENT,buffer:{type:'uniform'}},{binding:1,visibility:GPUShaderStage.VERTEX,buffer:{type:'read-only-storage'}}]});
   const layout=device.createPipelineLayout({bindGroupLayouts:[bindGroupLayout]});
   bindGroup=device.createBindGroup({layout:bindGroupLayout,entries:[{binding:0,resource:{buffer:uniformBuffer}},{binding:1,resource:{buffer:particleBuffer}}]});
-  const sky=device.createShaderModule({label:'Procedural planetary atmosphere and rings',code:SKY_SHADER});
-  const mesh=device.createShaderModule({label:'Station alloy and procedural lighting',code:MESH_SHADER});
-  const dust=device.createShaderModule({label:'Seeded drifting dust',code:DUST_SHADER});
+  const sky=device.createShaderModule({label:'Procedural planetary atmosphere and rings',code:HDR_SKY_SHADER});
+  const mesh=device.createShaderModule({label:'Station alloy and procedural lighting',code:HDR_MESH_SHADER});
+  const dust=device.createShaderModule({label:'Seeded drifting dust',code:HDR_DUST_SHADER});
   compilationChecks=Promise.all([sky,mesh,dust].map(async module=>{
     const info=await module.getCompilationInfo();const errors=info.messages.filter(message=>message.type==='error');
     if(errors.length)throw Error(errors.map(error=>`WGSL line ${error.lineNum}: ${error.message}`).join('\n'));
   }));
   compilationChecks.catch(error=>fail(error.message));
-  skyPipeline=device.createRenderPipeline({label:'Astronomical sky',layout,vertex:{module:sky,entryPoint:'skyVertex'},fragment:{module:sky,entryPoint:'skyFragment',targets:[{format}]},primitive:{topology:'triangle-list'},depthStencil:{format:'depth24plus',depthWriteEnabled:false,depthCompare:'always'},multisample:{count:samples}});
-  meshPipeline=device.createRenderPipeline({label:'Station architecture',layout,vertex:{module:mesh,entryPoint:'meshVertex',buffers:[{arrayStride:48,attributes:[{shaderLocation:0,offset:0,format:'float32x3'},{shaderLocation:1,offset:12,format:'float32x3'},{shaderLocation:2,offset:24,format:'float32x3'},{shaderLocation:3,offset:36,format:'float32x3'}]}]},fragment:{module:mesh,entryPoint:'meshFragment',targets:[{format}]},primitive:{topology:'triangle-list',cullMode:'none'},depthStencil:{format:'depth24plus',depthWriteEnabled:true,depthCompare:'less'},multisample:{count:samples}});
-  dustPipeline=device.createRenderPipeline({label:'Atmospheric particles',layout,vertex:{module:dust,entryPoint:'dustVertex'},fragment:{module:dust,entryPoint:'dustFragment',targets:[{format,blend:{color:{srcFactor:'src-alpha',dstFactor:'one-minus-src-alpha',operation:'add'},alpha:{srcFactor:'one',dstFactor:'one-minus-src-alpha',operation:'add'}}}]},primitive:{topology:'triangle-list'},depthStencil:{format:'depth24plus',depthWriteEnabled:false,depthCompare:'less'},multisample:{count:samples}});
+  skyPipeline=device.createRenderPipeline({label:'Astronomical sky',layout,vertex:{module:sky,entryPoint:'skyVertex'},fragment:{module:sky,entryPoint:'skyFragment',targets:[{format},{format:'rgba16float'}]},primitive:{topology:'triangle-list'},depthStencil:{format:'depth24plus',depthWriteEnabled:false,depthCompare:'always'},multisample:{count:samples}});
+  meshPipeline=device.createRenderPipeline({label:'Station architecture',layout,vertex:{module:mesh,entryPoint:'meshVertex',buffers:[{arrayStride:48,attributes:[{shaderLocation:0,offset:0,format:'float32x3'},{shaderLocation:1,offset:12,format:'float32x3'},{shaderLocation:2,offset:24,format:'float32x3'},{shaderLocation:3,offset:36,format:'float32x3'}]}]},fragment:{module:mesh,entryPoint:'meshFragment',targets:[{format},{format:'rgba16float'}]},primitive:{topology:'triangle-list',cullMode:'none'},depthStencil:{format:'depth24plus',depthWriteEnabled:true,depthCompare:'less'},multisample:{count:samples}});
+  dustPipeline=device.createRenderPipeline({label:'Atmospheric particles',layout,vertex:{module:dust,entryPoint:'dustVertex'},fragment:{module:dust,entryPoint:'dustFragment',targets:[{format,blend:{color:{srcFactor:'src-alpha',dstFactor:'one-minus-src-alpha',operation:'add'},alpha:{srcFactor:'one',dstFactor:'one-minus-src-alpha',operation:'add'}}},{format:'rgba16float',blend:HDR_PARTICLE_BLEND}]},primitive:{topology:'triangle-list'},depthStencil:{format:'depth24plus',depthWriteEnabled:false,depthCompare:'less'},multisample:{count:samples}});
 }
 function resize(){
   if(!device)return;
@@ -1175,9 +1412,9 @@ function resize(){
   canvas.width=renderWidth;canvas.height=renderHeight;
   depthTexture?.destroy();colorTexture?.destroy();
   depthTexture=device.createTexture({size:[renderWidth,renderHeight],format:'depth24plus',sampleCount:PRESETS[quality].samples,usage:GPUTextureUsage.RENDER_ATTACHMENT|GPUTextureUsage.TEXTURE_BINDING});
-  corridorRenderer?.setDepth(depthTexture,PRESETS[quality].samples);
+  corridorRenderer?.setDepth(depthTexture,PRESETS[quality].samples,renderWidth,renderHeight);
   colorTexture=PRESETS[quality].samples>1?device.createTexture({size:[renderWidth,renderHeight],format,sampleCount:PRESETS[quality].samples,usage:GPUTextureUsage.RENDER_ATTACHMENT}):null;
-  passDescriptor={colorAttachments:[{view:null,resolveTarget:undefined,clearValue:{r:0,g:0,b:0,a:1},loadOp:'clear',storeOp:'store'}],depthStencilAttachment:{view:depthTexture.createView(),depthClearValue:1,depthLoadOp:'clear',depthStoreOp:'store'},timestampWrites:undefined};
+  passDescriptor={colorAttachments:[{view:corridorRenderer.post.legacyView,resolveTarget:undefined,clearValue:{r:0,g:0,b:0,a:1},loadOp:'clear',storeOp:'store'},corridorRenderer.post.hdrAttachment],depthStencilAttachment:{view:depthTexture.createView(),depthClearValue:1,depthLoadOp:'clear',depthStoreOp:'store'},timestampWrites:undefined};
   if(colorTexture)passDescriptor.colorAttachments[0].view=colorTexture.createView();
   if(readbackMode){
     readbackTexture?.destroy();readbackBuffer?.destroy();
@@ -1213,7 +1450,7 @@ async function initialize(){
     }
     createPipelines();await compilationChecks;
     corridorScene=buildCorridor();navigationObstacles=scene.obstacles.concat(corridorScene.obstacles);
-    corridorRenderer=new CorridorRenderer(device,format,uniformBuffer,corridorScene,{shadows:params.get('shadows')!=='0',probe:params.get('probe')!=='0'});
+    corridorRenderer=new CorridorRenderer(device,format,uniformBuffer,corridorScene,{shadows:params.get('shadows')!=='0',probe:params.get('probe')!=='0',fog:params.get('fog')!=='0',bloom:params.get('bloom')!=='0'});
     await corridorRenderer.initialize(PRESETS[quality].samples);
     resize();await corridorRenderer.atmosphereCheck;setView(params.get('view')||1);setQuality(quality);setMenu(menuOpen);
     ready=true;$('loading').hidden=true;document.body.classList.add('ready');
@@ -1249,7 +1486,7 @@ function updateHud(now){
   $('coordinates').textContent=`${camera.position[0].toFixed(1)} / ${camera.position[1].toFixed(1)} / ${camera.position[2].toFixed(1)} M`;
   $('quality-label').textContent=quality.toUpperCase();$('location-label').textContent=currentSector();
   if(routeCaption)$('sector').textContent=currentSectorCaption();
-  if(showStats){const r=getReport();$('stats').textContent=`${quality} · ${renderWidth}×${renderHeight} · ${scene.triangles.toLocaleString()} triangles\nFrame mean ${r.frame.meanMs?.toFixed(2)||'—'} ms · p99 ${r.frame.p99Ms?.toFixed(2)||'—'} ms\nGPU ${r.gpu.meanMs?.toFixed(2)||'—'} ms · ${deviceInfo.architecture}\n${deviceInfo.isFallbackAdapter?'SOFTWARE DIAGNOSTIC — hardware gate BLOCKED':'REFERENCE GPU NOT SELECTED — gate BLOCKED'}${flight?'\nFLIGHT '+Math.min(60,(now-flight.start)/1000).toFixed(1)+' / 60.0 s':''}`;}
+  if(showStats){const r=getReport();$('stats').textContent=`${quality} · ${renderWidth}×${renderHeight} · ${r.triangles.toLocaleString()} triangles\nFrame mean ${r.frame.meanMs?.toFixed(2)||'—'} ms · p99 ${r.frame.p99Ms?.toFixed(2)||'—'} ms\nGPU ${r.gpu.meanMs?.toFixed(2)||'—'} ms · ${deviceInfo.architecture}\n${deviceInfo.isFallbackAdapter?'SOFTWARE DIAGNOSTIC — hardware gate BLOCKED':'REFERENCE GPU NOT SELECTED — gate BLOCKED'}${flight?'\nFLIGHT '+Math.min(60,(now-flight.start)/1000).toFixed(1)+' / 60.0 s':''}`;}
 }
 function readGpuTiming(){
   timestampRead.mapAsync(GPUMapMode.READ).then(()=>{
@@ -1280,10 +1517,10 @@ function render(now){
   if(ms>0&&frameCount<frameSamples.length)frameSamples[frameCount++]=ms;
   updateCamera(delta,now);updateUniforms();updateHud(now);
   const textureView=readbackMode?readbackTexture.createView():context.getCurrentTexture().createView();
-  if(colorTexture)passDescriptor.colorAttachments[0].resolveTarget=textureView;else passDescriptor.colorAttachments[0].view=textureView;
+  if(colorTexture)passDescriptor.colorAttachments[0].resolveTarget=corridorRenderer.post.legacyView;else passDescriptor.colorAttachments[0].view=corridorRenderer.post.legacyView;
   const renderFog=debug!=='clear'&&debug!=='sky';
   const sample=timestampSet&&!timestampBusy&&animationFrame%30===0;
-  if(sample){timestampBusy=true;passDescriptor.timestampWrites={querySet:timestampSet,beginningOfPassWriteIndex:0};if(!renderFog)passDescriptor.timestampWrites.endOfPassWriteIndex=1;}else passDescriptor.timestampWrites=undefined;
+  if(sample){timestampBusy=true;passDescriptor.timestampWrites={querySet:timestampSet,beginningOfPassWriteIndex:0};}else passDescriptor.timestampWrites=undefined;
   const encoder=device.createCommandEncoder(),pass=encoder.beginRenderPass(passDescriptor);pass.setBindGroup(0,bindGroup);
   if(debug!=='clear'){pass.setPipeline(skyPipeline);pass.draw(3);}
   if(debug!=='clear'&&debug!=='sky'){
@@ -1296,7 +1533,7 @@ function render(now){
     pass.setPipeline(dustPipeline);pass.setBindGroup(0,bindGroup);pass.draw(6,PRESETS[quality].dust);
   }
   pass.end();
-  if(renderFog)corridorRenderer.drawAtmosphere(encoder,textureView,sample?timestampSet:null);
+  corridorRenderer.drawAtmosphere(encoder,textureView,sample?timestampSet:null,renderFog);
   if(sample){encoder.resolveQuerySet(timestampSet,0,2,timestampResolve,0);encoder.copyBufferToBuffer(timestampResolve,0,timestampRead,0,16);}
   if(readbackMode){encoder.copyTextureToBuffer({texture:readbackTexture},{buffer:readbackBuffer,bytesPerRow:readbackStride,rowsPerImage:renderHeight},[renderWidth,renderHeight]);readbackBusy=true;}
   device.queue.submit([encoder.finish()]);
@@ -1328,7 +1565,7 @@ window.addEventListener('keydown',event=>{
 window.addEventListener('keyup',event=>keys.delete(event.code));window.addEventListener('blur',()=>keys.clear());
 document.addEventListener('mousemove',event=>{if(document.pointerLockElement===canvas&&!menuOpen){camera.yaw+=event.movementX*.0018;camera.pitch=clamp(camera.pitch+event.movementY*.0018,-1.45,1.45);}});
 document.addEventListener('pointerlockchange',()=>{document.body.classList.toggle('pointer-locked',document.pointerLockElement===canvas);});
-window.echo9={gpuInstance,get adapter(){return adapterReference;},get device(){return device;},get ready(){return ready&&startupSubmissionVerified&&(!readbackMode||presentedFrames>0);},setView,setQuality,setTime,startFlythrough,stopFlythrough,getReport,getState,setMenu,get stats(){return getReport();},camera,views:VIEWS,hero:CORRIDOR_HERO};
+window.echo9={gpuInstance,get adapter(){return adapterReference;},get device(){return device;},get ready(){return ready&&startupSubmissionVerified&&(!readbackMode||presentedFrames>0);},getHdrDiagnostics:()=>corridorRenderer.post.diagnostics(),setView,setQuality,setTime,startFlythrough,stopFlythrough,getReport,getState,setMenu,get stats(){return getReport();},camera,views:VIEWS,hero:CORRIDOR_HERO};
 initialize();
 </script>
 </body></html>

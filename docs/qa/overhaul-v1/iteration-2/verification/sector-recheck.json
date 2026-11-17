@@ -1,0 +1,56 @@
+{
+  "artifactSha256": "8d0da9eb540d3373eee1a33fecd49381d46e64c797afb6dd28c0c76ebe8a3e08",
+  "method": "Fresh 1920x1080 RGB comparison against preserved iteration2 captures and iteration1 baseline. No normalization. View6 allowed only previously inspected corridor doorway/MSAA edge.",
+  "checks": [
+    {
+      "view": 1,
+      "status": "PASS",
+      "newSha256": "ce123c82808526e5352fdf6a945a8b75d7202b4bb5128e9fab7dfdf35f833114",
+      "frozenSha256": "ce123c82808526e5352fdf6a945a8b75d7202b4bb5128e9fab7dfdf35f833114",
+      "changedFromFrozenPixels": 0,
+      "changedFromIteration1Pixels": 0,
+      "changedBoundingBox": null
+    },
+    {
+      "view": 2,
+      "status": "PASS",
+      "newSha256": "fdfe96f8662a532dea01675ee72fb7c0c0c0bdd4d4691227e38249165d2d3189",
+      "frozenSha256": "fdfe96f8662a532dea01675ee72fb7c0c0c0bdd4d4691227e38249165d2d3189",
+      "changedFromFrozenPixels": 0,
+      "changedFromIteration1Pixels": 0,
+      "changedBoundingBox": null
+    },
+    {
+      "view": 3,
+      "status": "PASS",
+      "newSha256": "911e50164fed6d93f99f2b9319b9d443c54ef3ebbfc0cdf51f4edd2302b5db5f",
+      "frozenSha256": "911e50164fed6d93f99f2b9319b9d443c54ef3ebbfc0cdf51f4edd2302b5db5f",
+      "changedFromFrozenPixels": 0,
+      "changedFromIteration1Pixels": 0,
+      "changedBoundingBox": null
+    },
+    {
+      "view": 5,
+      "status": "PASS",
+      "newSha256": "5c9750fbcf24ebca889971638f4614d69dcd19bf6e4820e564e5ab848c464191",
+      "frozenSha256": "5c9750fbcf24ebca889971638f4614d69dcd19bf6e4820e564e5ab848c464191",
+      "changedFromFrozenPixels": 0,
+      "changedFromIteration1Pixels": 0,
+      "changedBoundingBox": null
+    },
+    {
+      "view": 6,
+      "status": "PASS",
+      "newSha256": "f6b0d4ad244822e4e432281925adc07e9d20667312f216e04cdc5204453d2371",
+      "frozenSha256": "f6b0d4ad244822e4e432281925adc07e9d20667312f216e04cdc5204453d2371",
+      "changedFromFrozenPixels": 0,
+      "changedFromIteration1Pixels": 56314,
+      "changedBoundingBox": [
+        1520,
+        409,
+        1795,
+        644
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "artifactSha256": "8d0da9eb540d3373eee1a33fecd49381d46e64c797afb6dd28c0c76ebe8a3e08",
+  "sourceAndIndex": "PASS",
+  "sourceIntegrityFiles": 35,
+  "RunAllTests": {
+    "status": "PASS",
+    "count": 24
+  },
+  "smoke": {
+    "status": "PASS",
+    "count": 17
+  },
+  "fallback": {
+    "status": "PASS",
+    "count": 3
+  },
+  "sectorRechecks": {
+    "status": "PASS",
+    "count": 5
+  },
+  "heroRechecks": {
+    "status": "PASS",
+    "count": 2
+  },
+  "featureDiagnostics": {
+    "status": "PASS",
+    "count": 4
+  },
+  "actualHdrReadback": "PASS",
+  "sameArtifactRoute": "PASS",
+  "artDirection": "NOT ACCEPTED",
+  "independentReferenceMatch": "FAIL",
+  "hardwareGpu60FpsTemporal": "BLOCKED",
+  "iteration3": "NOT STARTED"
+}

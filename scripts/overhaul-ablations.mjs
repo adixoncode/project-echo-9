@@ -1,10 +1,11 @@
-/** Diagnostic feature-off renders of the same first candidate; no artistic revisions. */
+/** Diagnostic feature-off renders of the same approved candidate; no artistic revisions. */
 import {createRequire} from 'node:module';import {writeFile,readFile} from 'node:fs/promises';import {resolve} from 'node:path';import {createHash} from 'node:crypto';
-const {chromium}=createRequire(import.meta.url)('playwright');const root=resolve(import.meta.dirname,'..'),out=resolve(root,'docs/qa/overhaul-v1/iteration-1');
+const {chromium}=createRequire(import.meta.url)('playwright');const root=resolve(import.meta.dirname,'..'),out=resolve(root,process.env.QA_DIR||'docs/qa/overhaul-v1/iteration-2');
 const browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH||'/home/agent/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome',headless:true,args:['--no-sandbox','--enable-unsafe-webgpu','--use-angle=swiftshader']});
 const results=[];const sha=createHash('sha256').update(await readFile(resolve(root,'index.html'))).digest('hex');
 try{
- for(const [name,parameter]of [['no-shadows','shadows=0'],['no-environment','probe=0']]){
+ const variants=process.env.QA_VARIANTS?JSON.parse(process.env.QA_VARIANTS):[['no-shadows','shadows=0'],['no-environment','probe=0'],['no-atmosphere','fog=0'],['no-bloom','bloom=0']];
+ for(const [name,parameter]of variants){
   const page=await browser.newPage({viewport:{width:1920,height:1080},deviceScaleFactor:1});const errors=[];
   page.on('pageerror',error=>errors.push(error.message));page.on('console',msg=>{if(msg.type()==='error')errors.push(msg.text());});
   await page.goto('http://localhost:4173/index.html?test=1&readback=1&view=4&quality=High&clean=1&'+parameter);

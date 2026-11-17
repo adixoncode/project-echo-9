@@ -1,0 +1,1514 @@
+[
+  {
+    "name": "no-shadows",
+    "artifactSha256": "8d0da9eb540d3373eee1a33fecd49381d46e64c797afb6dd28c0c76ebe8a3e08",
+    "report": {
+      "project": "PROJECT ECHO-9",
+      "seed": 15515657,
+      "status": "BLOCKED",
+      "reason": "CPU readback presentation is diagnostic only; hardware swapchain measurement is required.",
+      "measurementStatus": "IN_PROGRESS",
+      "adapter": {
+        "vendor": "google",
+        "architecture": "swiftshader",
+        "device": "unreported",
+        "description": "unreported",
+        "isFallbackAdapter": true
+      },
+      "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/151.0.0.0 Safari/537.36",
+      "resolution": [
+        1920,
+        1080
+      ],
+      "cssResolution": [
+        1920,
+        1080
+      ],
+      "devicePixelRatio": 1,
+      "quality": "High",
+      "presentationMode": "readback",
+      "readbackOverhead": "GPU copy, async map, BGRA→RGBA conversion and 2D upload included in frame times",
+      "renderScale": 1,
+      "msaa": 4,
+      "triangles": 159578,
+      "vertices": 478734,
+      "legacyVertices": 116874,
+      "corridor": {
+        "triangles": 128084,
+        "geometryBytes": 18444096,
+        "estimatedGpuBytes": 171315632,
+        "shadowMaps": {
+          "count": 2,
+          "resolution": 2048,
+          "format": "depth32float",
+          "filter": "Receiver-plane-corrected bilinear 2x2 PCF",
+          "enabled": false,
+          "cached": true
+        },
+        "environment": {
+          "source": "Six native HDR renders of actual procedural corridor geometry, direct lights and geometric shadows",
+          "resolution": 128,
+          "faces": 6,
+          "mips": 8,
+          "prefilter": "128-sample GGX importance convolution per mip texel",
+          "parallaxCorrection": "Room-box projected reflected rays",
+          "enabled": true,
+          "cached": true
+        },
+        "hdr": {
+          "stage": "final",
+          "sceneFormat": "rgba16float",
+          "compositeFormat": "rgba16float",
+          "alpha": "Per-material/ray-bounded corridor coverage; HDR dust preserves destination alpha",
+          "toneMapping": "Lighting + reflection → shadowed scattering → linear HDR bloom → one final exposure/filmic/gamma; exact legacy display bypass elsewhere",
+          "exposure": 1.35,
+          "estimatedGpuBytes": 117481920,
+          "fog": {
+            "enabled": true,
+            "resolution": [
+              960,
+              540
+            ],
+            "steps": 24,
+            "extinctionNear": 0.0078,
+            "extinctionFar": 0.1,
+            "albedo": 0.16,
+            "anisotropy": 0.2,
+            "finiteSourceFootprint": 0.65,
+            "source": "Same authored light table and geometric shadow maps",
+            "reconstruction": "Receiver-distance bilateral 2x2; full-resolution transmittance"
+          },
+          "bloom": {
+            "enabled": true,
+            "levels": 4,
+            "threshold": 1.35,
+            "knee": 0.5,
+            "strength": 0.06,
+            "source": "Only scoped linear HDR luminance above threshold"
+          }
+        },
+        "bakeMilliseconds": 2472,
+        "lightTable": [
+          {
+            "id": "cold-rib-key",
+            "position": [
+              -1,
+              4.3,
+              31.8
+            ],
+            "target": [
+              -3.75,
+              2.4,
+              35.3
+            ],
+            "color": [
+              0.57,
+              0.74,
+              0.94
+            ],
+            "power": 280,
+            "fov": 104,
+            "far": 38,
+            "shadow": 0,
+            "size": [
+              0.3,
+              0.19,
+              0.1
+            ],
+            "mount": "ceiling",
+            "radius": 0.18,
+            "direction": [
+              -0.5682194167592653,
+              -0.39258796067003787,
+              0.7231883486027006
+            ],
+            "outerCos": 0.6156614753256583,
+            "innerCos": 0.8458209421247207,
+            "emission": 12.280701754385964
+          },
+          {
+            "id": "red-depth-key",
+            "position": [
+              0.45,
+              4.75,
+              44.1
+            ],
+            "target": [
+              0.45,
+              0.45,
+              45.2
+            ],
+            "color": [
+              1,
+              0.025,
+              0.011
+            ],
+            "power": 360,
+            "fov": 148,
+            "far": 38,
+            "shadow": 1,
+            "size": [
+              0.2,
+              0.28,
+              0.2
+            ],
+            "mount": "pendant",
+            "radius": 0.18,
+            "direction": [
+              0,
+              -0.9688027044775657,
+              0.24783324998263342
+            ],
+            "outerCos": 0.27563735581699916,
+            "innerCos": 0.6961634275566145,
+            "emission": 16.07142857142857
+          },
+          {
+            "id": "cold-left-graze",
+            "position": [
+              1.35,
+              4.55,
+              29.8
+            ],
+            "target": [
+              3.7,
+              2.15,
+              33.1
+            ],
+            "color": [
+              0.53,
+              0.68,
+              0.84
+            ],
+            "power": 105,
+            "fov": 96,
+            "far": 38,
+            "shadow": -1,
+            "size": [
+              0.3,
+              0.19,
+              0.1
+            ],
+            "mount": "ceiling",
+            "radius": 0.18,
+            "direction": [
+              0.49906892676595455,
+              -0.5096874145694854,
+              0.7008201950330426
+            ],
+            "outerCos": 0.6691306063588582,
+            "innerCos": 0.8681121951482392,
+            "emission": 4.605263157894736
+          },
+          {
+            "id": "cold-middle-rib",
+            "position": [
+              -0.3,
+              4.65,
+              38.7
+            ],
+            "target": [
+              -3.7,
+              2.4,
+              41.4
+            ],
+            "color": [
+              0.45,
+              0.61,
+              0.79
+            ],
+            "power": 110,
+            "fov": 96,
+            "far": 38,
+            "shadow": -1,
+            "size": [
+              0.3,
+              0.19,
+              0.1
+            ],
+            "mount": "ceiling",
+            "radius": 0.18,
+            "direction": [
+              -0.6952907081536089,
+              -0.4601188509840059,
+              0.5521426211808061
+            ],
+            "outerCos": 0.6691306063588582,
+            "innerCos": 0.8681121951482392,
+            "emission": 4.824561403508771
+          },
+          {
+            "id": "red-middle",
+            "position": [
+              0.45,
+              4.75,
+              52.5
+            ],
+            "target": [
+              0.2,
+              0.55,
+              54.5
+            ],
+            "color": [
+              1,
+              0.022,
+              0.008
+            ],
+            "power": 110,
+            "fov": 120,
+            "far": 38,
+            "shadow": -1,
+            "size": [
+              0.2,
+              0.28,
+              0.2
+            ],
+            "mount": "pendant",
+            "radius": 0.18,
+            "direction": [
+              -0.05366425767258279,
+              -0.9015595288993908,
+              0.4293140613806623
+            ],
+            "outerCos": 0.5000000000000001,
+            "innerCos": 0.7965299180241963,
+            "emission": 4.910714285714286
+          },
+          {
+            "id": "red-far",
+            "position": [
+              0.45,
+              4.75,
+              61.7
+            ],
+            "target": [
+              0.2,
+              0.4,
+              63
+            ],
+            "color": [
+              1,
+              0.022,
+              0.008
+            ],
+            "power": 90,
+            "fov": 120,
+            "far": 38,
+            "shadow": -1,
+            "size": [
+              0.2,
+              0.28,
+              0.2
+            ],
+            "mount": "pendant",
+            "radius": 0.18,
+            "direction": [
+              -0.05498158425339618,
+              -0.9566795660090934,
+              0.2859042381176595
+            ],
+            "outerCos": 0.5000000000000001,
+            "innerCos": 0.7965299180241963,
+            "emission": 4.017857142857142
+          },
+          {
+            "id": "cold-service-bay",
+            "position": [
+              -4.3,
+              3.6,
+              33.5
+            ],
+            "target": [
+              -1.5,
+              1.6,
+              35
+            ],
+            "color": [
+              0.55,
+              0.71,
+              0.87
+            ],
+            "power": 30,
+            "fov": 110,
+            "far": 38,
+            "shadow": -1,
+            "size": [
+              0.72,
+              0.36,
+              0.07
+            ],
+            "mount": "wall",
+            "radius": 0.18,
+            "direction": [
+              0.7459376616259147,
+              -0.5328126154470819,
+              0.39960946158531147
+            ],
+            "outerCos": 0.5735764363510462,
+            "innerCos": 0.8280603346224944,
+            "emission": 0.28935185185185186
+          }
+        ],
+        "fixedExposure": 1.35
+      },
+      "estimatedGpuBytes": 259883344,
+      "diagnosticCpuPixelBytes": 8294400,
+      "frame": {
+        "count": 2,
+        "meanMs": 30357.149999999998,
+        "p99Ms": 30765.5,
+        "maxMs": 30765.5
+      },
+      "gpu": {
+        "count": 1,
+        "meanMs": 30717.849466,
+        "p99Ms": 30717.849466,
+        "maxMs": 30717.849466,
+        "samplingEveryNthFrame": 30,
+        "status": "PASS",
+        "reason": null
+      },
+      "flythrough": {
+        "durationSeconds": 60,
+        "status": "NOT_RUN"
+      },
+      "runtimeErrors": [],
+      "elapsedSeconds": 66.40819999999925
+    },
+    "errors": []
+  },
+  {
+    "name": "no-environment",
+    "artifactSha256": "8d0da9eb540d3373eee1a33fecd49381d46e64c797afb6dd28c0c76ebe8a3e08",
+    "report": {
+      "project": "PROJECT ECHO-9",
+      "seed": 15515657,
+      "status": "BLOCKED",
+      "reason": "CPU readback presentation is diagnostic only; hardware swapchain measurement is required.",
+      "measurementStatus": "IN_PROGRESS",
+      "adapter": {
+        "vendor": "google",
+        "architecture": "swiftshader",
+        "device": "unreported",
+        "description": "unreported",
+        "isFallbackAdapter": true
+      },
+      "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/151.0.0.0 Safari/537.36",
+      "resolution": [
+        1920,
+        1080
+      ],
+      "cssResolution": [
+        1920,
+        1080
+      ],
+      "devicePixelRatio": 1,
+      "quality": "High",
+      "presentationMode": "readback",
+      "readbackOverhead": "GPU copy, async map, BGRA→RGBA conversion and 2D upload included in frame times",
+      "renderScale": 1,
+      "msaa": 4,
+      "triangles": 159578,
+      "vertices": 478734,
+      "legacyVertices": 116874,
+      "corridor": {
+        "triangles": 128084,
+        "geometryBytes": 18444096,
+        "estimatedGpuBytes": 171315632,
+        "shadowMaps": {
+          "count": 2,
+          "resolution": 2048,
+          "format": "depth32float",
+          "filter": "Receiver-plane-corrected bilinear 2x2 PCF",
+          "enabled": true,
+          "cached": true
+        },
+        "environment": {
+          "source": "Six native HDR renders of actual procedural corridor geometry, direct lights and geometric shadows",
+          "resolution": 128,
+          "faces": 6,
+          "mips": 8,
+          "prefilter": "128-sample GGX importance convolution per mip texel",
+          "parallaxCorrection": "Room-box projected reflected rays",
+          "enabled": false,
+          "cached": true
+        },
+        "hdr": {
+          "stage": "final",
+          "sceneFormat": "rgba16float",
+          "compositeFormat": "rgba16float",
+          "alpha": "Per-material/ray-bounded corridor coverage; HDR dust preserves destination alpha",
+          "toneMapping": "Lighting + reflection → shadowed scattering → linear HDR bloom → one final exposure/filmic/gamma; exact legacy display bypass elsewhere",
+          "exposure": 1.35,
+          "estimatedGpuBytes": 117481920,
+          "fog": {
+            "enabled": true,
+            "resolution": [
+              960,
+              540
+            ],
+            "steps": 24,
+            "extinctionNear": 0.0078,
+            "extinctionFar": 0.1,
+            "albedo": 0.16,
+            "anisotropy": 0.2,
+            "finiteSourceFootprint": 0.65,
+            "source": "Same authored light table and geometric shadow maps",
+            "reconstruction": "Receiver-distance bilateral 2x2; full-resolution transmittance"
+          },
+          "bloom": {
+            "enabled": true,
+            "levels": 4,
+            "threshold": 1.35,
+            "knee": 0.5,
+            "strength": 0.06,
+            "source": "Only scoped linear HDR luminance above threshold"
+          }
+        },
+        "bakeMilliseconds": 2279.9000000003725,
+        "lightTable": [
+          {
+            "id": "cold-rib-key",
+            "position": [
+              -1,
+              4.3,
+              31.8
+            ],
+            "target": [
+              -3.75,
+              2.4,
+              35.3
+            ],
+            "color": [
+              0.57,
+              0.74,
+              0.94
+            ],
+            "power": 280,
+            "fov": 104,
+            "far": 38,
+            "shadow": 0,
+            "size": [
+              0.3,
+              0.19,
+              0.1
+            ],
+            "mount": "ceiling",
+            "radius": 0.18,
+            "direction": [
+              -0.5682194167592653,
+              -0.39258796067003787,
+              0.7231883486027006
+            ],
+            "outerCos": 0.6156614753256583,
+            "innerCos": 0.8458209421247207,
+            "emission": 12.280701754385964
+          },
+          {
+            "id": "red-depth-key",
+            "position": [
+              0.45,
+              4.75,
+              44.1
+            ],
+            "target": [
+              0.45,
+              0.45,
+              45.2
+            ],
+            "color": [
+              1,
+              0.025,
+              0.011
+            ],
+            "power": 360,
+            "fov": 148,
+            "far": 38,
+            "shadow": 1,
+            "size": [
+              0.2,
+              0.28,
+              0.2
+            ],
+            "mount": "pendant",
+            "radius": 0.18,
+            "direction": [
+              0,
+              -0.9688027044775657,
+              0.24783324998263342
+            ],
+            "outerCos": 0.27563735581699916,
+            "innerCos": 0.6961634275566145,
+            "emission": 16.07142857142857
+          },
+          {
+            "id": "cold-left-graze",
+            "position": [
+              1.35,
+              4.55,
+              29.8
+            ],
+            "target": [
+              3.7,
+              2.15,
+              33.1
+            ],
+            "color": [
+              0.53,
+              0.68,
+              0.84
+            ],
+            "power": 105,
+            "fov": 96,
+            "far": 38,
+            "shadow": -1,
+            "size": [
+              0.3,
+              0.19,
+              0.1
+            ],
+            "mount": "ceiling",
+            "radius": 0.18,
+            "direction": [
+              0.49906892676595455,
+              -0.5096874145694854,
+              0.7008201950330426
+            ],
+            "outerCos": 0.6691306063588582,
+            "innerCos": 0.8681121951482392,
+            "emission": 4.605263157894736
+          },
+          {
+            "id": "cold-middle-rib",
+            "position": [
+              -0.3,
+              4.65,
+              38.7
+            ],
+            "target": [
+              -3.7,
+              2.4,
+              41.4
+            ],
+            "color": [
+              0.45,
+              0.61,
+              0.79
+            ],
+            "power": 110,
+            "fov": 96,
+            "far": 38,
+            "shadow": -1,
+            "size": [
+              0.3,
+              0.19,
+              0.1
+            ],
+            "mount": "ceiling",
+            "radius": 0.18,
+            "direction": [
+              -0.6952907081536089,
+              -0.4601188509840059,
+              0.5521426211808061
+            ],
+            "outerCos": 0.6691306063588582,
+            "innerCos": 0.8681121951482392,
+            "emission": 4.824561403508771
+          },
+          {
+            "id": "red-middle",
+            "position": [
+              0.45,
+              4.75,
+              52.5
+            ],
+            "target": [
+              0.2,
+              0.55,
+              54.5
+            ],
+            "color": [
+              1,
+              0.022,
+              0.008
+            ],
+            "power": 110,
+            "fov": 120,
+            "far": 38,
+            "shadow": -1,
+            "size": [
+              0.2,
+              0.28,
+              0.2
+            ],
+            "mount": "pendant",
+            "radius": 0.18,
+            "direction": [
+              -0.05366425767258279,
+              -0.9015595288993908,
+              0.4293140613806623
+            ],
+            "outerCos": 0.5000000000000001,
+            "innerCos": 0.7965299180241963,
+            "emission": 4.910714285714286
+          },
+          {
+            "id": "red-far",
+            "position": [
+              0.45,
+              4.75,
+              61.7
+            ],
+            "target": [
+              0.2,
+              0.4,
+              63
+            ],
+            "color": [
+              1,
+              0.022,
+              0.008
+            ],
+            "power": 90,
+            "fov": 120,
+            "far": 38,
+            "shadow": -1,
+            "size": [
+              0.2,
+              0.28,
+              0.2
+            ],
+            "mount": "pendant",
+            "radius": 0.18,
+            "direction": [
+              -0.05498158425339618,
+              -0.9566795660090934,
+              0.2859042381176595
+            ],
+            "outerCos": 0.5000000000000001,
+            "innerCos": 0.7965299180241963,
+            "emission": 4.017857142857142
+          },
+          {
+            "id": "cold-service-bay",
+            "position": [
+              -4.3,
+              3.6,
+              33.5
+            ],
+            "target": [
+              -1.5,
+              1.6,
+              35
+            ],
+            "color": [
+              0.55,
+              0.71,
+              0.87
+            ],
+            "power": 30,
+            "fov": 110,
+            "far": 38,
+            "shadow": -1,
+            "size": [
+              0.72,
+              0.36,
+              0.07
+            ],
+            "mount": "wall",
+            "radius": 0.18,
+            "direction": [
+              0.7459376616259147,
+              -0.5328126154470819,
+              0.39960946158531147
+            ],
+            "outerCos": 0.5735764363510462,
+            "innerCos": 0.8280603346224944,
+            "emission": 0.28935185185185186
+          }
+        ],
+        "fixedExposure": 1.35
+      },
+      "estimatedGpuBytes": 259883344,
+      "diagnosticCpuPixelBytes": 8294400,
+      "frame": {
+        "count": 2,
+        "meanMs": 27315.6,
+        "p99Ms": 27832.3,
+        "maxMs": 27832.3
+      },
+      "gpu": {
+        "count": 1,
+        "meanMs": 27794.225069,
+        "p99Ms": 27794.225069,
+        "maxMs": 27794.225069,
+        "samplingEveryNthFrame": 30,
+        "status": "PASS",
+        "reason": null
+      },
+      "flythrough": {
+        "durationSeconds": 60,
+        "status": "NOT_RUN"
+      },
+      "runtimeErrors": [],
+      "elapsedSeconds": 58.72419999999926
+    },
+    "errors": []
+  },
+  {
+    "name": "no-atmosphere",
+    "artifactSha256": "8d0da9eb540d3373eee1a33fecd49381d46e64c797afb6dd28c0c76ebe8a3e08",
+    "report": {
+      "project": "PROJECT ECHO-9",
+      "seed": 15515657,
+      "status": "BLOCKED",
+      "reason": "CPU readback presentation is diagnostic only; hardware swapchain measurement is required.",
+      "measurementStatus": "IN_PROGRESS",
+      "adapter": {
+        "vendor": "google",
+        "architecture": "swiftshader",
+        "device": "unreported",
+        "description": "unreported",
+        "isFallbackAdapter": true
+      },
+      "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/151.0.0.0 Safari/537.36",
+      "resolution": [
+        1920,
+        1080
+      ],
+      "cssResolution": [
+        1920,
+        1080
+      ],
+      "devicePixelRatio": 1,
+      "quality": "High",
+      "presentationMode": "readback",
+      "readbackOverhead": "GPU copy, async map, BGRA→RGBA conversion and 2D upload included in frame times",
+      "renderScale": 1,
+      "msaa": 4,
+      "triangles": 159578,
+      "vertices": 478734,
+      "legacyVertices": 116874,
+      "corridor": {
+        "triangles": 128084,
+        "geometryBytes": 18444096,
+        "estimatedGpuBytes": 171315632,
+        "shadowMaps": {
+          "count": 2,
+          "resolution": 2048,
+          "format": "depth32float",
+          "filter": "Receiver-plane-corrected bilinear 2x2 PCF",
+          "enabled": true,
+          "cached": true
+        },
+        "environment": {
+          "source": "Six native HDR renders of actual procedural corridor geometry, direct lights and geometric shadows",
+          "resolution": 128,
+          "faces": 6,
+          "mips": 8,
+          "prefilter": "128-sample GGX importance convolution per mip texel",
+          "parallaxCorrection": "Room-box projected reflected rays",
+          "enabled": true,
+          "cached": true
+        },
+        "hdr": {
+          "stage": "final",
+          "sceneFormat": "rgba16float",
+          "compositeFormat": "rgba16float",
+          "alpha": "Per-material/ray-bounded corridor coverage; HDR dust preserves destination alpha",
+          "toneMapping": "Lighting + reflection → shadowed scattering → linear HDR bloom → one final exposure/filmic/gamma; exact legacy display bypass elsewhere",
+          "exposure": 1.35,
+          "estimatedGpuBytes": 117481920,
+          "fog": {
+            "enabled": false,
+            "resolution": [
+              960,
+              540
+            ],
+            "steps": 24,
+            "extinctionNear": 0.0078,
+            "extinctionFar": 0.1,
+            "albedo": 0.16,
+            "anisotropy": 0.2,
+            "finiteSourceFootprint": 0.65,
+            "source": "Same authored light table and geometric shadow maps",
+            "reconstruction": "Receiver-distance bilateral 2x2; full-resolution transmittance"
+          },
+          "bloom": {
+            "enabled": true,
+            "levels": 4,
+            "threshold": 1.35,
+            "knee": 0.5,
+            "strength": 0.06,
+            "source": "Only scoped linear HDR luminance above threshold"
+          }
+        },
+        "bakeMilliseconds": 2107.699999999255,
+        "lightTable": [
+          {
+            "id": "cold-rib-key",
+            "position": [
+              -1,
+              4.3,
+              31.8
+            ],
+            "target": [
+              -3.75,
+              2.4,
+              35.3
+            ],
+            "color": [
+              0.57,
+              0.74,
+              0.94
+            ],
+            "power": 280,
+            "fov": 104,
+            "far": 38,
+            "shadow": 0,
+            "size": [
+              0.3,
+              0.19,
+              0.1
+            ],
+            "mount": "ceiling",
+            "radius": 0.18,
+            "direction": [
+              -0.5682194167592653,
+              -0.39258796067003787,
+              0.7231883486027006
+            ],
+            "outerCos": 0.6156614753256583,
+            "innerCos": 0.8458209421247207,
+            "emission": 12.280701754385964
+          },
+          {
+            "id": "red-depth-key",
+            "position": [
+              0.45,
+              4.75,
+              44.1
+            ],
+            "target": [
+              0.45,
+              0.45,
+              45.2
+            ],
+            "color": [
+              1,
+              0.025,
+              0.011
+            ],
+            "power": 360,
+            "fov": 148,
+            "far": 38,
+            "shadow": 1,
+            "size": [
+              0.2,
+              0.28,
+              0.2
+            ],
+            "mount": "pendant",
+            "radius": 0.18,
+            "direction": [
+              0,
+              -0.9688027044775657,
+              0.24783324998263342
+            ],
+            "outerCos": 0.27563735581699916,
+            "innerCos": 0.6961634275566145,
+            "emission": 16.07142857142857
+          },
+          {
+            "id": "cold-left-graze",
+            "position": [
+              1.35,
+              4.55,
+              29.8
+            ],
+            "target": [
+              3.7,
+              2.15,
+              33.1
+            ],
+            "color": [
+              0.53,
+              0.68,
+              0.84
+            ],
+            "power": 105,
+            "fov": 96,
+            "far": 38,
+            "shadow": -1,
+            "size": [
+              0.3,
+              0.19,
+              0.1
+            ],
+            "mount": "ceiling",
+            "radius": 0.18,
+            "direction": [
+              0.49906892676595455,
+              -0.5096874145694854,
+              0.7008201950330426
+            ],
+            "outerCos": 0.6691306063588582,
+            "innerCos": 0.8681121951482392,
+            "emission": 4.605263157894736
+          },
+          {
+            "id": "cold-middle-rib",
+            "position": [
+              -0.3,
+              4.65,
+              38.7
+            ],
+            "target": [
+              -3.7,
+              2.4,
+              41.4
+            ],
+            "color": [
+              0.45,
+              0.61,
+              0.79
+            ],
+            "power": 110,
+            "fov": 96,
+            "far": 38,
+            "shadow": -1,
+            "size": [
+              0.3,
+              0.19,
+              0.1
+            ],
+            "mount": "ceiling",
+            "radius": 0.18,
+            "direction": [
+              -0.6952907081536089,
+              -0.4601188509840059,
+              0.5521426211808061
+            ],
+            "outerCos": 0.6691306063588582,
+            "innerCos": 0.8681121951482392,
+            "emission": 4.824561403508771
+          },
+          {
+            "id": "red-middle",
+            "position": [
+              0.45,
+              4.75,
+              52.5
+            ],
+            "target": [
+              0.2,
+              0.55,
+              54.5
+            ],
+            "color": [
+              1,
+              0.022,
+              0.008
+            ],
+            "power": 110,
+            "fov": 120,
+            "far": 38,
+            "shadow": -1,
+            "size": [
+              0.2,
+              0.28,
+              0.2
+            ],
+            "mount": "pendant",
+            "radius": 0.18,
+            "direction": [
+              -0.05366425767258279,
+              -0.9015595288993908,
+              0.4293140613806623
+            ],
+            "outerCos": 0.5000000000000001,
+            "innerCos": 0.7965299180241963,
+            "emission": 4.910714285714286
+          },
+          {
+            "id": "red-far",
+            "position": [
+              0.45,
+              4.75,
+              61.7
+            ],
+            "target": [
+              0.2,
+              0.4,
+              63
+            ],
+            "color": [
+              1,
+              0.022,
+              0.008
+            ],
+            "power": 90,
+            "fov": 120,
+            "far": 38,
+            "shadow": -1,
+            "size": [
+              0.2,
+              0.28,
+              0.2
+            ],
+            "mount": "pendant",
+            "radius": 0.18,
+            "direction": [
+              -0.05498158425339618,
+              -0.9566795660090934,
+              0.2859042381176595
+            ],
+            "outerCos": 0.5000000000000001,
+            "innerCos": 0.7965299180241963,
+            "emission": 4.017857142857142
+          },
+          {
+            "id": "cold-service-bay",
+            "position": [
+              -4.3,
+              3.6,
+              33.5
+            ],
+            "target": [
+              -1.5,
+              1.6,
+              35
+            ],
+            "color": [
+              0.55,
+              0.71,
+              0.87
+            ],
+            "power": 30,
+            "fov": 110,
+            "far": 38,
+            "shadow": -1,
+            "size": [
+              0.72,
+              0.36,
+              0.07
+            ],
+            "mount": "wall",
+            "radius": 0.18,
+            "direction": [
+              0.7459376616259147,
+              -0.5328126154470819,
+              0.39960946158531147
+            ],
+            "outerCos": 0.5735764363510462,
+            "innerCos": 0.8280603346224944,
+            "emission": 0.28935185185185186
+          }
+        ],
+        "fixedExposure": 1.35
+      },
+      "estimatedGpuBytes": 259883344,
+      "diagnosticCpuPixelBytes": 8294400,
+      "frame": {
+        "count": 2,
+        "meanMs": 24965.699999999997,
+        "p99Ms": 25265.7,
+        "maxMs": 25265.7
+      },
+      "gpu": {
+        "count": 1,
+        "meanMs": 25190.301401,
+        "p99Ms": 25190.301401,
+        "maxMs": 25190.301401,
+        "samplingEveryNthFrame": 30,
+        "status": "PASS",
+        "reason": null
+      },
+      "flythrough": {
+        "durationSeconds": 60,
+        "status": "NOT_RUN"
+      },
+      "runtimeErrors": [],
+      "elapsedSeconds": 53.835
+    },
+    "errors": []
+  },
+  {
+    "name": "no-bloom",
+    "artifactSha256": "8d0da9eb540d3373eee1a33fecd49381d46e64c797afb6dd28c0c76ebe8a3e08",
+    "report": {
+      "project": "PROJECT ECHO-9",
+      "seed": 15515657,
+      "status": "BLOCKED",
+      "reason": "CPU readback presentation is diagnostic only; hardware swapchain measurement is required.",
+      "measurementStatus": "IN_PROGRESS",
+      "adapter": {
+        "vendor": "google",
+        "architecture": "swiftshader",
+        "device": "unreported",
+        "description": "unreported",
+        "isFallbackAdapter": true
+      },
+      "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/151.0.0.0 Safari/537.36",
+      "resolution": [
+        1920,
+        1080
+      ],
+      "cssResolution": [
+        1920,
+        1080
+      ],
+      "devicePixelRatio": 1,
+      "quality": "High",
+      "presentationMode": "readback",
+      "readbackOverhead": "GPU copy, async map, BGRA→RGBA conversion and 2D upload included in frame times",
+      "renderScale": 1,
+      "msaa": 4,
+      "triangles": 159578,
+      "vertices": 478734,
+      "legacyVertices": 116874,
+      "corridor": {
+        "triangles": 128084,
+        "geometryBytes": 18444096,
+        "estimatedGpuBytes": 171315632,
+        "shadowMaps": {
+          "count": 2,
+          "resolution": 2048,
+          "format": "depth32float",
+          "filter": "Receiver-plane-corrected bilinear 2x2 PCF",
+          "enabled": true,
+          "cached": true
+        },
+        "environment": {
+          "source": "Six native HDR renders of actual procedural corridor geometry, direct lights and geometric shadows",
+          "resolution": 128,
+          "faces": 6,
+          "mips": 8,
+          "prefilter": "128-sample GGX importance convolution per mip texel",
+          "parallaxCorrection": "Room-box projected reflected rays",
+          "enabled": true,
+          "cached": true
+        },
+        "hdr": {
+          "stage": "final",
+          "sceneFormat": "rgba16float",
+          "compositeFormat": "rgba16float",
+          "alpha": "Per-material/ray-bounded corridor coverage; HDR dust preserves destination alpha",
+          "toneMapping": "Lighting + reflection → shadowed scattering → linear HDR bloom → one final exposure/filmic/gamma; exact legacy display bypass elsewhere",
+          "exposure": 1.35,
+          "estimatedGpuBytes": 117481920,
+          "fog": {
+            "enabled": true,
+            "resolution": [
+              960,
+              540
+            ],
+            "steps": 24,
+            "extinctionNear": 0.0078,
+            "extinctionFar": 0.1,
+            "albedo": 0.16,
+            "anisotropy": 0.2,
+            "finiteSourceFootprint": 0.65,
+            "source": "Same authored light table and geometric shadow maps",
+            "reconstruction": "Receiver-distance bilateral 2x2; full-resolution transmittance"
+          },
+          "bloom": {
+            "enabled": false,
+            "levels": 4,
+            "threshold": 1.35,
+            "knee": 0.5,
+            "strength": 0.06,
+            "source": "Only scoped linear HDR luminance above threshold"
+          }
+        },
+        "bakeMilliseconds": 2167.9000000003725,
+        "lightTable": [
+          {
+            "id": "cold-rib-key",
+            "position": [
+              -1,
+              4.3,
+              31.8
+            ],
+            "target": [
+              -3.75,
+              2.4,
+              35.3
+            ],
+            "color": [
+              0.57,
+              0.74,
+              0.94
+            ],
+            "power": 280,
+            "fov": 104,
+            "far": 38,
+            "shadow": 0,
+            "size": [
+              0.3,
+              0.19,
+              0.1
+            ],
+            "mount": "ceiling",
+            "radius": 0.18,
+            "direction": [
+              -0.5682194167592653,
+              -0.39258796067003787,
+              0.7231883486027006
+            ],
+            "outerCos": 0.6156614753256583,
+            "innerCos": 0.8458209421247207,
+            "emission": 12.280701754385964
+          },
+          {
+            "id": "red-depth-key",
+            "position": [
+              0.45,
+              4.75,
+              44.1
+            ],
+            "target": [
+              0.45,
+              0.45,
+              45.2
+            ],
+            "color": [
+              1,
+              0.025,
+              0.011
+            ],
+            "power": 360,
+            "fov": 148,
+            "far": 38,
+            "shadow": 1,
+            "size": [
+              0.2,
+              0.28,
+              0.2
+            ],
+            "mount": "pendant",
+            "radius": 0.18,
+            "direction": [
+              0,
+              -0.9688027044775657,
+              0.24783324998263342
+            ],
+            "outerCos": 0.27563735581699916,
+            "innerCos": 0.6961634275566145,
+            "emission": 16.07142857142857
+          },
+          {
+            "id": "cold-left-graze",
+            "position": [
+              1.35,
+              4.55,
+              29.8
+            ],
+            "target": [
+              3.7,
+              2.15,
+              33.1
+            ],
+            "color": [
+              0.53,
+              0.68,
+              0.84
+            ],
+            "power": 105,
+            "fov": 96,
+            "far": 38,
+            "shadow": -1,
+            "size": [
+              0.3,
+              0.19,
+              0.1
+            ],
+            "mount": "ceiling",
+            "radius": 0.18,
+            "direction": [
+              0.49906892676595455,
+              -0.5096874145694854,
+              0.7008201950330426
+            ],
+            "outerCos": 0.6691306063588582,
+            "innerCos": 0.8681121951482392,
+            "emission": 4.605263157894736
+          },
+          {
+            "id": "cold-middle-rib",
+            "position": [
+              -0.3,
+              4.65,
+              38.7
+            ],
+            "target": [
+              -3.7,
+              2.4,
+              41.4
+            ],
+            "color": [
+              0.45,
+              0.61,
+              0.79
+            ],
+            "power": 110,
+            "fov": 96,
+            "far": 38,
+            "shadow": -1,
+            "size": [
+              0.3,
+              0.19,
+              0.1
+            ],
+            "mount": "ceiling",
+            "radius": 0.18,
+            "direction": [
+              -0.6952907081536089,
+              -0.4601188509840059,
+              0.5521426211808061
+            ],
+            "outerCos": 0.6691306063588582,
+            "innerCos": 0.8681121951482392,
+            "emission": 4.824561403508771
+          },
+          {
+            "id": "red-middle",
+            "position": [
+              0.45,
+              4.75,
+              52.5
+            ],
+            "target": [
+              0.2,
+              0.55,
+              54.5
+            ],
+            "color": [
+              1,
+              0.022,
+              0.008
+            ],
+            "power": 110,
+            "fov": 120,
+            "far": 38,
+            "shadow": -1,
+            "size": [
+              0.2,
+              0.28,
+              0.2
+            ],
+            "mount": "pendant",
+            "radius": 0.18,
+            "direction": [
+              -0.05366425767258279,
+              -0.9015595288993908,
+              0.4293140613806623
+            ],
+            "outerCos": 0.5000000000000001,
+            "innerCos": 0.7965299180241963,
+            "emission": 4.910714285714286
+          },
+          {
+            "id": "red-far",
+            "position": [
+              0.45,
+              4.75,
+              61.7
+            ],
+            "target": [
+              0.2,
+              0.4,
+              63
+            ],
+            "color": [
+              1,
+              0.022,
+              0.008
+            ],
+            "power": 90,
+            "fov": 120,
+            "far": 38,
+            "shadow": -1,
+            "size": [
+              0.2,
+              0.28,
+              0.2
+            ],
+            "mount": "pendant",
+            "radius": 0.18,
+            "direction": [
+              -0.05498158425339618,
+              -0.9566795660090934,
+              0.2859042381176595
+            ],
+            "outerCos": 0.5000000000000001,
+            "innerCos": 0.7965299180241963,
+            "emission": 4.017857142857142
+          },
+          {
+            "id": "cold-service-bay",
+            "position": [
+              -4.3,
+              3.6,
+              33.5
+            ],
+            "target": [
+              -1.5,
+              1.6,
+              35
+            ],
+            "color": [
+              0.55,
+              0.71,
+              0.87
+            ],
+            "power": 30,
+            "fov": 110,
+            "far": 38,
+            "shadow": -1,
+            "size": [
+              0.72,
+              0.36,
+              0.07
+            ],
+            "mount": "wall",
+            "radius": 0.18,
+            "direction": [
+              0.7459376616259147,
+              -0.5328126154470819,
+              0.39960946158531147
+            ],
+            "outerCos": 0.5735764363510462,
+            "innerCos": 0.8280603346224944,
+            "emission": 0.28935185185185186
+          }
+        ],
+        "fixedExposure": 1.35
+      },
+      "estimatedGpuBytes": 259883344,
+      "diagnosticCpuPixelBytes": 8294400,
+      "frame": {
+        "count": 2,
+        "meanMs": 31690.399999999998,
+        "p99Ms": 32498.6,
+        "maxMs": 32498.6
+      },
+      "gpu": {
+        "count": 1,
+        "meanMs": 32454.65096,
+        "p99Ms": 32454.65096,
+        "maxMs": 32454.65096,
+        "samplingEveryNthFrame": 30,
+        "status": "PASS",
+        "reason": null
+      },
+      "flythrough": {
+        "durationSeconds": 60,
+        "status": "NOT_RUN"
+      },
+      "runtimeErrors": [],
+      "elapsedSeconds": 68.17140000000038
+    },
+    "errors": []
+  }
+]

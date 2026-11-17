@@ -2,7 +2,7 @@ import {clamp,lookAngles,viewMatrix,perspective,multiply,VIEWS,sampleFlight,cons
 import {buildScene} from './scene.js';
 import {buildCorridor,CORRIDOR_HERO} from './corridor.js';
 import {CorridorRenderer} from './corridor-renderer.js';
-import {SKY_SHADER,MESH_SHADER,DUST_SHADER} from './shaders.js';
+import {HDR_SKY_SHADER,HDR_MESH_SHADER,HDR_DUST_SHADER,HDR_PARTICLE_BLEND} from './hdr.js';
 
 const $=id=>document.getElementById(id);
 const params=new URLSearchParams(location.search),testMode=params.has('test'),debug=params.get('debug'),readbackMode=params.has('readback');
@@ -79,17 +79,17 @@ function createPipelines(){
   if(!bindGroupLayout)bindGroupLayout=device.createBindGroupLayout({entries:[{binding:0,visibility:GPUShaderStage.VERTEX|GPUShaderStage.FRAGMENT,buffer:{type:'uniform'}},{binding:1,visibility:GPUShaderStage.VERTEX,buffer:{type:'read-only-storage'}}]});
   const layout=device.createPipelineLayout({bindGroupLayouts:[bindGroupLayout]});
   bindGroup=device.createBindGroup({layout:bindGroupLayout,entries:[{binding:0,resource:{buffer:uniformBuffer}},{binding:1,resource:{buffer:particleBuffer}}]});
-  const sky=device.createShaderModule({label:'Procedural planetary atmosphere and rings',code:SKY_SHADER});
-  const mesh=device.createShaderModule({label:'Station alloy and procedural lighting',code:MESH_SHADER});
-  const dust=device.createShaderModule({label:'Seeded drifting dust',code:DUST_SHADER});
+  const sky=device.createShaderModule({label:'Procedural planetary atmosphere and rings',code:HDR_SKY_SHADER});
+  const mesh=device.createShaderModule({label:'Station alloy and procedural lighting',code:HDR_MESH_SHADER});
+  const dust=device.createShaderModule({label:'Seeded drifting dust',code:HDR_DUST_SHADER});
   compilationChecks=Promise.all([sky,mesh,dust].map(async module=>{
     const info=await module.getCompilationInfo();const errors=info.messages.filter(message=>message.type==='error');
     if(errors.length)throw Error(errors.map(error=>`WGSL line ${error.lineNum}: ${error.message}`).join('\n'));
   }));
   compilationChecks.catch(error=>fail(error.message));
-  skyPipeline=device.createRenderPipeline({label:'Astronomical sky',layout,vertex:{module:sky,entryPoint:'skyVertex'},fragment:{module:sky,entryPoint:'skyFragment',targets:[{format}]},primitive:{topology:'triangle-list'},depthStencil:{format:'depth24plus',depthWriteEnabled:false,depthCompare:'always'},multisample:{count:samples}});
-  meshPipeline=device.createRenderPipeline({label:'Station architecture',layout,vertex:{module:mesh,entryPoint:'meshVertex',buffers:[{arrayStride:48,attributes:[{shaderLocation:0,offset:0,format:'float32x3'},{shaderLocation:1,offset:12,format:'float32x3'},{shaderLocation:2,offset:24,format:'float32x3'},{shaderLocation:3,offset:36,format:'float32x3'}]}]},fragment:{module:mesh,entryPoint:'meshFragment',targets:[{format}]},primitive:{topology:'triangle-list',cullMode:'none'},depthStencil:{format:'depth24plus',depthWriteEnabled:true,depthCompare:'less'},multisample:{count:samples}});
-  dustPipeline=device.createRenderPipeline({label:'Atmospheric particles',layout,vertex:{module:dust,entryPoint:'dustVertex'},fragment:{module:dust,entryPoint:'dustFragment',targets:[{format,blend:{color:{srcFactor:'src-alpha',dstFactor:'one-minus-src-alpha',operation:'add'},alpha:{srcFactor:'one',dstFactor:'one-minus-src-alpha',operation:'add'}}}]},primitive:{topology:'triangle-list'},depthStencil:{format:'depth24plus',depthWriteEnabled:false,depthCompare:'less'},multisample:{count:samples}});
+  skyPipeline=device.createRenderPipeline({label:'Astronomical sky',layout,vertex:{module:sky,entryPoint:'skyVertex'},fragment:{module:sky,entryPoint:'skyFragment',targets:[{format},{format:'rgba16float'}]},primitive:{topology:'triangle-list'},depthStencil:{format:'depth24plus',depthWriteEnabled:false,depthCompare:'always'},multisample:{count:samples}});
+  meshPipeline=device.createRenderPipeline({label:'Station architecture',layout,vertex:{module:mesh,entryPoint:'meshVertex',buffers:[{arrayStride:48,attributes:[{shaderLocation:0,offset:0,format:'float32x3'},{shaderLocation:1,offset:12,format:'float32x3'},{shaderLocation:2,offset:24,format:'float32x3'},{shaderLocation:3,offset:36,format:'float32x3'}]}]},fragment:{module:mesh,entryPoint:'meshFragment',targets:[{format},{format:'rgba16float'}]},primitive:{topology:'triangle-list',cullMode:'none'},depthStencil:{format:'depth24plus',depthWriteEnabled:true,depthCompare:'less'},multisample:{count:samples}});
+  dustPipeline=device.createRenderPipeline({label:'Atmospheric particles',layout,vertex:{module:dust,entryPoint:'dustVertex'},fragment:{module:dust,entryPoint:'dustFragment',targets:[{format,blend:{color:{srcFactor:'src-alpha',dstFactor:'one-minus-src-alpha',operation:'add'},alpha:{srcFactor:'one',dstFactor:'one-minus-src-alpha',operation:'add'}}},{format:'rgba16float',blend:HDR_PARTICLE_BLEND}]},primitive:{topology:'triangle-list'},depthStencil:{format:'depth24plus',depthWriteEnabled:false,depthCompare:'less'},multisample:{count:samples}});
 }
 function resize(){
   if(!device)return;
@@ -101,9 +101,9 @@ function resize(){
   canvas.width=renderWidth;canvas.height=renderHeight;
   depthTexture?.destroy();colorTexture?.destroy();
   depthTexture=device.createTexture({size:[renderWidth,renderHeight],format:'depth24plus',sampleCount:PRESETS[quality].samples,usage:GPUTextureUsage.RENDER_ATTACHMENT|GPUTextureUsage.TEXTURE_BINDING});
-  corridorRenderer?.setDepth(depthTexture,PRESETS[quality].samples);
+  corridorRenderer?.setDepth(depthTexture,PRESETS[quality].samples,renderWidth,renderHeight);
   colorTexture=PRESETS[quality].samples>1?device.createTexture({size:[renderWidth,renderHeight],format,sampleCount:PRESETS[quality].samples,usage:GPUTextureUsage.RENDER_ATTACHMENT}):null;
-  passDescriptor={colorAttachments:[{view:null,resolveTarget:undefined,clearValue:{r:0,g:0,b:0,a:1},loadOp:'clear',storeOp:'store'}],depthStencilAttachment:{view:depthTexture.createView(),depthClearValue:1,depthLoadOp:'clear',depthStoreOp:'store'},timestampWrites:undefined};
+  passDescriptor={colorAttachments:[{view:corridorRenderer.post.legacyView,resolveTarget:undefined,clearValue:{r:0,g:0,b:0,a:1},loadOp:'clear',storeOp:'store'},corridorRenderer.post.hdrAttachment],depthStencilAttachment:{view:depthTexture.createView(),depthClearValue:1,depthLoadOp:'clear',depthStoreOp:'store'},timestampWrites:undefined};
   if(colorTexture)passDescriptor.colorAttachments[0].view=colorTexture.createView();
   if(readbackMode){
     readbackTexture?.destroy();readbackBuffer?.destroy();
@@ -139,7 +139,7 @@ async function initialize(){
     }
     createPipelines();await compilationChecks;
     corridorScene=buildCorridor();navigationObstacles=scene.obstacles.concat(corridorScene.obstacles);
-    corridorRenderer=new CorridorRenderer(device,format,uniformBuffer,corridorScene,{shadows:params.get('shadows')!=='0',probe:params.get('probe')!=='0'});
+    corridorRenderer=new CorridorRenderer(device,format,uniformBuffer,corridorScene,{shadows:params.get('shadows')!=='0',probe:params.get('probe')!=='0',fog:params.get('fog')!=='0',bloom:params.get('bloom')!=='0'});
     await corridorRenderer.initialize(PRESETS[quality].samples);
     resize();await corridorRenderer.atmosphereCheck;setView(params.get('view')||1);setQuality(quality);setMenu(menuOpen);
     ready=true;$('loading').hidden=true;document.body.classList.add('ready');
@@ -175,7 +175,7 @@ function updateHud(now){
   $('coordinates').textContent=`${camera.position[0].toFixed(1)} / ${camera.position[1].toFixed(1)} / ${camera.position[2].toFixed(1)} M`;
   $('quality-label').textContent=quality.toUpperCase();$('location-label').textContent=currentSector();
   if(routeCaption)$('sector').textContent=currentSectorCaption();
-  if(showStats){const r=getReport();$('stats').textContent=`${quality} · ${renderWidth}×${renderHeight} · ${scene.triangles.toLocaleString()} triangles\nFrame mean ${r.frame.meanMs?.toFixed(2)||'—'} ms · p99 ${r.frame.p99Ms?.toFixed(2)||'—'} ms\nGPU ${r.gpu.meanMs?.toFixed(2)||'—'} ms · ${deviceInfo.architecture}\n${deviceInfo.isFallbackAdapter?'SOFTWARE DIAGNOSTIC — hardware gate BLOCKED':'REFERENCE GPU NOT SELECTED — gate BLOCKED'}${flight?'\nFLIGHT '+Math.min(60,(now-flight.start)/1000).toFixed(1)+' / 60.0 s':''}`;}
+  if(showStats){const r=getReport();$('stats').textContent=`${quality} · ${renderWidth}×${renderHeight} · ${r.triangles.toLocaleString()} triangles\nFrame mean ${r.frame.meanMs?.toFixed(2)||'—'} ms · p99 ${r.frame.p99Ms?.toFixed(2)||'—'} ms\nGPU ${r.gpu.meanMs?.toFixed(2)||'—'} ms · ${deviceInfo.architecture}\n${deviceInfo.isFallbackAdapter?'SOFTWARE DIAGNOSTIC — hardware gate BLOCKED':'REFERENCE GPU NOT SELECTED — gate BLOCKED'}${flight?'\nFLIGHT '+Math.min(60,(now-flight.start)/1000).toFixed(1)+' / 60.0 s':''}`;}
 }
 function readGpuTiming(){
   timestampRead.mapAsync(GPUMapMode.READ).then(()=>{
@@ -206,10 +206,10 @@ function render(now){
   if(ms>0&&frameCount<frameSamples.length)frameSamples[frameCount++]=ms;
   updateCamera(delta,now);updateUniforms();updateHud(now);
   const textureView=readbackMode?readbackTexture.createView():context.getCurrentTexture().createView();
-  if(colorTexture)passDescriptor.colorAttachments[0].resolveTarget=textureView;else passDescriptor.colorAttachments[0].view=textureView;
+  if(colorTexture)passDescriptor.colorAttachments[0].resolveTarget=corridorRenderer.post.legacyView;else passDescriptor.colorAttachments[0].view=corridorRenderer.post.legacyView;
   const renderFog=debug!=='clear'&&debug!=='sky';
   const sample=timestampSet&&!timestampBusy&&animationFrame%30===0;
-  if(sample){timestampBusy=true;passDescriptor.timestampWrites={querySet:timestampSet,beginningOfPassWriteIndex:0};if(!renderFog)passDescriptor.timestampWrites.endOfPassWriteIndex=1;}else passDescriptor.timestampWrites=undefined;
+  if(sample){timestampBusy=true;passDescriptor.timestampWrites={querySet:timestampSet,beginningOfPassWriteIndex:0};}else passDescriptor.timestampWrites=undefined;
   const encoder=device.createCommandEncoder(),pass=encoder.beginRenderPass(passDescriptor);pass.setBindGroup(0,bindGroup);
   if(debug!=='clear'){pass.setPipeline(skyPipeline);pass.draw(3);}
   if(debug!=='clear'&&debug!=='sky'){
@@ -222,7 +222,7 @@ function render(now){
     pass.setPipeline(dustPipeline);pass.setBindGroup(0,bindGroup);pass.draw(6,PRESETS[quality].dust);
   }
   pass.end();
-  if(renderFog)corridorRenderer.drawAtmosphere(encoder,textureView,sample?timestampSet:null);
+  corridorRenderer.drawAtmosphere(encoder,textureView,sample?timestampSet:null,renderFog);
   if(sample){encoder.resolveQuerySet(timestampSet,0,2,timestampResolve,0);encoder.copyBufferToBuffer(timestampResolve,0,timestampRead,0,16);}
   if(readbackMode){encoder.copyTextureToBuffer({texture:readbackTexture},{buffer:readbackBuffer,bytesPerRow:readbackStride,rowsPerImage:renderHeight},[renderWidth,renderHeight]);readbackBusy=true;}
   device.queue.submit([encoder.finish()]);
@@ -254,5 +254,5 @@ window.addEventListener('keydown',event=>{
 window.addEventListener('keyup',event=>keys.delete(event.code));window.addEventListener('blur',()=>keys.clear());
 document.addEventListener('mousemove',event=>{if(document.pointerLockElement===canvas&&!menuOpen){camera.yaw+=event.movementX*.0018;camera.pitch=clamp(camera.pitch+event.movementY*.0018,-1.45,1.45);}});
 document.addEventListener('pointerlockchange',()=>{document.body.classList.toggle('pointer-locked',document.pointerLockElement===canvas);});
-window.echo9={gpuInstance,get adapter(){return adapterReference;},get device(){return device;},get ready(){return ready&&startupSubmissionVerified&&(!readbackMode||presentedFrames>0);},setView,setQuality,setTime,startFlythrough,stopFlythrough,getReport,getState,setMenu,get stats(){return getReport();},camera,views:VIEWS,hero:CORRIDOR_HERO};
+window.echo9={gpuInstance,get adapter(){return adapterReference;},get device(){return device;},get ready(){return ready&&startupSubmissionVerified&&(!readbackMode||presentedFrames>0);},getHdrDiagnostics:()=>corridorRenderer.post.diagnostics(),setView,setQuality,setTime,startFlythrough,stopFlythrough,getReport,getState,setMenu,get stats(){return getReport();},camera,views:VIEWS,hero:CORRIDOR_HERO};
 initialize();

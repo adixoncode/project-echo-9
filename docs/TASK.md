@@ -44,4 +44,13 @@ Only corridor iteration 1 was approved. It adds independently generated heavy ar
 
 Build/RunAllTests 15/15, browser smoke 17/17 and fallback 3/3 PASS. Artifact105,761 raw / 34,927 gzip. Actual1920×1080 clean/HUD renders, reference comparison, regression evidence and independent review: [iteration 1 results](qa/overhaul-v1/iteration-1/RESULTS.md).
 
-**Reference-match review FAIL; ART DIRECTION NOT ACCEPTED.** Architecture improved, but exposure/light hierarchy and the visual effect of shadows/reflections remain below reference. This static image shortcoming is not attributed to missing hardware. GPU/temporal gates remain BLOCKED. No second artistic iteration started. STOP pending Adrian's evaluation. Issue #1 remains open.
+**Reference-match review FAIL; ART DIRECTION NOT ACCEPTED.** Architecture improved, but exposure/light hierarchy and the visual effect of shadows/reflections remain below reference. This static image shortcoming is not attributed to missing hardware. GPU/temporal gates remain BLOCKED. This historical first-candidate stop was lifted only for iteration 2 by Adrian on 2026-11-17. The first image remains unaccepted. Issue #1 remains open.
+
+
+## Issue #2 — iteration 2 delivered for owner review, 2026-11-17
+
+Cinematic Lighting & HDR Overhaul is preserved and verified after recovering the same Cloud environment. No source/art changes followed the independent review. The final artifact is 128,893 raw /41,027 gzip bytes; source SHA256 and all actual captures are recorded in [iteration2 results](qa/overhaul-v1/iteration-2/RESULTS.md).
+
+Fresh build/RunAllTests 24/24, smoke 17/17, fallback 3/3 and four feature-off diagnostics PASS. Fresh clean/HUD and all five sector captures are pixel-identical to the preserved candidate. Four sector views remain identical to iteration1; view6 differs only at the visible corridor entrance. Legacy content/RNG, all saved poses and flight remain unchanged. The same-source full route completed functionally in63.2297s with12 software frames.
+
+**Reference-match: FAIL. ART DIRECTION: NOT ACCEPTED. Hardware GPU /60FPS /temporal acceptance: BLOCKED.** The independent reviewer identified five major and three minor artistic differences; full review is preserved. Documentation, AGENTS and Issue #2 record these limits. Both issues remain open. STOP before iteration3 and wait for Adrian's assessment.

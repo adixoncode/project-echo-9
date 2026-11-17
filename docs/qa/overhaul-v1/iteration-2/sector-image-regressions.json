@@ -1,0 +1,72 @@
+{
+  "method": "Exact RGB pixel comparison at fixed camera, seed, time12, High1920\u00d71080; no normalization or retouching",
+  "checks": [
+    {
+      "view": 1,
+      "status": "PASS",
+      "reason": "Pixel-identical outside corridor view",
+      "changedPixels": 0,
+      "changedFraction": 0.0,
+      "meanAbsoluteRgbDifference": 0.0,
+      "maxChannelDifference": 0,
+      "changedBoundingBox": null,
+      "beforeSha256": "ce123c82808526e5352fdf6a945a8b75d7202b4bb5128e9fab7dfdf35f833114",
+      "afterSha256": "ce123c82808526e5352fdf6a945a8b75d7202b4bb5128e9fab7dfdf35f833114"
+    },
+    {
+      "view": 2,
+      "status": "PASS",
+      "reason": "Pixel-identical outside corridor view",
+      "changedPixels": 0,
+      "changedFraction": 0.0,
+      "meanAbsoluteRgbDifference": 0.0,
+      "maxChannelDifference": 0,
+      "changedBoundingBox": null,
+      "beforeSha256": "fdfe96f8662a532dea01675ee72fb7c0c0c0bdd4d4691227e38249165d2d3189",
+      "afterSha256": "fdfe96f8662a532dea01675ee72fb7c0c0c0bdd4d4691227e38249165d2d3189"
+    },
+    {
+      "view": 3,
+      "status": "PASS",
+      "reason": "Pixel-identical outside corridor view",
+      "changedPixels": 0,
+      "changedFraction": 0.0,
+      "meanAbsoluteRgbDifference": 0.0,
+      "maxChannelDifference": 0,
+      "changedBoundingBox": null,
+      "beforeSha256": "911e50164fed6d93f99f2b9319b9d443c54ef3ebbfc0cdf51f4edd2302b5db5f",
+      "afterSha256": "911e50164fed6d93f99f2b9319b9d443c54ef3ebbfc0cdf51f4edd2302b5db5f"
+    },
+    {
+      "view": 5,
+      "status": "PASS",
+      "reason": "Pixel-identical outside corridor view",
+      "changedPixels": 0,
+      "changedFraction": 0.0,
+      "meanAbsoluteRgbDifference": 0.0,
+      "maxChannelDifference": 0,
+      "changedBoundingBox": null,
+      "beforeSha256": "5c9750fbcf24ebca889971638f4614d69dcd19bf6e4820e564e5ab848c464191",
+      "afterSha256": "5c9750fbcf24ebca889971638f4614d69dcd19bf6e4820e564e5ab848c464191"
+    },
+    {
+      "view": 6,
+      "status": "PASS",
+      "reason": "Differences need manual classification against visible corridor geometry",
+      "changedPixels": 56314,
+      "changedFraction": 0.027157600308641974,
+      "meanAbsoluteRgbDifference": 0.2272874871399177,
+      "maxChannelDifference": 229,
+      "changedBoundingBox": [
+        1520,
+        409,
+        1795,
+        644
+      ],
+      "beforeSha256": "2b3ba7ae9ddce2f796c9f8f2918344adce38ea2787f258e5db51dcc50782ac6c",
+      "afterSha256": "f6b0d4ad244822e4e432281925adc07e9d20667312f216e04cdc5204453d2371",
+      "automatedStatus": "BLOCKED",
+      "scopeReview": "56,314 changed pixels (2.716%) are confined to visible corridor geometry/air inside the hangar doorway and its mixed-MSAA border [1520,409,1795,644]. Manual inspection confirms the red corridor entrance is the changed object. Every pixel outside this rectangle is exactly identical; all observatory/hangar geometry/material/RNG hashes remain unchanged. This is disclosed corridor visibility, not a hangar lighting or content change."
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "stage": "HDR-only, before relighting",
+  "rawBytes": 115898,
+  "sourceArchive": "hdr-source.html.gz",
+  "constructionCheckpoint": true,
+  "artifactSha256": "a3d14e1f792053f0c9e9c965df76bfd26e7af84d448626c432e4d5362324e43e"
+}

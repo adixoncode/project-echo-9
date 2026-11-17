@@ -1,6 +1,6 @@
 # QA results — PROJECT ECHO-9
 
-Historical **Issue #1 baseline** at7164bff, preserved unchanged below. Current corridor iteration1 has a separate [results report](overhaul-v1/iteration-1/RESULTS.md); its reference-relative art review FAIL must not be confused with this baseline technical verification.
+Historical **Issue #1 baseline** at7164bff, preserved unchanged below. The current approved corridor work is [iteration 2](overhaul-v1/iteration-2/RESULTS.md), with separate source hashes, actual HDR/readback diagnostics, browser results and independent reference-relative review. [Iteration 1](overhaul-v1/iteration-1/RESULTS.md) remains historical evidence. Technical verification does not approve the art direction.
 
 **Acceptance remains BLOCKED.** Build/unit checks and software browser diagnostics have passed. Native presentation, hardware temporal stability and the agreed desktop 60 FPS target are not verified. Do not close Issue #1 as complete on this evidence.
 

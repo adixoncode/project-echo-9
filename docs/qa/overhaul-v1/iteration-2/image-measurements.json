@@ -1,0 +1,57 @@
+{
+  "method": "Unnormalized encoded-sRGB luminance statistics; different compositions, diagnostic only",
+  "measurements": {
+    "reference": {
+      "meanDisplayLuminance": 0.09033045353941407,
+      "medianDisplayLuminance": 0.040595294117647056,
+      "darkPixelFractionBelow24of255": 0.6051144070095487,
+      "highlightFractionAbove220of255": 0.0005772908528645834
+    },
+    "before": {
+      "meanDisplayLuminance": 0.04955991552854938,
+      "medianDisplayLuminance": 0.039781960784313716,
+      "darkPixelFractionBelow24of255": 0.9176760223765432,
+      "highlightFractionAbove220of255": 0.0
+    },
+    "after": {
+      "meanDisplayLuminance": 0.1143940303664367,
+      "medianDisplayLuminance": 0.05012627450980392,
+      "darkPixelFractionBelow24of255": 0.6645891203703703,
+      "highlightFractionAbove220of255": 0.006160300925925926
+    }
+  },
+  "ablations": [
+    {
+      "name": "no-shadows",
+      "changedPixelFraction": 0.052400173611111114,
+      "meanAbsoluteRgbDifference": 0.8812723443930042,
+      "maxChannelDifference": 212,
+      "status": "PASS",
+      "meaning": "Feature contributes actual pixels; this is not an art-direction score"
+    },
+    {
+      "name": "no-environment",
+      "changedPixelFraction": 0.9793581211419753,
+      "meanAbsoluteRgbDifference": 7.481882555298354,
+      "maxChannelDifference": 112,
+      "status": "PASS",
+      "meaning": "Feature contributes actual pixels; this is not an art-direction score"
+    },
+    {
+      "name": "no-atmosphere",
+      "changedPixelFraction": 0.544654224537037,
+      "meanAbsoluteRgbDifference": 3.2614673353909467,
+      "maxChannelDifference": 187,
+      "status": "PASS",
+      "meaning": "Feature contributes actual pixels; this is not an art-direction score"
+    },
+    {
+      "name": "no-bloom",
+      "changedPixelFraction": 0.0040494791666666665,
+      "meanAbsoluteRgbDifference": 0.005306712962962963,
+      "maxChannelDifference": 109,
+      "status": "PASS",
+      "meaning": "Feature contributes actual pixels; this is not an art-direction score"
+    }
+  ]
+}

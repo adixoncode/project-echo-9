@@ -1,0 +1,34 @@
+{
+  "artifactSha256": "8d0da9eb540d3373eee1a33fecd49381d46e64c797afb6dd28c0c76ebe8a3e08",
+  "rawBytes": 128893,
+  "gzipBytes": 41027,
+  "baselineRawBytes": 105761,
+  "baselineGzipBytes": 34927,
+  "baselineSha256": "aeb80e7100df3c58c4e916426285f6140c3b2e49882edc85972f43ffd7277db6",
+  "stage": "iteration-2-final",
+  "hardwareAcceptance": "BLOCKED",
+  "artDirection": "NOT ACCEPTED",
+  "camera": {
+    "position": [
+      -2.35,
+      1.72,
+      27.5
+    ],
+    "target": [
+      -13.5,
+      1.78,
+      61
+    ],
+    "verticalFovDegrees": 64
+  },
+  "seed": 15515657,
+  "time": 12,
+  "renderSize": [
+    1920,
+    1080
+  ],
+  "quality": "High",
+  "dpr": 1,
+  "msaa": 4,
+  "gzipMethod": "Node zlib gzip level 9, matching build and baseline"
+}

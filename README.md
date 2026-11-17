@@ -35,7 +35,7 @@ node scripts/browser-qa.mjs --benchmark --video
 node scripts/browser-qa.mjs --software --readback --benchmark --video
 ```
 
-The QA collector requires Playwright and uses `/usr/bin/chromium` by default. Override `CHROMIUM_PATH` and `ECHO_URL` for another local installation. It writes six 1920×1080 images, browser diagnostics, adapter identity and timing results to `docs/qa/`. `?view=1&quality=High&test=1` selects a reproducible view with the menu hidden. The application exposes `window.echo9` for inspection: `setView(1..6)`, `setTime(seconds)`, `setQuality(name)`, `startFlythrough()`, `stopFlythrough()`, `getState()` and `getReport()`.
+The QA collector requires Playwright and uses `/usr/bin/chromium` by default. Override `CHROMIUM_PATH` and `ECHO_URL` for another local installation, and `QA_DIR` to keep a new evidence run separate. It writes six 1920×1080 images, browser diagnostics, adapter identity and timing results to `docs/qa/`. `?view=1&quality=High&test=1` selects a reproducible view with the menu hidden. The application exposes `window.echo9` for inspection: `setView(1..6)`, `setTime(seconds)`, `setQuality(name)`, `startFlythrough()`, `stopFlythrough()`, `getState()` and `getReport()`.
 
 ## Acceptance and evidence
 
@@ -59,7 +59,7 @@ node scripts/gpu-presentation-probe.mjs --software
 
 Known artistic simplifications in the original observatory/hangar: analytic local contact darkening and procedural light pools rather than shadow maps or physically traced reflections; suspended geometry and dust move subtly, without a rigid-body physics simulation. See the independent visual review for remaining minor findings and the required hardware follow-up.
 
-## Visual Overhaul — corridor iteration 1
+## Visual Overhaul — corridor iterations
 
 Issue #2 adds a corridor-only first candidate. Use saved view4, or open `http://localhost:4173/index.html?view=4&quality=High`; append `&clean=1` for the HUD-free view. The default start remains in the original observatory. The primary art reference in `docs/references/target-red-corridor.jpg` is documentation only and is never loaded by the application.
 
@@ -67,6 +67,15 @@ The corridor has independent procedural geometry and RNG, beveled structural pro
 
 `npm run qa:overhaul` captures the fixed 1920×1080 corridor and the other-sector regression views. `node scripts/overhaul-ablations.mjs` captures feature-off diagnostics; `python3 scripts/overhaul-regressions.py` compares actual pixels using Pillow/NumPy; `node scripts/overhaul-comparison.mjs` produces the documentation comparison layouts. See `docs/qa/overhaul-v1/iteration-1/` for source hashes, renders, test logs and independent reference-relative review. `QA_OUT` redirects the existing smoke/fallback reports without overwriting the original Issue #1 evidence.
 
-Only iteration 1 is authorized. Art direction remains NOT ACCEPTED until Adrian evaluates the candidate. No second artistic iteration or observatory/hangar overhaul proceeds without approval. Hardware/native presentation and 60 FPS gates remain BLOCKED; software readback pictures support static analysis only.
+Adrian approved iteration 2, “Cinematic Lighting & HDR Overhaul”, on 2026-11-17. Scope remains the service corridor, with the original hero camera, seed, time and route. Art direction remains NOT ACCEPTED until Adrian evaluates the new candidate. Iteration 3 and observatory/hangar overhaul require separate approval. Hardware/native presentation and 60 FPS gates remain BLOCKED; software readback pictures support static analysis only.
 
-The first corridor candidate improves architectural complexity but **fails reference-relative artistic review** because its lighting is too dark and shadows/reflections lack visual clarity. Technical checks passing does not approve the look. See the [independent review](docs/qa/overhaul-v1/iteration-1/INDEPENDENT-REVIEW.md). Work is stopped after iteration 1 pending owner feedback.
+The first corridor candidate improves architectural complexity but **fails reference-relative artistic review** because its lighting is too dark and shadows/reflections lack visual clarity. Technical checks passing does not approve the look. See the [independent review](docs/qa/overhaul-v1/iteration-1/INDEPENDENT-REVIEW.md). That review is preserved as historical evidence; the owner subsequently authorized iteration 2.
+
+
+## Corridor iteration 2 — HDR lighting
+
+The approved second iteration keeps the corridor camera/seed/route and other sectors, while moving corridor lighting and reflection through linear RGBA16F, shadowed scattering, bright-only bloom and one final exposure/filmic/gamma pass. The original sectors retain their display output through a shared-depth spatial bypass. Seven authored lights drive fixtures, direct shading, cached shadows, the room probe and scattering from one table. Receiver-plane PCF corrects false self-shadowing on sloped panels.
+
+`&fog=0` and `&bloom=0` join the existing shadow/probe diagnostic switches. `window.echo9.getHdrDiagnostics()` performs an on-demand readback of actual HDR buffers; it is not part of normal frame timing. `QA_DIR` selects a separate output directory for browser/overhaul QA; `QA_OUT` selects smoke/fallback report paths.
+
+Current images, source hashes, staged diagnostics, tests, approximations and independent review are in [iteration 2 results](docs/qa/overhaul-v1/iteration-2/RESULTS.md). The full route is functionally verified using software readback; native performance and smoothness remain BLOCKED. Art direction is NOT ACCEPTED pending Adrian's assessment. STOP after this candidate: no iteration 3 or other-sector overhaul without separate owner approval.

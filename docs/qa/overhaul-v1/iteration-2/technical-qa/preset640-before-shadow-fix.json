@@ -1,0 +1,13 @@
+{
+  "provenance": "Recorded from implementation exec session 89699 stdout; actual browser run, no screenshot was saved",
+  "artifactSha256": "ba393412194922422935c9cd493252e2d0bb3f3990df112bda11dce62c6d0abb",
+  "browser": "Playwright bundled Chrome 151 with explicit SwiftShader and readback=1",
+  "viewport": [640,360],
+  "initialQuality": "High",
+  "checks": [
+    {"quality":"Low","renderSize":[448,251],"ready":true},
+    {"quality":"Medium","renderSize":[640,360],"ready":true},
+    {"quality":"High","renderSize":[640,360],"ready":true}
+  ],
+  "errors": []
+}

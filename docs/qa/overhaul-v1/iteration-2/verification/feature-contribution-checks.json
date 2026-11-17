@@ -1,0 +1,34 @@
+{
+  "artifactSha256": "8d0da9eb540d3373eee1a33fecd49381d46e64c797afb6dd28c0c76ebe8a3e08",
+  "meaning": "Effects contribute actual pixels, not an art-direction acceptance score",
+  "checks": [
+    {
+      "name": "no-shadows",
+      "status": "PASS",
+      "changedPixels": 108657,
+      "meanAbsoluteRgbDifference": 0.8812723443930042,
+      "sha256": "aa9af653455fba61bc2e732bd3b8c02d77487d8f82ee93686de05fd95e562c75"
+    },
+    {
+      "name": "no-environment",
+      "status": "PASS",
+      "changedPixels": 2030797,
+      "meanAbsoluteRgbDifference": 7.481882555298354,
+      "sha256": "7c2a1f9e18e89d56b312628797540bd26d319bd27d78e3d23f27d53aa8fe4bcd"
+    },
+    {
+      "name": "no-atmosphere",
+      "status": "PASS",
+      "changedPixels": 1129395,
+      "meanAbsoluteRgbDifference": 3.2614673353909467,
+      "sha256": "46fb6615437b1c93754ee0c77f4f25c5884adfbf9225ea0548556a90dfb0963a"
+    },
+    {
+      "name": "no-bloom",
+      "status": "PASS",
+      "changedPixels": 8397,
+      "meanAbsoluteRgbDifference": 0.005306712962962963,
+      "sha256": "49de3f2920a1b643100aeeab85ae1623de84264ea427d5581df8779ba5df6d31"
+    }
+  ]
+}

@@ -1,0 +1,120 @@
+{
+  "artifactSha256": "8d0da9eb540d3373eee1a33fecd49381d46e64c797afb6dd28c0c76ebe8a3e08",
+  "method": "CPU ray/triangle visibility; matches spotlight near clip 0.15m and world receiver offset 0.006m; not a GPU render",
+  "samples": [
+    {
+      "pixel": [
+        290,
+        480
+      ],
+      "world": [
+        3.8199999332427965,
+        2.758127242851134,
+        45.06004060073569
+      ],
+      "normal": [
+        -1,
+        0,
+        0
+      ],
+      "redKeyVisible": true,
+      "receiverTriangle": 46585,
+      "occluderTriangle": null
+    },
+    {
+      "pixel": [
+        300,
+        490
+      ],
+      "world": [
+        3.8199999332427965,
+        2.6112037564501995,
+        45.47754365986518
+      ],
+      "normal": [
+        -1,
+        0,
+        0
+      ],
+      "redKeyVisible": true,
+      "receiverTriangle": 46584,
+      "occluderTriangle": null
+    },
+    {
+      "pixel": [
+        310,
+        510
+      ],
+      "world": [
+        3.8199999332427983,
+        2.2764767015882916,
+        45.918710696075294
+      ],
+      "normal": [
+        -1,
+        0,
+        0
+      ],
+      "redKeyVisible": true,
+      "receiverTriangle": 46584,
+      "occluderTriangle": null
+    },
+    {
+      "pixel": [
+        320,
+        520
+      ],
+      "world": [
+        3.8199999332427974,
+        2.1074997688522275,
+        46.3843797406101
+      ],
+      "normal": [
+        -1,
+        0,
+        0
+      ],
+      "redKeyVisible": true,
+      "receiverTriangle": 46584,
+      "occluderTriangle": null
+    },
+    {
+      "pixel": [
+        330,
+        525
+      ],
+      "world": [
+        3.7827467552773757,
+        2.021899937139783,
+        46.7599983215332
+      ],
+      "normal": [
+        0,
+        0,
+        -1
+      ],
+      "redKeyVisible": false,
+      "receiverTriangle": 84013,
+      "occluderTriangle": 123847
+    },
+    {
+      "pixel": [
+        340,
+        530
+      ],
+      "world": [
+        3.6349999904632555,
+        1.9284743398482929,
+        46.80264409650038
+      ],
+      "normal": [
+        -1,
+        0,
+        0
+      ],
+      "redKeyVisible": false,
+      "receiverTriangle": 84005,
+      "occluderTriangle": 123847
+    }
+  ]
+}

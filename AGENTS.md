@@ -56,3 +56,19 @@
 - P0: linear HDR scene/composite and one final tone mapping/exposure; purposeful cool first-frame illumination and vivid red depth, real associated shadows/reflectance. P1: depth-aware light-linked fog/scattering, believable colored metal-floor reflections, subtle HDR bloom; only necessary geometry fixes. Check the independent critic's iteration-1 findings.
 - Never globally brighten other sectors or hide changes by camera-threshold switching. Keep observatory/hangar content and legacy behavior stable, compare regression images, run all build/RunAllTests/smoke/fallback checks and record genuine QA evidence under `docs/qa/overhaul-v1/iteration-2/`. Reference images remain documentation-only; 100 KB remains optional. Hardware FPS and native temporal tests remain BLOCKED without physical GPU.
 - After one actual iteration-2 candidate and independent reference-relative media-only review, update AGENTS/QA/Issue, commit and push to main and **STOP for Adrian's artistic assessment**. Do not start iteration 3 or overhaul other sectors without separate approval. The current approval is for implementation and review only, not artistic sign-off.
+
+### Iteration 2 execution
+- User reconfirmed implementation, build/RunAllTests/browser/reference comparison/independent review, documentation and Issue #2 update, main commit and push. The historical iteration1 STOP is superseded only for iteration2.
+- Preserve exact approved hero camera/seed/time. Save real HDR-only, relighting and final diagnostics under `docs/qa/overhaul-v1/iteration-2/`. Do not overwrite iteration1 evidence.
+- Final review must be independent of implementation/advisory work and receive only target plus actual final clean/HUD media. After presenting that candidate, STOP before iteration3; artist acceptance remains Adrian's decision.
+
+
+## Issue #2 iteration 2 closeout — 2026-11-17
+- The original Cloud workspace was recovered with uncommitted work intact. A verified local snapshot/diff is kept under `.git/echo9-recovery/`; no resets, source reconstruction or artistic edits were performed during recovery.
+- Final HTML: 128,893 raw / 41,027 gzip bytes; source identity is recorded in `artifact-manifest.json`.
+- Authoritative final HTML SHA256: `8d0da9eb540d3373eee1a33fecd49381d46e64c797afb6dd28c0c76ebe8a3e08`. Source and generated HTML match; 35 source/script/test/package/index files remain byte-identical to the recovered snapshot.
+- Explicit build and RunAllTests 24/24, smoke 17/17, fallback 3/3, five sector rechecks, clean/HUD rechecks and four feature-off diagnostics PASS. Final recovery reports are under `docs/qa/overhaul-v1/iteration-2/verification/`; earlier reports/failures remain historical evidence.
+- Fresh images are pixel-identical to the preserved candidate. Views1/2/3/5 are also identical to iteration1; view6 changes only within the visible corridor doorway/MSAA edge. Legacy geometry/material/RNG, six poses, hero camera and full route are unchanged.
+- Independent GPT-6 Astra received only reference and final actual clean/HUD media: reference-match FAIL, five major and three minor findings, no critical defect. Main gaps: smooth materials, broad white/red blocks, repetitive structure, depth and shadow modelling. ART DIRECTION: NOT ACCEPTED until Adrian approves. No source art changes follow that review.
+- Software route completion PASS (63.2297s, 12 frames) is functional only. Hardware GPU / 60 FPS / native temporal acceptance remain BLOCKED; Issue #1 stays open. Issue #2 remains open for owner review.
+- Approved closeout is documentation/AGENTS/Issue update, main commit and push. STOP after delivery: iteration3, further artistic revisions and other-sector overhaul are not authorized.

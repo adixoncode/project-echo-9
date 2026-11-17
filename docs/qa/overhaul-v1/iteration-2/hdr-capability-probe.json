@@ -1,0 +1,49 @@
+{
+  "status": "PASS",
+  "adapter": {
+    "vendor": "google",
+    "architecture": "swiftshader",
+    "isFallbackAdapter": true
+  },
+  "format": "rgba16float",
+  "msaa": 4,
+  "hdrPixel": [
+    4,
+    0.5,
+    0.04998779296875,
+    1
+  ],
+  "expectedHdr": [
+    4,
+    0.5,
+    0.05,
+    1
+  ],
+  "displayPixel": [
+    252,
+    205,
+    62,
+    255
+  ],
+  "expectedDisplay": [
+    252,
+    205,
+    62,
+    255
+  ],
+  "legacyBypassPixel": [
+    38,
+    64,
+    89,
+    255
+  ],
+  "expectedLegacyBypass": [
+    38,
+    64,
+    89,
+    255
+  ],
+  "errors": [],
+  "hardwareAcceptance": "BLOCKED",
+  "scope": "Independent format/MSAA/linear-composite calibration, not scene artistic/performance acceptance"
+}

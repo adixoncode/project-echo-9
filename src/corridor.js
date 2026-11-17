@@ -1,13 +1,11 @@
 import {Geometry} from './geometry.js';
+import {CORRIDOR_LIGHTS,CORRIDOR_LIGHT_TABLE} from './corridor-lights.js';
+export {CORRIDOR_LIGHTS} from './corridor-lights.js';
 import {seededRandom,normalize,cross,WORLD_SEED} from './math.js';
 
 // Corridor-only construction. Its RNG and material encoding do not touch the legacy world.
 // Vertex material = (emission, perceptual roughness, metallic fraction), all in linear light.
 export const CORRIDOR_HERO={position:[-2.35,1.72,27.5],target:[-13.5,1.78,61],verticalFov:64};
-export const CORRIDOR_LIGHTS=[
-  {position:[-3.3,4.45,33.6],target:[2.2,.65,37.2],color:[.57,.72,.92],power:155,fov:104,far:34},
-  {position:[.45,4.85,48],target:[-.3,.3,51],color:[1,.018,.009],power:125,fov:126,far:32}
-];
 export const CORRIDOR_PROBE={position:[0,2.55,38],min:[-3.9,-.25,23],max:[3.9,5.6,72],size:128,mips:8};
 export function buildCorridor(seed=WORLD_SEED^0xC0771D0){
   const random=seededRandom(seed),g=new Geometry(),obstacles=[];
@@ -68,7 +66,6 @@ export function buildCorridor(seed=WORLD_SEED^0xC0771D0){
         for(const dz of [-1.45,1.45])box(side*4.02,2.1,z+dz,.9,3.7,.13,.04,steel,.44,.8);
         box(side*4.13,4.0,z,1.2,.14,3,.04,steel,.44,.8);box(side*4.2,.34,z,1.0,.18,3,.04,steel,.5,.8);
         for(let j=0;j<6;j++)box(side*4.45,.75+j*.45,z+.6,.32,.14,1.2,.025,dark,.48,.6);
-        if(bay===3){box(side*4.47,3.6,z, .05,.65,1.35,.018,[.62,.75,.86],.35,.05,3.4);}
       }else{
         // Full-height removable panels with raised perimeter lips and double-recessed centres.
         for(const dy of [-1.28,1.28])box(side*3.955,2.35+dy,z,.12,.075,2.64,.018,steel,.46,.8);
@@ -141,15 +138,21 @@ export function buildCorridor(seed=WORLD_SEED^0xC0771D0){
     for(let j=0;j<5;j++)box(side*3.16,1.14+j*.16,z+.25,.045,.045,.48,.008,steel,.4,.8);
     obstacles.push([Math.min(side*3.2,side*3.85),.3,z-.75,Math.max(side*3.2,side*3.85),3.1,z+.75]);
   }
-  // Hanging practicals: red light is concentrated deeper along the spine, cold at the side bay.
-  for(const z of [41.2,48,56.3,65.3]){
-    box(.45,5.05,z,.55,.22,.6,.045,dark,.5,.6);
-    tube([[.45,5.6,z],[.45,4.95,z]],.035,steel,.4,.9,10);
-    box(.45,4.78,z,.19,.32,.22,.04,[1,.025,.012],.32,.05,5.5);
-    for(const dx of [-.16,.16])box(.45+dx,4.78,z,.035,.42,.29,.008,dark,.38,.8);
+  // Every scene-light housing and emitter is built from the same table as the shaders.
+  for(const source of CORRIDOR_LIGHT_TABLE){
+    const direction=source.direction,u=normalize(cross(direction,Math.abs(direction[1])>.95?[1,0,0]:[0,1,0])),v=cross(direction,u),basis=[u,v,direction];
+    const back=source.position.map((p,i)=>p-direction[i]*.065),front=source.position.map((p,i)=>p+direction[i]*.045);
+    if(source.mount==='pendant'){
+      // Diffuser is visible from both axial directions; the dark housing sits above it.
+      box(...source.position,...source.size,.035,source.color,.28,0,source.emission);
+      box(source.position[0],source.position[1]+.22,source.position[2],.40,.12,.38,.025,dark,.5,.75);
+      for(const dx of [-.145,.145])box(source.position[0]+dx,source.position[1],source.position[2],.025,.40,.28,.006,dark,.45,.8);
+    }else{
+      chamfer(back,[source.size[0]+.14,source.size[1]+.12,.17],.025,dark,.5,.75,0,basis);
+      chamfer(front,[source.size[0],source.size[1],.035],.012,source.color,.28,0,source.emission,basis);
+    }
+    if(source.mount!=='wall')tube([[source.position[0],source.position[1]+.12,source.position[2]],[source.position[0],5.56,source.position[2]]],.025,steel,.4,.9,10);
   }
-  box(.8,5.15,29.3,.38,.14,1.2,.025,steel,.42,.8);
-  box(.8,5.04,29.3,.21,.055,.8,.015,[.55,.65,.7],.4,.05,2.0);
   // Offset wall cable loops, an exposed valve and a small field-repair plate.
   for(const side of [-1,1])for(const z of [32.1,44.6,58.4]){
     const pts=[];for(let k=0;k<=20;k++){const t=k/20;pts.push([side*3.75,3.35-Math.sin(t*Math.PI)*.42,z+t*2.2]);}tube(pts,.035,dark,.65,.15,10);
@@ -173,5 +176,5 @@ export function buildCorridor(seed=WORLD_SEED^0xC0771D0){
   for(const side of [-1,1])box(side*4.05,4,70.8,.35,8,.5,.07,dark,.6,.65);
   box(0,8,70.8,8.5,.4,.5,.08,steel,.43,.8);
   box(0,8.15,69.3,8.5,.2,5.7,.04,dark,.68,.3);
-  return {vertices:g.finish(),triangles:g.triangles,obstacles,exitShellRange,seed,hero:CORRIDOR_HERO,probe:CORRIDOR_PROBE,lights:CORRIDOR_LIGHTS};
+  return {vertices:g.finish(),triangles:g.triangles,obstacles,exitShellRange,seed,hero:CORRIDOR_HERO,probe:CORRIDOR_PROBE,lights:CORRIDOR_LIGHT_TABLE};
 }
